@@ -1,0 +1,6 @@
+{
+  "name": "Thai Construction Progress Report System",
+  "description": "ระบบสร้างและบันทึกรายงานผลการปฏิบัติงานผู้ควบคุมงานก่อสร้าง และบันทึกข้อความตรวจรับพัสดุ พร้อมระบบช่วยเหลือ AI Gemini",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Sarabun', 'TH Sarabun PSK', sans-serif;
+    background-color: #121212;
+    color: #f3f4f6;
+  }
+}
+
+.font-sarabun {
+  font-family: 'Sarabun', 'TH Sarabun New', 'TH Sarabun PSK', sans-serif;
+}
+
+/* Dark Neumorphism utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.neu-flat {
+  background: #1e1e1e;
+  box-shadow: 6px 6px 14px #0c0c0c, -6px -6px 14px #2a2a2a;
+}
+
+.neu-button {
+  background: #1e1e1e;
+  box-shadow: 4px 4px 10px #0c0c0c, -4px -4px 10px #2a2a2a;
+  transition: all 0.2s ease;
+}
+
+.neu-button:hover {
+  box-shadow: 6px 6px 14px #0a0a0a, -6px -6px 14px #2e2e2e;
+}
+
+.neu-button:active, .neu-button-active {
+  background: #1a1a1a;
+  box-shadow: inset 3px 3px 6px #0d0d0d, inset -3px -3px 6px #272727;
+}
+
+.neu-pressed {
+  background: #181818;
+  box-shadow: inset 4px 4px 8px #0a0a0a, inset -4px -4px 8px #262626;
+}
+
+.neu-orange-btn {
+  background: linear-gradient(145deg, #f97316, #ea580c);
+  box-shadow: 4px 4px 12px rgba(249, 115, 22, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.05);
+}
+
+.neu-orange-btn:hover {
+  background: linear-gradient(145deg, #fb923c, #f97316);
+  box-shadow: 6px 6px 16px rgba(249, 115, 22, 0.4), -2px -2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.neu-purple-btn {
+  background: linear-gradient(145deg, #8b5cf6, #7c3aed);
+  box-shadow: 4px 4px 12px rgba(139, 92, 246, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.05);
+}
+
+.neu-purple-btn:hover {
+  background: linear-gradient(145deg, #a78bfa, #8b5cf6);
+  box-shadow: 6px 6px 16px rgba(139, 92, 246, 0.4);
+}
+
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  .print\:hidden {
+    display: none !important;
+  }
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+  .print\:p-0 {
+    padding: 0 !important;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm 15mm 15mm;
+  }
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+  }
+}
+
