@@ -13,6 +13,7 @@ import {
   ChevronRight,
   ChevronDown,
   ArrowRight,
+  RotateCcw,
 } from 'lucide-react';
 import { GarudaEmblem } from './GarudaEmblem';
 import {
@@ -185,6 +186,42 @@ export const DocumentPage1: React.FC<Props> = ({
     });
   };
 
+  const handleClearPage1 = () => {
+    if (!window.confirm('คุณต้องการล้างข้อมูลในหน้า ๑ (ข้อมูลสัญญาและโครงการ) ทั้งหมดใช่หรือไม่?')) {
+      return;
+    }
+    if (onChange) {
+      onChange({
+        ...data,
+        docNo: '',
+        reportDate: '',
+        projectName: '',
+        location: '',
+        quantity: '',
+        contractNo: '',
+        contractDate: '',
+        wsDate: '',
+        contractEndDate: '',
+        totalDays: '',
+        constructionCost: '',
+        finePerDay: '',
+        installN: '๑',
+        contractorName: '',
+        contractorAddress: '',
+        rep1Name: '',
+        rep2Name: '',
+        supervisorName: '',
+        supervisorPos: '',
+        committeeChairName: '',
+        committeeChairPos: '',
+        committee1Name: '',
+        committee1Pos: '',
+        committee2Name: '',
+        committee2Pos: '',
+      });
+    }
+  };
+
   const inputClass =
     'w-full px-4 py-2.5 rounded-2xl bg-[#141517] text-slate-100 placeholder:text-zinc-500 placeholder:font-light text-sm outline-none border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)] focus:border-orange-500/50 transition-all antialiased';
 
@@ -241,7 +278,7 @@ export const DocumentPage1: React.FC<Props> = ({
             </div>
           </div>
         )}
-        
+
         {/* Top Control Bar: Active Week Selector (Dropdown List) & Actions */}
         <div className="neu-flat p-3.5 sm:p-4 rounded-3xl border border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
           {/* Week Selector Dropdown */}
@@ -249,7 +286,7 @@ export const DocumentPage1: React.FC<Props> = ({
             <div className="w-10 h-10 rounded-2xl neu-pressed flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0">
               <Layers className="w-5 h-5" />
             </div>
-            
+
             <div className="flex items-center gap-2 flex-1 min-w-0 flex-wrap sm:flex-nowrap">
               {/* Prev Week Button */}
               <button
@@ -316,12 +353,23 @@ export const DocumentPage1: React.FC<Props> = ({
               <Sparkles className="w-3.5 h-3.5 text-orange-400" />
               <span>แปลงเลขไทย</span>
             </button>
+
+            {/* Clear Data Button */}
+            <button
+              type="button"
+              onClick={handleClearPage1}
+              className="px-3 py-2 neu-button text-rose-400 hover:text-rose-300 rounded-2xl text-xs font-bold border border-rose-500/20 hover:border-rose-500/40 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
+              title="ล้างข้อมูลทั้งหมดในหน้า ๑ (ข้อมูลสัญญา)"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-rose-400" />
+              <span>ล้างข้อมูล</span>
+            </button>
           </div>
         </div>
 
         {/* Bento Cards Grid: 2 Columns on PC, 1 Column on Mobile */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          
+
           {/* Bento Card 1: โครงการ (Project Card) */}
           <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-5 flex flex-col justify-between">
             <div className="space-y-4">
@@ -344,7 +392,7 @@ export const DocumentPage1: React.FC<Props> = ({
               <div className="space-y-4 text-xs">
                 {/* Row 1: Short Fields (DOC_NO, R_DATE, WEEK) */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  
+
                   {/* DOC_NO */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{DOC_NO}}">
@@ -406,7 +454,7 @@ export const DocumentPage1: React.FC<Props> = ({
 
                 {/* Row 2: Short Date Range Fields (START, END) */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  
+
                   {/* START */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{START}}">
@@ -516,7 +564,7 @@ export const DocumentPage1: React.FC<Props> = ({
               <div className="space-y-4 text-xs">
                 {/* Row 1: Contract Numbers & Dates (C_NO, C_DATE, WS_DATE, C_END) */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                  
+
                   {/* C_NO */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{C_NO}}">
@@ -587,7 +635,7 @@ export const DocumentPage1: React.FC<Props> = ({
 
                 {/* Row 2: Metrics (DAYS, COST, FINE, INSTALL_N) */}
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                  
+
                   {/* DAYS */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{DAYS}}">
@@ -651,91 +699,6 @@ export const DocumentPage1: React.FC<Props> = ({
                       onChange={(e) => updateField('installN', toThaiDigits(e.target.value))}
                       placeholder="เช่น ๑"
                       className={`${inputClass} text-center font-bold`}
-                    />
-                  </div>
-                </div>
-
-                {/* Auto BahtText Preview Display */}
-                {(data.constructionCost || data.finePerDay) && (
-                  <div className="p-3 rounded-2xl bg-[#141517] border border-white/5 space-y-1.5 text-[11px] shadow-[inset_2px_2px_5px_#0a0b0c]">
-                    {data.constructionCost && (
-                      <div className="flex items-center gap-2 text-gray-300">
-                        <span className="text-orange-400 font-semibold shrink-0">ตัวหนังสือค่าจ้าง (COST_TEXT):</span>
-                        <span className="text-gray-200 italic font-medium">{bahttext(data.constructionCost)}</span>
-                      </div>
-                    )}
-                    {data.finePerDay && (
-                      <div className="flex items-center gap-2 text-gray-300">
-                        <span className="text-orange-400 font-semibold shrink-0">ตัวหนังสือค่าปรับ (FINE_TEXT):</span>
-                        <span className="text-gray-200 italic font-medium">{bahttext(data.finePerDay)}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* CONTRACTOR & CTR_ADDR */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{CONTRACTOR}}">
-                      ชื่อผู้รับจ้าง
-                      <span className="text-orange-500 font-bold">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      id="field_contractor_name"
-                      name="contractor_name"
-                      value={data.contractorName || ''}
-                      onChange={(e) => updateField('contractorName', e.target.value)}
-                      placeholder="เช่น ห้างหุ้นส่วนจำกัด ชัยยุทธ ธุรกิจการโยธา"
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{CTR_ADDR}}">
-                      ที่อยู่ผู้รับจ้าง (CTR_ADDR)
-                    </label>
-                    <input
-                      type="text"
-                      id="field_contractor_addr"
-                      name="contractor_addr"
-                      value={data.contractorAddress || ''}
-                      onChange={(e) => updateField('contractorAddress', e.target.value)}
-                      placeholder="เช่น บ้านปงยางคก เลขที่ ๕๒/๑ หมู่ ๙ ตำบลปงยางคก..."
-                      className={inputClass}
-                    />
-                  </div>
-                </div>
-
-                {/* REP_1 & REP_2 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{REP_1}}">
-                      ผู้แทนผู้รับจ้าง คนที่ 1 (REP_1)
-                    </label>
-                    <input
-                      type="text"
-                      id="field_rep1_name"
-                      name="rep1_name"
-                      value={data.rep1Name || ''}
-                      onChange={(e) => updateField('rep1Name', e.target.value)}
-                      placeholder="เช่น นายพรหมมินทร์ ปะระมา"
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-1.5 w-full">
-                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{REP_2}}">
-                      ผู้แทนผู้รับจ้าง คนที่ 2 (REP_2)
-                    </label>
-                    <input
-                      type="text"
-                      id="field_rep2_name"
-                      name="rep2_name"
-                      value={data.rep2Name || '-'}
-                      onChange={(e) => updateField('rep2Name', e.target.value)}
-                      placeholder="ระบุชื่อ หรือใส่ -"
-                      className={inputClass}
                     />
                   </div>
                 </div>

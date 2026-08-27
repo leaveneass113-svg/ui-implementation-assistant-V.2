@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReportData, WeekData } from '../types';
-import { BarChart2, Info, ChevronLeft, ArrowRight } from 'lucide-react';
+import { BarChart2, Info, ChevronLeft, ArrowRight, RotateCcw } from 'lucide-react';
 import { buildDailyWorkSummary, recalculateWeekProgress, toThaiDigits } from '../utils/weekUtils';
 import { WeekSelectorBar } from './WeekSelectorBar';
 
@@ -63,13 +63,38 @@ export const DocumentPage2: React.FC<Props> = ({
     onChange({ ...data, activeWeekIndex: idx });
   };
 
+  const handleClearPage2 = () => {
+    if (!window.confirm(`คุณต้องการล้างข้อมูลความก้าวหน้าในสัปดาห์ที่ ${toThaiDigits(currentWeek?.weekNo || activeIndex + 1)} ใช่หรือไม่?`)) {
+      return;
+    }
+    if (!onChange) return;
+    const updatedWeeks = weeks.map((w, idx) => {
+      if (idx === activeIndex) {
+        return {
+          ...w,
+          workProgress: {
+            weight: 0,
+            prevPercent: 0,
+            thisWeek: 0,
+            cumulative: 0,
+            rowTotal: 0,
+          },
+        };
+      }
+      return w;
+    });
+    const recalculated = recalculateWeekProgress(updatedWeeks);
+    onChange({ ...data, weeks: recalculated });
+  };
+
   const handleUpdateProgressField = (field: 'weight' | 'thisWeek' | 'rowTotal', value: number) => {
     if (!onChange) return;
 
     const updatedWeeks = weeks.map((w, idx) => {
       if (idx === activeIndex) {
-        const thisW = field === 'thisWeek' ? value : (w.workProgress?.thisWeek ?? 0);
-        const weightVal = field === 'weight' ? value : (w.workProgress?.weight ?? 100);
+        const weightVal = (field === 'weight' || field === 'thisWeek') ? value : (w.workProgress?.weight ?? 0);
+        // ในช่องของ "ในสัปดาห์นี้" ให้ใช้ค่าตัวเลขของ "สัดส่วนของ" เสมอ
+        const thisW = weightVal;
         const rowTotalVal = field === 'rowTotal' ? value : (w.workProgress?.rowTotal ?? 0);
 
         return {
@@ -129,9 +154,22 @@ export const DocumentPage2: React.FC<Props> = ({
               </div>
             </div>
 
-            <div className="hidden sm:flex items-center gap-2 text-xs text-orange-300 bg-orange-500/10 px-3.5 py-2 rounded-2xl border border-orange-500/20">
-              <Info className="w-4 h-4 text-orange-400 shrink-0" />
-              <span>คำนวณผลงานสะสมส่งต่อจากสัปดาห์ก่อนหน้าอัตโนมัติ</span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="hidden sm:flex items-center gap-2 text-xs text-orange-300 bg-orange-500/10 px-3.5 py-2 rounded-2xl border border-orange-500/20">
+                <Info className="w-4 h-4 text-orange-400 shrink-0" />
+                <span>คำนวณผลงานสะสมส่งต่อจากสัปดาห์ก่อนหน้าอัตโนมัติ</span>
+              </div>
+
+              {/* Clear Data Button */}
+              <button
+                type="button"
+                onClick={handleClearPage2}
+                className="px-3 py-2 neu-button text-rose-400 hover:text-rose-300 rounded-2xl text-xs font-bold border border-rose-500/20 hover:border-rose-500/40 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
+                title="ล้างข้อมูลผลงานในสัปดาห์นี้"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-rose-400" />
+                <span>ล้างข้อมูล</span>
+              </button>
             </div>
           </div>
 
@@ -199,7 +237,7 @@ export const DocumentPage2: React.FC<Props> = ({
                   <input
                     type="number"
                     step="0.01"
-                    value={wp.weight !== undefined && wp.weight !== 0 ? wp.weight : (wp.weight === 0 ? '' : 100)}
+                    value={wp.weight !== undefined && wp.weight !== 0 ? wp.weight : (wp.weight === 0 ? '' : 0)}
                     onChange={(e) => handleUpdateProgressField('weight', parseFloat(e.target.value) || 0)}
                     placeholder="100"
                     className="w-full h-14 text-center rounded-2xl bg-[#141517] text-slate-100 placeholder:text-zinc-500 text-sm outline-none border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)] focus:border-orange-500/50 font-bold transition-all antialiased px-2"

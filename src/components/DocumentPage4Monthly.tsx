@@ -1,21 +1,27 @@
 import React from 'react';
-import { ReportData, MonthlyRollupItem } from '../types';
+import { ReportData, WeekData } from '../types';
 import {
-  FileText,
+  Building,
+  ScrollText,
   UserCheck,
   TrendingUp,
   Sparkles,
-  Calendar,
   Layers,
   ChevronLeft,
+  ChevronRight,
+  ChevronDown,
   ArrowRight,
   RotateCcw,
-  Building,
 } from 'lucide-react';
+import { GarudaEmblem } from './GarudaEmblem';
 import {
-  calculateMonthlyProgress,
+  getLatestCumulativeProgress,
+  getFirstWeekSunday,
+  getNextMonday,
+  parseThaiDate,
+  formatThaiDateFull,
+  formatThaiDateShort,
   toThaiDigits,
-  convertThaiDigitsToStandard,
   bahttext,
 } from '../utils/weekUtils';
 
@@ -38,558 +44,847 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
     }
   };
 
-  const monthlyItems: MonthlyRollupItem[] =
-    data.monthlyRollup && data.monthlyRollup.length === 3
-      ? data.monthlyRollup
-      : [
-          {
-            index: 1,
-            label: data.monthlyRollup?.[0]?.label || 'งานเตรียมพื้นที่และปรับระดับคันทางเดิม',
-            desc: data.monthlyRollup?.[0]?.desc || 'ถางป่าขุดตอและปรับเกรดดินเดิมตลอดสายทาง',
-            weight_MW: data.monthlyRollup?.[0]?.weight_MW ?? 20,
-            prevCum_MP: data.monthlyRollup?.[0]?.prevCum_MP ?? 0,
-            thisMonth_MM: data.monthlyRollup?.[0]?.thisMonth_MM ?? 20,
-          },
-          {
-            index: 2,
-            label: data.monthlyRollup?.[1]?.label || 'งานชั้นพื้นทางหินคลุก หนา 0.15 ม.',
-            desc: data.monthlyRollup?.[1]?.desc || 'ขนส่ง ลงหินคลุกและบดอัดแน่นด้วยรถบดสั่นสะเทือน',
-            weight_MW: data.monthlyRollup?.[1]?.weight_MW ?? 25,
-            prevCum_MP: data.monthlyRollup?.[1]?.prevCum_MP ?? 0,
-            thisMonth_MM: data.monthlyRollup?.[1]?.thisMonth_MM ?? 25,
-          },
-          {
-            index: 3,
-            label: data.monthlyRollup?.[2]?.label || 'งานผิวจราจร คอร. หนา 0.15 ม. และถมไหล่ทาง',
-            desc: data.monthlyRollup?.[2]?.desc || 'เทคอนกรีตผสมเสร็จ ผูกเหล็กไวร์เมช และถมไหล่ทางข้างละ 0.20 ม.',
-            weight_MW: data.monthlyRollup?.[2]?.weight_MW ?? 55,
-            prevCum_MP: data.monthlyRollup?.[2]?.prevCum_MP ?? 0,
-            thisMonth_MM: data.monthlyRollup?.[2]?.thisMonth_MM ?? 55,
-          },
-        ];
+  // Derive current cumulative % from latest week in state (using Thai digits)
+  const currentPctDisplay = getLatestCumulativeProgress(data.weeks || [], true);
 
-  const monthlyCalc = calculateMonthlyProgress(monthlyItems);
+  const activeIndex = data.activeWeekIndex ?? 0;
+  const activeWeek = (data.weeks && data.weeks[activeIndex]) || data.weeks?.[0];
 
-  const handleUpdateMonthlyItem = (
-    index: number,
-    field: keyof MonthlyRollupItem,
-    value: any
-  ) => {
+  const updateActiveWeekField = (field: keyof WeekData, value: any) => {
     if (!onChange) return;
-    const updated = monthlyItems.map((item, idx) => {
-      if (idx === index) {
-        const newItem = { ...item, [field]: value };
-        const mp = Number(newItem.prevCum_MP) || 0;
-        const mm = Number(newItem.thisMonth_MM) || 0;
-        const mw = Number(newItem.weight_MW) || 0;
-        newItem.cum_MC = Number((mp + mm).toFixed(2));
-        newItem.total_MR = Number(((mw * newItem.cum_MC) / 100).toFixed(2));
-        return newItem;
+    const weeks = data.weeks || [];
+    const updatedWeeks = weeks.map((w, idx) => {
+      if (idx === activeIndex) {
+        return { ...w, [field]: value };
       }
-      return item;
+      return w;
     });
-    onChange({ ...data, monthlyRollup: updated });
+    onChange({
+      ...data,
+      weeks: updatedWeeks,
+    });
   };
 
-  const handleResetMonthlyData = () => {
+  const handleStartDateChange = (val: string) => {
     if (!onChange) return;
-    if (confirm('คุณต้องการรีเซ็ตข้อมูลรายงานประจำเดือนเป็นค่าเริ่มต้นหรือไม่?')) {
+    const startDate = parseThaiDate(val);
+    let end: Date;
+    if (activeIndex === 0) {
+      end = getFirstWeekSunday(startDate);
+    } else {
+      end = new Date(startDate);
+      end.setDate(end.getDate() + 6);
+    }
+    const reportDate = getNextMonday(end);
+
+    const dailyDates: string[] = [];
+    const dailyShortDates: string[] = [];
+    const weekSunday = new Date(end);
+    const weekMonday = new Date(weekSunday);
+    weekMonday.setDate(weekMonday.getDate() - 6);
+
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(weekMonday);
+      d.setDate(d.getDate() + i);
+      dailyDates.push(formatThaiDateFull(d, true));
+      dailyShortDates.push(formatThaiDateShort(d, true));
+    }
+
+    const formattedStart = formatThaiDateFull(startDate, true);
+    const formattedEnd = formatThaiDateFull(end, true);
+    const formattedReport = formatThaiDateFull(reportDate, true);
+
+    const weeks = data.weeks || [];
+    const updatedWeeks = weeks.map((w, idx) => {
+      if (idx === activeIndex) {
+        return {
+          ...w,
+          startDate: val.includes('มิถุนายน') || val.includes('กรกฎาคม') || val.includes('สิงหาคม') ? toThaiDigits(val) : formattedStart,
+          endDate: formattedEnd,
+          reportDate: formattedReport,
+          dailyDates,
+          dailyShortDates,
+        };
+      }
+      return w;
+    });
+
+    onChange({
+      ...data,
+      startDate: toThaiDigits(val),
+      endDate: formattedEnd,
+      reportDate: formattedReport,
+      weeks: updatedWeeks,
+    });
+  };
+
+  const handleEndDateChange = (val: string) => {
+    if (!onChange) return;
+    const endDate = parseThaiDate(val);
+    const reportDate = getNextMonday(endDate);
+    const formattedReport = formatThaiDateFull(reportDate, true);
+
+    const weeks = data.weeks || [];
+    const updatedWeeks = weeks.map((w, idx) => {
+      if (idx === activeIndex) {
+        return {
+          ...w,
+          endDate: toThaiDigits(val),
+          reportDate: formattedReport,
+        };
+      }
+      return w;
+    });
+
+    onChange({
+      ...data,
+      endDate: toThaiDigits(val),
+      reportDate: formattedReport,
+      weeks: updatedWeeks,
+    });
+  };
+
+  // Convert all numbers in the project to Thai Numerals (1-click)
+  const handleConvertAllToThaiDigits = () => {
+    if (!onChange) return;
+
+    const convertedWeeks = (data.weeks || []).map((w) => ({
+      ...w,
+      weekNo: toThaiDigits(w.weekNo),
+      startDate: toThaiDigits(w.startDate),
+      endDate: toThaiDigits(w.endDate),
+      reportDate: toThaiDigits(w.reportDate),
+      remainingDays: toThaiDigits(w.remainingDays),
+      dailyDates: (w.dailyDates || []).map((d) => toThaiDigits(d)),
+      dailyShortDates: (w.dailyShortDates || []).map((d) => toThaiDigits(d)),
+    }));
+
+    onChange({
+      ...data,
+      docNo: toThaiDigits(data.docNo),
+      rptMonth: toThaiDigits(data.rptMonth),
+      reportDate: toThaiDigits(data.reportDate),
+      weekNo: toThaiDigits(data.weekNo),
+      startDate: toThaiDigits(data.startDate),
+      endDate: toThaiDigits(data.endDate),
+      contractNo: toThaiDigits(data.contractNo),
+      contractDate: toThaiDigits(data.contractDate),
+      contractEndDate: toThaiDigits(data.contractEndDate),
+      totalDays: toThaiDigits(data.totalDays),
+      constructionCost: toThaiDigits(data.constructionCost),
+      finePerDay: toThaiDigits(data.finePerDay),
+      budgetAmount: toThaiDigits(data.budgetAmount),
+      budgetYear: toThaiDigits(data.budgetYear || '2569'),
+      remainingDays: toThaiDigits(data.remainingDays),
+      weeks: convertedWeeks,
+    });
+  };
+
+  const handleClearPage4 = () => {
+    if (!window.confirm('คุณต้องการล้างข้อมูลในหน้า ๔ (รายงานรายเดือน) ทั้งหมดใช่หรือไม่?')) {
+      return;
+    }
+    if (onChange) {
       onChange({
         ...data,
+        docNo: '',
         rptMonth: '',
-        monthlyRollup: [
-          { index: 1, label: '', desc: '', weight_MW: 100, prevCum_MP: 0, thisMonth_MM: 0 },
-          { index: 2, label: '', desc: '', weight_MW: 0, prevCum_MP: 0, thisMonth_MM: 0 },
-          { index: 3, label: '', desc: '', weight_MW: 0, prevCum_MP: 0, thisMonth_MM: 0 },
-        ],
+        projectName: '',
+        location: '',
+        quantity: '',
+        contractNo: '',
+        totalDays: '',
+        constructionCost: '',
+        finePerDay: '',
+        installN: '๑',
+        contractorName: '',
+        supervisorName: '',
+        supervisorPos: '',
+        committeeChairName: '',
+        committeeChairPos: '',
+        committee1Name: '',
+        committee1Pos: '',
+        committee2Name: '',
+        committee2Pos: '',
       });
     }
   };
 
   const inputClass =
-    'w-full px-3.5 py-2.5 rounded-2xl bg-[#141517] text-slate-100 placeholder:text-zinc-500 text-xs sm:text-sm outline-none border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)] focus:border-orange-500/50 transition-all antialiased';
+    'w-full px-4 py-2.5 rounded-2xl bg-[#141517] text-slate-100 placeholder:text-zinc-500 placeholder:font-light text-sm outline-none border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)] focus:border-orange-500/50 transition-all antialiased';
+
+  const textareaClass =
+    'w-full px-4 py-2.5 rounded-2xl bg-[#141517] text-slate-100 placeholder:text-zinc-500 placeholder:font-light text-sm outline-none border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)] focus:border-orange-500/50 resize-none transition-all antialiased leading-relaxed';
 
   return (
-    <div id="page-4-monthly-memo" className="space-y-6 max-w-7xl mx-auto">
-      {/* Top Title Bar & Action Capsule */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 pb-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl neu-pressed flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0">
-            <FileText className="w-5 h-5" />
+    <div className="w-full space-y-6">
+      {/* Screen View: Dark Neumorphism Bento Cards Form Input */}
+      <div className="print:hidden space-y-6">
+
+        {/* Top Control Bar: Active Week Selector (Dropdown List) & Actions */}
+        <div className="neu-flat p-3.5 sm:p-4 rounded-3xl border border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
+          {/* Week Selector Dropdown */}
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="w-10 h-10 rounded-2xl neu-pressed flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0">
+              <Layers className="w-5 h-5" />
+            </div>
+
+            <div className="flex items-center gap-2 flex-1 min-w-0 flex-wrap sm:flex-nowrap">
+              {/* Prev Week Button */}
+              <button
+                type="button"
+                disabled={activeIndex === 0}
+                onClick={() => onChange && onChange({ ...data, activeWeekIndex: Math.max(0, activeIndex - 1) })}
+                className="p-2.5 rounded-2xl neu-button text-gray-300 hover:text-orange-400 disabled:opacity-25 disabled:cursor-not-allowed border border-white/5 shrink-0 transition-all active:scale-95 cursor-pointer"
+                title="สัปดาห์ก่อนหน้า"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              {/* Dropdown Select for Weeks */}
+              <div className="relative flex-1 min-w-[220px] sm:min-w-[320px] max-w-lg">
+                <select
+                  id="select_active_week_page4"
+                  value={activeIndex}
+                  onChange={(e) => onChange && onChange({ ...data, activeWeekIndex: Number(e.target.value) })}
+                  className="w-full appearance-none px-4 py-2.5 pr-10 rounded-2xl bg-[#141517] text-orange-400 font-bold text-sm sm:text-base border border-orange-500/30 outline-none shadow-[inset_2px_2px_6px_#0a0b0c,inset_-2px_-2px_6px_rgba(255,255,255,0.02)] focus:border-orange-500 cursor-pointer transition-all hover:border-orange-500/50 truncate"
+                >
+                  {data.weeks && data.weeks.map((w, idx) => {
+                    const cum = w.workProgress?.cumulative ?? 0;
+                    return (
+                      <option key={w.id || idx} value={idx} className="bg-[#181818] text-white py-1">
+                        สัปดาห์ที่ {toThaiDigits(w.weekNo || idx + 1)} {w.startDate ? `(${w.startDate} ถึง ${w.endDate})` : ''} {cum > 0 ? `[สะสม ${toThaiDigits(cum)}%]` : ''}
+                      </option>
+                    );
+                  })}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-orange-400">
+                  <ChevronDown className="w-4 h-4" />
+                </div>
+              </div>
+
+              {/* Next Week Button */}
+              <button
+                type="button"
+                disabled={!data.weeks || activeIndex >= data.weeks.length - 1}
+                onClick={() => onChange && onChange({ ...data, activeWeekIndex: Math.min(data.weeks.length - 1, activeIndex + 1) })}
+                className="p-2.5 rounded-2xl neu-button text-gray-300 hover:text-orange-400 disabled:opacity-25 disabled:cursor-not-allowed border border-white/5 shrink-0 transition-all active:scale-95 cursor-pointer"
+                title="สัปดาห์ถัดไป"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-base sm:text-lg font-bold text-white tracking-wide">
-                บันทึกข้อความ (รายงานประจำเดือน — หน้า ๔)
-              </h2>
-              <span className="text-[11px] px-2.5 py-0.5 rounded-full neu-pressed text-orange-400 font-bold border border-orange-500/30">
-                Group G (template1.docx)
+
+          {/* Right Action & Badges */}
+          <div className="flex items-center gap-2 flex-wrap justify-between md:justify-end shrink-0">
+            <span className="text-[11px] sm:text-xs px-2.5 py-1.5 rounded-xl neu-pressed text-orange-400 font-bold border border-orange-500/30">
+              สะสม: {toThaiDigits(activeWeek?.workProgress?.cumulative ?? 0)}%
+            </span>
+
+            <span className="hidden sm:inline-block text-[11px] bg-orange-500/15 text-orange-400 px-2.5 py-1.5 rounded-xl border border-orange-500/30 font-medium">
+              ตัวเลขไทย ๑๐๐%
+            </span>
+
+            {/* Convert All to Thai Numerals Button */}
+            <button
+              onClick={handleConvertAllToThaiDigits}
+              className="px-3 py-2 neu-button text-orange-400 hover:text-orange-300 rounded-2xl text-xs font-bold border border-orange-500/20 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
+              title="แปลงตัวเลขทั้งหมดในโครงการเป็นตัวเลขไทย (๐-๙) อัตโนมัติ"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+              <span>แปลงเลขไทย</span>
+            </button>
+
+            {/* Clear Data Button */}
+            <button
+              type="button"
+              onClick={handleClearPage4}
+              className="px-3 py-2 neu-button text-rose-400 hover:text-rose-300 rounded-2xl text-xs font-bold border border-rose-500/20 hover:border-rose-500/40 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
+              title="ล้างข้อมูลทั้งหมดในหน้า ๔ (รายงานรายเดือน)"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-rose-400" />
+              <span>ล้างข้อมูล</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Bento Cards Grid: 2 Columns on PC, 1 Column on Mobile */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          {/* Bento Card 1: โครงการ (Project Card) */}
+          <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-5 flex flex-col justify-between">
+            <div className="space-y-4">
+              {/* Card Header */}
+              <div className="flex items-center justify-between border-b border-white/5 pb-3.5 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl neu-pressed flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0">
+                    <Building className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm sm:text-base text-orange-400 tracking-wide">
+                      Card โครงการ & หนังสือราชการ (รายงานประจำเดือน)
+                    </h3>
+                    <p className="text-[11px] text-gray-400">ข้อมูลหนังสือ โครงการ และสถานที่</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Form Fields */}
+              <div className="space-y-4 text-xs">
+                {/* Row 1: Short Fields (DOC_NO, RPT_MONTH) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                  {/* DOC_NO */}
+                  <div className="flex flex-col gap-1.5 w-full">
+                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{DOC_NO}}">
+                      เลขที่หนังสือ (ที่)
+                    </label>
+                    <input
+                      type="text"
+                      id="field_monthly_doc_no"
+                      name="doc_no"
+                      value={data.docNo || ''}
+                      onChange={(e) => updateField('docNo', toThaiDigits(e.target.value))}
+                      placeholder="เช่น ๐๒/๒๕๖๙ หรือ สถ ๐๐๒๓.๓/ว ๑๒๔"
+                      className={inputClass}
+                    />
+                  </div>
+
+                  {/* RPT_MONTH (เปลี่ยนจาก วันที่รายงาน ให้เป็น เดือน) */}
+                  <div className="flex flex-col gap-1.5 w-full">
+                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{RPT_MONTH}}">
+                      เดือน
+                      <span className="text-orange-500 font-bold">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="field_monthly_rpt_month"
+                      name="rpt_month"
+                      value={data.rptMonth || ''}
+                      onChange={(e) => updateField('rptMonth', toThaiDigits(e.target.value))}
+                      placeholder="เช่น กรกฎาคม ๒๕๖๙"
+                      className={`${inputClass} text-orange-300 font-bold`}
+                    />
+                  </div>
+                </div>
+
+                {/* PROJECT */}
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{PROJECT}}">
+                    งานก่อสร้าง / ชื่อโครงการ
+                    <span className="text-orange-500 font-bold">*</span>
+                  </label>
+                  <textarea
+                    rows={2}
+                    id="field_monthly_project_name"
+                    name="project_name"
+                    value={data.projectName || ''}
+                    onChange={(e) => updateField('projectName', e.target.value)}
+                    placeholder="กรอกชื่องานก่อสร้าง หรือรอผลการสแกน..."
+                    className={textareaClass}
+                  />
+                </div>
+
+                {/* LOCATION */}
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{LOCATION}}">
+                    สถานที่ก่อสร้าง
+                  </label>
+                  <textarea
+                    rows={2}
+                    id="field_monthly_location"
+                    name="location"
+                    value={data.location || ''}
+                    onChange={(e) => updateField('location', e.target.value)}
+                    placeholder="ระบุสถานที่ก่อสร้าง (เช่น บ้านทุ่งขามใต้ หมู่ที่ ๙ ตำบลใหม่พัฒนา)..."
+                    className={textareaClass}
+                  />
+                </div>
+
+                {/* QTY */}
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{QTY}}">
+                    ปริมาณงาน (ขนาดและสเปก)
+                  </label>
+                  <textarea
+                    rows={2}
+                    id="field_monthly_quantity"
+                    name="quantity"
+                    value={data.quantity || ''}
+                    onChange={(e) => updateField('quantity', toThaiDigits(e.target.value))}
+                    placeholder="ระบุปริมาณงาน เช่น กว้าง ๓.๐๐ เมตร ยาว ๑๕๐.๐๐ เมตร หนา ๐.๑๕ เมตร หรือมีพื้นที่รวมไม่น้อยกว่า ๔๕๐.๐๐ ตร.ม..."
+                    className={textareaClass}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bento Card 2: สัญญา (Contract Card) */}
+          <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-5 flex flex-col justify-between">
+            <div className="space-y-4">
+              {/* Card Header */}
+              <div className="flex items-center justify-between border-b border-white/5 pb-3.5 mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl neu-pressed flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0">
+                    <ScrollText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm sm:text-base text-orange-400 tracking-wide">
+                      Card สัญญา & ผลงาน (เลขไทย)
+                    </h3>
+                    <p className="text-[11px] text-gray-400">สัญญาจ้าง ระยะเวลา ค่าก่อสร้าง และความก้าวหน้า</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Form Fields */}
+              <div className="space-y-4 text-xs">
+                {/* Row 1: Contract Number (C_NO) */}
+                <div className="grid grid-cols-1 gap-3">
+
+                  {/* C_NO */}
+                  <div className="flex flex-col gap-1.5 w-full">
+                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{C_NO}}">
+                      สัญญาจ้างเลขที่
+                      <span className="text-orange-500 font-bold">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="field_monthly_contract_no"
+                      name="contract_no"
+                      value={data.contractNo || ''}
+                      onChange={(e) => updateField('contractNo', toThaiDigits(e.target.value))}
+                      placeholder="เช่น ๓๐/๒๕๖๙"
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+
+                {/* Row 2: Metrics (DAYS, COST, FINE, INSTALL_N) */}
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+
+                  {/* DAYS */}
+                  <div className="flex flex-col gap-1.5 w-full">
+                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{DAYS}}">
+                      รวมระยะเวลา (วัน)
+                      <span className="text-orange-500 font-bold">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="field_monthly_total_days"
+                      name="total_days"
+                      value={toThaiDigits(data.totalDays || '')}
+                      onChange={(e) => updateField('totalDays', toThaiDigits(e.target.value))}
+                      placeholder="เช่น ๖๐"
+                      className={`${inputClass} text-center font-bold`}
+                    />
+                  </div>
+
+                  {/* COST */}
+                  <div className="flex flex-col gap-1.5 w-full">
+                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COST}}">
+                      ค่าก่อสร้าง (บาท)
+                      <span className="text-orange-500 font-bold">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="field_monthly_construction_cost"
+                      name="construction_cost"
+                      value={data.constructionCost || ''}
+                      onChange={(e) => updateField('constructionCost', toThaiDigits(e.target.value))}
+                      placeholder="เช่น ๒๗๗,๐๐๐.๐๐"
+                      className={`${inputClass} font-bold text-orange-200`}
+                    />
+                  </div>
+
+                  {/* FINE */}
+                  <div className="flex flex-col gap-1.5 w-full">
+                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{FINE}}">
+                      ค่าปรับวันละ (บาท)
+                    </label>
+                    <input
+                      type="text"
+                      id="field_monthly_fine_per_day"
+                      name="fine_per_day"
+                      value={data.finePerDay || ''}
+                      onChange={(e) => updateField('finePerDay', toThaiDigits(e.target.value))}
+                      placeholder="เช่น ๖๙๓.๐๐"
+                      className={`${inputClass} font-bold`}
+                    />
+                  </div>
+
+                  {/* INSTALL_N */}
+                  <div className="flex flex-col gap-1.5 w-full">
+                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{INSTALL_N}}">
+                      งวดงานที่
+                    </label>
+                    <input
+                      type="text"
+                      id="field_monthly_install_n"
+                      name="install_n"
+                      value={toThaiDigits(data.installN || '๑')}
+                      onChange={(e) => updateField('installN', toThaiDigits(e.target.value))}
+                      placeholder="เช่น ๑"
+                      className={`${inputClass} text-center font-bold`}
+                    />
+                  </div>
+                </div>
+
+                {/* CONTRACTOR */}
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="flex flex-col gap-1.5 w-full">
+                    <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{CONTRACTOR}}">
+                      ชื่อผู้รับจ้าง
+                      <span className="text-orange-500 font-bold">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="field_monthly_contractor_name"
+                      name="contractor_name"
+                      value={data.contractorName || ''}
+                      onChange={(e) => updateField('contractorName', e.target.value)}
+                      placeholder="เช่น ห้างหุ้นส่วนจำกัด ชัยยุทธ ธุรกิจการโยธา"
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+
+                {/* Section Divider: Progress */}
+                  <div className="pt-3 border-t border-white/5 space-y-3">
+                    <div className="flex items-center gap-1.5 text-orange-400 font-bold text-xs">
+                      <TrendingUp className="w-4 h-4" />
+                      <span>ข้อมูลผลงานและความก้าวหน้า (คำนวณจากสัปดาห์ล่าสุดอัตโนมัติ)</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {/* CURRENT_PCT */}
+                      <div className="p-4 rounded-2xl bg-[#141517] border border-orange-500/30 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)]">
+                        <label className="block text-orange-300 font-bold mb-1 text-xs">
+                          %ผลงานปัจจุบัน (ดึงจากสะสม WC)
+                        </label>
+                        <div id="field_monthly_percent" className="text-2xl font-black text-orange-400">
+                          {currentPctDisplay}
+                        </div>
+                        <span className="text-[10px] text-gray-400 block mt-1">
+                          อัปเดตอัตโนมัติจากแท็บบันทึกประจำสัปดาห์
+                        </span>
+                      </div>
+
+                      {/* REMAIN */}
+                      <div className="p-4 rounded-2xl bg-[#141517] border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)]">
+                        <label className="block text-gray-300 font-semibold mb-1 text-xs">
+                          ระยะเวลาก่อสร้างคงเหลือ
+                        </label>
+                        <div id="field_monthly_remain" className="text-2xl font-bold text-white">
+                          {activeWeek?.remainingDays || data.remainingDays ? (
+                            <>
+                              {toThaiDigits(activeWeek?.remainingDays || data.remainingDays)} <span className="text-xs font-normal text-gray-400">วัน</span>
+                            </>
+                          ) : (
+                            <span className="text-gray-400 text-xl">- วัน</span>
+                          )}
+                        </div>
+                        <span className="text-[10px] text-gray-400 block mt-1">
+                          {data.totalDays
+                            ? `คำนวณจาก ${toThaiDigits(data.totalDays)} วัน ลบด้วยวันที่ทำไปแล้ว`
+                            : 'รอข้อมูลวันที่สิ้นสุดสัญญา'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bento Card 3: บุคลากร (Staff Card) - Full Width */}
+            <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-5 flex flex-col justify-between lg:col-span-2">
+              <div className="space-y-4">
+                {/* Card Header */}
+                <div className="flex items-center gap-3 border-b border-white/5 pb-3.5 mb-4">
+                  <div className="w-10 h-10 rounded-2xl neu-pressed flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0">
+                    <UserCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm sm:text-base text-orange-400 tracking-wide">
+                      Card บุคลากร & คณะกรรมการตรวจรับพัสดุ
+                    </h3>
+                    <p className="text-[11px] text-gray-400">ผู้ควบคุมงาน และ คณะกรรมการตรวจรับพัสดุ</p>
+                  </div>
+                </div>
+
+                {/* Form Fields: 2 Columns */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                  {/* Supervisor */}
+                  <div className="space-y-3.5 pb-4 md:pb-0 border-b md:border-b-0 md:border-r border-white/5 md:pr-6">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
+                      <UserCheck className="w-4 h-4" />
+                      <span>ผู้ควบคุมงาน</span>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex flex-col gap-1.5 w-full">
+                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{SUP_NAME}}">
+                          ชื่อ-นามสกุล
+                          <span className="text-orange-500 font-bold">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="field_monthly_supervisor_name"
+                          name="supervisor_name"
+                          value={data.supervisorName || ''}
+                          onChange={(e) => updateField('supervisorName', e.target.value)}
+                          placeholder="เช่น นายธนิส บุญเป็ง"
+                          className={inputClass}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5 w-full">
+                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{SUP_POS}}">
+                          ตำแหน่ง
+                        </label>
+                        <input
+                          type="text"
+                          id="field_monthly_supervisor_pos"
+                          name="supervisor_pos"
+                          value={data.supervisorPos || ''}
+                          onChange={(e) => updateField('supervisorPos', e.target.value)}
+                          placeholder="เช่น นายช่างโยธาอาวุโส"
+                          className={inputClass}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Committee Chair */}
+                  <div className="space-y-3.5">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
+                      <UserCheck className="w-4 h-4" />
+                      <span>ประธานกรรมการตรวจรับพัสดุ</span>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex flex-col gap-1.5 w-full">
+                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_P_NAME}}">
+                          ชื่อ-นามสกุล
+                          <span className="text-orange-500 font-bold">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="field_monthly_committee_chair_name"
+                          name="committee_chair_name"
+                          value={data.committeeChairName || ''}
+                          onChange={(e) => updateField('committeeChairName', e.target.value)}
+                          placeholder="เช่น นายมนตรี ฟูฟ่า"
+                          className={inputClass}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5 w-full">
+                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_P_POS}}">
+                          ตำแหน่ง
+                        </label>
+                        <input
+                          type="text"
+                          id="field_monthly_committee_chair_pos"
+                          name="committee_chair_pos"
+                          value={data.committeeChairPos || ''}
+                          onChange={(e) => updateField('committeeChairPos', e.target.value)}
+                          placeholder="เช่น ผู้อำนวยการกองช่าง"
+                          className={inputClass}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Committee Member 1 */}
+                  <div className="space-y-3.5 pt-4 border-t border-white/5 md:pr-6 md:border-r">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
+                      <UserCheck className="w-4 h-4" />
+                      <span>กรรมการตรวจรับพัสดุ (คนที่ ๑)</span>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex flex-col gap-1.5 w-full">
+                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_1_NAME}}">
+                          ชื่อ-นามสกุล
+                        </label>
+                        <input
+                          type="text"
+                          id="field_monthly_committee1_name"
+                          name="committee1_name"
+                          value={data.committee1Name || ''}
+                          onChange={(e) => updateField('committee1Name', e.target.value)}
+                          placeholder="เช่น นางสาวธัญญารัตน์ กันทาสุข"
+                          className={inputClass}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5 w-full">
+                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_1_POS}}">
+                          ตำแหน่ง
+                        </label>
+                        <input
+                          type="text"
+                          id="field_monthly_committee1_pos"
+                          name="committee1_pos"
+                          value={data.committee1Pos || ''}
+                          onChange={(e) => updateField('committee1Pos', e.target.value)}
+                          placeholder="เช่น นักวิชาการเงินและบัญชีชำนาญการ"
+                          className={inputClass}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Committee Member 2 */}
+                  <div className="space-y-3.5 pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
+                      <UserCheck className="w-4 h-4" />
+                      <span>กรรมการตรวจรับพัสดุ (คนที่ ๒)</span>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex flex-col gap-1.5 w-full">
+                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_2_NAME}}">
+                          ชื่อ-นามสกุล
+                        </label>
+                        <input
+                          type="text"
+                          id="field_monthly_committee2_name"
+                          name="committee2_name"
+                          value={data.committee2Name || ''}
+                          onChange={(e) => updateField('committee2Name', e.target.value)}
+                          placeholder="เช่น นายศราวุฒิ ทรายใจ"
+                          className={inputClass}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5 w-full">
+                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_2_POS}}">
+                          ตำแหน่ง
+                        </label>
+                        <input
+                          type="text"
+                          id="field_monthly_committee2_pos"
+                          name="committee2_pos"
+                          value={data.committee2Pos || ''}
+                          onChange={(e) => updateField('committee2Pos', e.target.value)}
+                          placeholder="เช่น นักวิชาการศึกษาชำนาญการ"
+                          className={inputClass}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Step Navigation Footer */}
+          <div className="flex items-center justify-between pt-4 border-t border-white/5 gap-3">
+            {onNavigatePrev && (
+              <button
+                onClick={onNavigatePrev}
+                className="neu-button px-4 py-2.5 rounded-2xl text-xs font-semibold text-gray-300 hover:text-white border border-white/5 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span>ย้อนกลับ: บันทึกรายวัน (หน้า ๓)</span>
+              </button>
+            )}
+            {onNavigateNext && (
+              <button
+                onClick={onNavigateNext}
+                className="neu-orange-btn ml-auto px-5 py-2.5 rounded-2xl text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer hover:scale-[1.02]"
+              >
+                <span>ถัดไป: ข้อมูลโครงการ (หน้า ๕)</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Print View: Document format conforming 100% to V2 Template1.docx */}
+        <div className="hidden print:block bg-white text-black p-8 sm:p-12 shadow-none font-sarabun max-w-[210mm] min-h-[297mm] mx-auto text-[15px] leading-relaxed relative select-text">
+          {/* Garuda Emblem Header */}
+          <div className="flex items-start justify-between relative mb-3">
+            <div className="absolute left-1/2 -translate-x-1/2 top-0">
+              <GarudaEmblem className="w-[3cm] h-[3cm]" />
+            </div>
+            <div className="font-bold text-2xl tracking-wider pt-2">บันทึกข้อความ</div>
+          </div>
+
+          {/* Memo Header Details */}
+          <div className="space-y-1 mt-6 text-[15px]">
+            <div className="flex items-baseline">
+              <span className="font-bold w-28 shrink-0">ส่วนราชการ</span>
+              <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5">
+                องค์การบริหารส่วนตำบลใหม่พัฒนา อำเภอเกาะคา จังหวัดลำปาง
               </span>
             </div>
-            <p className="text-xs text-gray-400 mt-0.5">
-              สรุปภาพรวมผลงานรายเดือน สะสม ๓ รายการหลัก พร้อมผู้ลงนามรับรอง
+            <div className="flex items-baseline justify-between gap-4">
+              <div className="flex items-baseline flex-1">
+                <span className="font-bold w-12 shrink-0">ที่</span>
+                <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5 font-bold">
+                  {toThaiDigits(data.docNo) || '...........................'}
+                </span>
+              </div>
+              <div className="flex items-baseline flex-1">
+                <span className="font-bold w-12 shrink-0">เดือน</span>
+                <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5 font-bold">
+                  {toThaiDigits(data.rptMonth) || '...........................'}
+                </span>
+              </div>
+            </div>
+            <div className="flex items-baseline">
+              <span className="font-bold w-14 shrink-0">เรื่อง</span>
+              <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5 font-bold">
+                รายงานผลการปฏิบัติงานของผู้ควบคุมงาน ประจำเดือน {toThaiDigits(data.rptMonth) || '...........................'}
+              </span>
+            </div>
+          </div>
+
+          {/* Recipient */}
+          <div className="mt-4 font-bold">
+            เรียน ประธานกรรมการตรวจรับพัสดุ
+          </div>
+
+          {/* Body Content */}
+          <div className="mt-3 space-y-2 text-justify text-[15px] indent-8">
+            <p>
+              ตามคำสั่งองค์การบริหารส่วนตำบลใหม่พัฒนา ที่ ๒/๒๕๖๙ ลงวันที่ ๙ มิถุนายน ๒๕๖๙ ได้แต่งตั้งข้าพเจ้า{' '}
+              <span className="font-bold">{data.supervisorName || '...........................'}</span> ตำแหน่ง{' '}
+              <span>{data.supervisorPos || '...........................'}</span> เป็นผู้ควบคุมงานจ้าง{' '}
+              <span className="font-bold">{data.projectName || '...........................'}</span> สถานที่ก่อสร้าง{' '}
+              <span>{data.location || '...........................'}</span> ปริมาณงาน{' '}
+              <span>{toThaiDigits(data.quantity) || '...........................'}</span>
+            </p>
+            <p className="indent-8">
+              ตามสัญญาจ้างเลขที่ <span className="font-bold">{toThaiDigits(data.contractNo) || '...........................'}</span> ลงวันที่{' '}
+              <span>{toThaiDigits(data.contractDate) || '...........................'}</span> สิ้นสุดสัญญาวันที่{' '}
+              <span>{toThaiDigits(data.contractEndDate) || '...........................'}</span> รวมระยะเวลาทำการ{' '}
+              <span className="font-bold">{toThaiDigits(data.totalDays) || '......'}</span> วัน ค่าจ้างเป็นเงิน{' '}
+              <span className="font-bold">{toThaiDigits(data.constructionCost) || '...........................'}</span> บาท ค่าปรับวันละ{' '}
+              <span>{toThaiDigits(data.finePerDay) || '..........'}</span> บาท โดยมี{' '}
+              <span className="font-bold">{data.contractorName || '...........................'}</span> เป็นผู้รับจ้าง นั้น
+            </p>
+            <p className="indent-8">
+              บัดนี้ ผู้ควบคุมงานได้ควบคุมงานก่อสร้าง ประจำเดือน{' '}
+              <span className="font-bold">{toThaiDigits(data.rptMonth || '...........................')}</span> ตั้งแต่วันที่{' '}
+              <span className="font-bold">{toThaiDigits(activeWeek?.startDate || data.startDate || '...........................')}</span> ถึงวันที่{' '}
+              <span className="font-bold">{toThaiDigits(activeWeek?.endDate || data.endDate || '...........................')}</span> ผลงานก่อสร้างสะสมคิดเป็นร้อยละ{' '}
+              <span className="font-bold">{currentPctDisplay}</span> ระยะเวลาก่อสร้างคงเหลือ{' '}
+              <span className="font-bold">{toThaiDigits(activeWeek?.remainingDays || data.remainingDays || '..')}</span> วัน รายละเอียดตามเอกสารแนบท้ายนี้
             </p>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <button
-            type="button"
-            onClick={handleResetMonthlyData}
-            className="px-3 py-2 rounded-2xl neu-button text-gray-300 hover:text-rose-400 text-xs font-semibold flex items-center gap-1.5 border border-white/5 active:scale-95 transition-all cursor-pointer"
-            title="ล้างข้อมูลหน้า 4"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>ล้างข้อมูลหน้า ๔</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Report Scope & Period Details Card */}
-      <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-5">
-        <div className="flex items-center gap-2 text-orange-400 font-bold text-xs sm:text-sm border-b border-white/5 pb-3">
-          <Calendar className="w-4 h-4" />
-          <span>ขอบเขตและรอบระยะเวลาของรายงานประจำเดือน</span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5" title="แมปกับตัวแปร Word: {{RPT_MONTH}}">
-              รายงานประจำเดือน (RPT_MONTH):
-              <span className="text-orange-500 font-bold ml-1">*</span>
-            </label>
-            <input
-              type="text"
-              id="field_monthly_rpt_month"
-              value={data.rptMonth || ''}
-              onChange={(e) => updateField('rptMonth', toThaiDigits(e.target.value))}
-              placeholder="เช่น กรกฎาคม ๒๕๖๙"
-              className={`${inputClass} font-bold text-orange-300`}
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5" title="แมปกับตัวแปร Word: {{START}}">
-              ตั้งแต่วันที่ (START):
-            </label>
-            <input
-              type="text"
-              id="field_monthly_start_date"
-              value={data.startDate || ''}
-              onChange={(e) => updateField('startDate', toThaiDigits(e.target.value))}
-              placeholder="เช่น ๓๐ มิถุนายน ๒๕๖๙"
-              className={inputClass}
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5" title="แมปกับตัวแปร Word: {{END}}">
-              ถึงวันที่ (END):
-            </label>
-            <input
-              type="text"
-              id="field_monthly_end_date"
-              value={data.endDate || ''}
-              onChange={(e) => updateField('endDate', toThaiDigits(e.target.value))}
-              placeholder="เช่น ๕ กรกฎาคม ๒๕๖๙"
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5" title="แมปกับตัวแปร Word: {{PROJECT}}">
-              โครงการ / งานก่อสร้าง:
-            </label>
-            <input
-              type="text"
-              id="field_monthly_project_name"
-              value={data.projectName || ''}
-              onChange={(e) => updateField('projectName', e.target.value)}
-              placeholder="ชื่อโครงการก่อสร้าง..."
-              className={inputClass}
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5" title="แมปกับตัวแปร Word: {{LOCATION}}">
-              สถานที่ก่อสร้าง:
-            </label>
-            <input
-              type="text"
-              id="field_monthly_location"
-              value={data.location || ''}
-              onChange={(e) => updateField('location', e.target.value)}
-              placeholder="สถานที่ก่อสร้าง..."
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5" title="แมปกับตัวแปร Word: {{C_NO}}">
-              สัญญาจ้างเลขที่:
-            </label>
-            <input
-              type="text"
-              id="field_monthly_contract_no"
-              value={data.contractNo || ''}
-              onChange={(e) => updateField('contractNo', toThaiDigits(e.target.value))}
-              placeholder="เช่น ๓๐/๒๕๖๙"
-              className={inputClass}
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5" title="แมปกับตัวแปร Word: {{WS_DATE}}">
-              วันที่เริ่มต้นสัญญา:
-            </label>
-            <input
-              type="text"
-              id="field_monthly_ws_date"
-              value={data.wsDate || data.startDate || ''}
-              onChange={(e) => updateField('wsDate', toThaiDigits(e.target.value))}
-              placeholder="เช่น ๓๐ มิถุนายน ๒๕๖๙"
-              className={inputClass}
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5" title="แมปกับตัวแปร Word: {{C_END}}">
-              วันที่สิ้นสุดสัญญา:
-            </label>
-            <input
-              type="text"
-              id="field_monthly_c_end"
-              value={data.contractEndDate || ''}
-              onChange={(e) => updateField('contractEndDate', toThaiDigits(e.target.value))}
-              placeholder="เช่น ๒๘ สิงหาคม ๒๕๖๙"
-              className={inputClass}
-            />
+          {/* Signatures */}
+          <div className="mt-8 grid grid-cols-2 gap-6 text-center text-[14px]">
+            <div className="space-y-1">
+              <p className="font-bold mb-8">ลงชื่อ................................................ผู้ควบคุมงาน</p>
+              <p className="font-bold">({data.supervisorName || '................................................'})</p>
+              <p className="text-gray-700">{data.supervisorPos || '................................................'}</p>
+            </div>
+            <div className="space-y-1">
+              <p className="font-bold mb-8">ลงชื่อ................................................ประธานกรรมการ</p>
+              <p className="font-bold">({data.committeeChairName || '................................................'})</p>
+              <p className="text-gray-700">{data.committeeChairPos || '................................................'}</p>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Auto-calculated Summary Grid */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-2 text-orange-400 font-bold text-xs sm:text-sm">
-            <TrendingUp className="w-4 h-4" />
-            <span>ตารางสรุปผลการดำเนินงานประจำเดือน (คำนวณอัตโนมัติ)</span>
-          </div>
-          <span className="text-[11px] px-3 py-1 rounded-full neu-pressed text-orange-400 font-bold flex items-center gap-1 border border-orange-500/30">
-            <Sparkles className="w-3.5 h-3.5" />
-            คำนวณอัตโนมัติ
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-          {/* 1: Current Actual % MCP */}
-          <div className="neu-flat p-4 rounded-3xl space-y-1.5 border border-white/5" id="stat-monthly-progress">
-            <span className="text-[11px] font-bold text-slate-400 block">
-              % ผลงานสะสมจริง (MCP)
-            </span>
-            <div className="text-xl sm:text-2xl font-black text-orange-400">
-              {toThaiDigits(monthlyCalc.MCP)}%
-            </div>
-            <span className="text-[10px] text-gray-400 block">ดึงจากผลงานรวม MT</span>
-          </div>
-
-          {/* 2: สัดส่วนงานรวม (MW_SUM) */}
-          <div className="neu-flat p-4 rounded-3xl space-y-1.5 border border-white/5" id="stat-monthly-mw-sum">
-            <span className="text-[11px] font-bold text-slate-400 block">
-              สัดส่วนงานรวม (MW_SUM)
-            </span>
-            <div className={`text-xl sm:text-2xl font-black ${monthlyCalc.MW_SUM === 100 ? 'text-emerald-400' : 'text-amber-400'}`}>
-              {toThaiDigits(monthlyCalc.MW_SUM)}%
-            </div>
-            <span className="text-[10px] text-gray-400 block">
-              {monthlyCalc.MW_SUM === 100 ? 'สัดส่วนครบ ๑๐๐% พอดี' : 'ควรแบ่งให้ครบ ๑๐๐%'}
-            </span>
-          </div>
-
-          {/* 3: Remaining Days */}
-          <div className="neu-flat p-4 rounded-3xl space-y-1.5 border border-white/5" id="stat-monthly-days">
-            <span className="text-[11px] font-bold text-slate-400 block">
-              ระยะเวลาก่อสร้างคงเหลือ
-            </span>
-            <div className="text-xl sm:text-2xl font-black text-white">
-              {toThaiDigits(data.remainingDays || '๕๓')} <span className="text-xs font-normal text-gray-400">วัน</span>
-            </div>
-            <span className="text-[10px] text-gray-400 block">จากสัญญา {toThaiDigits(data.totalDays || '๖๐')} วัน</span>
-          </div>
-
-          {/* 4: ค่าก่อสร้างตามสัญญา */}
-          <div className="neu-flat p-4 rounded-3xl space-y-1.5 border border-white/5" id="stat-monthly-cost">
-            <span className="text-[11px] font-bold text-slate-400 block">
-              ค่าก่อสร้างตามสัญญา (COST)
-            </span>
-            <div className="text-lg sm:text-xl font-black text-emerald-400">
-              ฿{toThaiDigits(data.constructionCost || '๒๗๗,๐๐๐.๐๐')}
-            </div>
-            <span className="text-[10px] text-gray-400 block">
-              งบประมาณ: ฿{toThaiDigits(data.budgetAmount || data.constructionCost || '๒๗๗,๐๐๐.๐๐')}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Group G Table: Monthly Rollup (3 Fixed Rows) */}
-      <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-4">
-        <div className="flex items-center justify-between border-b border-white/5 pb-3">
-          <div className="flex items-center gap-2 text-orange-400 font-bold text-xs sm:text-sm">
-            <Layers className="w-4 h-4" />
-            <span>ตารางผลการดำเนินงานประจำเดือน ๓ รายการ (Group G: MNi, MWi, MPi, MMi, MCi, MRi)</span>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left min-w-[780px]">
-            <thead>
-              <tr className="text-gray-400 border-b border-white/5 text-center">
-                <th className="py-2.5 px-2 w-12 neu-pressed rounded-l-2xl border border-white/5">ที่ (MN)</th>
-                <th className="py-2.5 px-3 text-left neu-pressed border border-white/5">หัวข้อ / รายละเอียดงาน (MO_LABEL & MO_DESC)</th>
-                <th className="py-2.5 px-2 w-24 neu-pressed border border-white/5">สัดส่วนงาน% (MW)</th>
-                <th className="py-2.5 px-2 w-24 neu-pressed border border-white/5">ถึงเดือนก่อน% (MP)</th>
-                <th className="py-2.5 px-2 w-24 neu-pressed border border-orange-500/30 text-orange-400">ในเดือนนี้% (MM)</th>
-                <th className="py-2.5 px-2 w-24 neu-pressed border border-white/5">สะสม% (MC)</th>
-                <th className="py-2.5 px-2 w-24 neu-pressed rounded-r-2xl border border-white/5">ผลงานรวม% (MR)</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {monthlyItems.map((item, idx) => {
-                const mp = Number(item.prevCum_MP) || 0;
-                const mm = Number(item.thisMonth_MM) || 0;
-                const mw = Number(item.weight_MW) || 0;
-                const mc = Number((mp + mm).toFixed(2));
-                const mr = Number(((mw * mc) / 100).toFixed(2));
-
-                return (
-                  <tr key={idx} className="hover:bg-white/[0.02] transition-colors">
-                    {/* MN */}
-                    <td className="py-3 px-2 text-center font-bold text-orange-400">
-                      {toThaiDigits(idx + 1)}
-                    </td>
-
-                    {/* MO_LABEL & MO_DESC */}
-                    <td className="py-3 px-3 space-y-1.5">
-                      <input
-                        type="text"
-                        value={item.label || ''}
-                        onChange={(e) => handleUpdateMonthlyItem(idx, 'label', e.target.value)}
-                        placeholder={`หัวข้องานรายการที่ ${idx + 1}...`}
-                        className="w-full px-3 py-1.5 rounded-xl bg-[#141517] text-white text-xs font-semibold border border-white/5 shadow-inner focus:border-orange-500/50 outline-none"
-                      />
-                      <input
-                        type="text"
-                        value={item.desc || ''}
-                        onChange={(e) => handleUpdateMonthlyItem(idx, 'desc', e.target.value)}
-                        placeholder={`รายละเอียดการดำเนินงานรายการที่ ${idx + 1}...`}
-                        className="w-full px-3 py-1.5 rounded-xl bg-[#141517] text-gray-300 text-[11px] border border-white/5 shadow-inner focus:border-orange-500/50 outline-none"
-                      />
-                    </td>
-
-                    {/* MW (สัดส่วน) */}
-                    <td className="py-3 px-2">
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={item.weight_MW !== undefined ? item.weight_MW : ''}
-                        onChange={(e) => handleUpdateMonthlyItem(idx, 'weight_MW', parseFloat(e.target.value) || 0)}
-                        placeholder="0"
-                        className="w-full text-center py-2 rounded-xl bg-[#141517] text-white text-xs font-bold border border-white/5 shadow-inner focus:border-orange-500/50 outline-none"
-                      />
-                    </td>
-
-                    {/* MP (ถึงเดือนก่อน) */}
-                    <td className="py-3 px-2">
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={item.prevCum_MP !== undefined ? item.prevCum_MP : ''}
-                        onChange={(e) => handleUpdateMonthlyItem(idx, 'prevCum_MP', parseFloat(e.target.value) || 0)}
-                        placeholder="0"
-                        className="w-full text-center py-2 rounded-xl bg-[#141517] text-gray-400 text-xs font-semibold border border-white/5 shadow-inner focus:border-orange-500/50 outline-none"
-                      />
-                    </td>
-
-                    {/* MM (ในเดือนนี้ - Input หลัก) */}
-                    <td className="py-3 px-2">
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={item.thisMonth_MM !== undefined ? item.thisMonth_MM : ''}
-                        onChange={(e) => handleUpdateMonthlyItem(idx, 'thisMonth_MM', parseFloat(e.target.value) || 0)}
-                        placeholder="0"
-                        className="w-full text-center py-2 rounded-xl bg-[#141517] text-orange-300 text-xs font-black border border-orange-500/40 bg-orange-500/5 shadow-inner focus:border-orange-500 outline-none"
-                      />
-                    </td>
-
-                    {/* MC (สะสม = MP + MM) */}
-                    <td className="py-3 px-2 text-center font-bold text-emerald-400">
-                      {toThaiDigits(mc)}%
-                    </td>
-
-                    {/* MR (ผลงานรวม = MW * MC / 100) */}
-                    <td className="py-3 px-2 text-center font-black text-orange-400">
-                      {toThaiDigits(mr)}%
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-            <tfoot>
-              <tr className="border-t-2 border-white/10 font-bold text-sm bg-white/[0.02]">
-                <td colSpan={2} className="py-3 px-3 text-right text-gray-300">
-                  รวมยอดสุทธิ:
-                </td>
-                <td className={`py-3 px-2 text-center font-black ${monthlyCalc.MW_SUM === 100 ? 'text-emerald-400' : 'text-amber-400'}`}>
-                  {toThaiDigits(monthlyCalc.MW_SUM)}%
-                </td>
-                <td colSpan={3} className="py-3 px-2 text-right text-gray-400 text-xs">
-                  ผลงานรวมสะสมทั้งโครงการ (MT / MCP):
-                </td>
-                <td className="py-3 px-2 text-center font-black text-orange-400 text-base">
-                  {toThaiDigits(monthlyCalc.MT)}%
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-
-      {/* Signatories Section */}
-      <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-5">
-        <div className="flex items-center gap-2 text-orange-400 font-bold text-xs sm:text-sm border-b border-white/5 pb-3">
-          <UserCheck className="w-4 h-4" />
-          <span>ผู้ลงนามรับรองรายงานประจำเดือน (ดึงข้อมูลร่วมกับหน้าข้อมูลสัญญา)</span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-          {/* Supervisor */}
-          <div className="p-4 rounded-2xl bg-[#141517] border border-white/5 space-y-2.5 shadow-inner">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-orange-400">ผู้ควบคุมงาน</span>
-              <span className="text-[11px] text-gray-400">ผู้จัดทำรายงาน (SUP_NAME)</span>
-            </div>
-            <input
-              type="text"
-              id="field_monthly_sup_name"
-              value={data.supervisorName || ''}
-              onChange={(e) => updateField('supervisorName', e.target.value)}
-              placeholder="ชื่อ-สกุล ผู้ควบคุมงาน"
-              className={inputClass}
-            />
-            <input
-              type="text"
-              id="field_monthly_sup_pos"
-              value={data.supervisorPos || ''}
-              onChange={(e) => updateField('supervisorPos', e.target.value)}
-              placeholder="ตำแหน่ง (SUP_POS)"
-              className={inputClass}
-            />
-          </div>
-
-          {/* Committee Chair */}
-          <div className="p-4 rounded-2xl bg-[#141517] border border-white/5 space-y-2.5 shadow-inner">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-orange-400">ประธานกรรมการตรวจรับพัสดุ</span>
-              <span className="text-[11px] text-gray-400">ประธานกรรมการ (COM_P_NAME)</span>
-            </div>
-            <input
-              type="text"
-              id="field_monthly_comp_name"
-              value={data.committeeChairName || ''}
-              onChange={(e) => updateField('committeeChairName', e.target.value)}
-              placeholder="ชื่อ-สกุล ประธานกรรมการ"
-              className={inputClass}
-            />
-            <input
-              type="text"
-              id="field_monthly_comp_pos"
-              value={data.committeeChairPos || ''}
-              onChange={(e) => updateField('committeeChairPos', e.target.value)}
-              placeholder="ตำแหน่ง (COM_P_POS)"
-              className={inputClass}
-            />
-          </div>
-
-          {/* Committee Member 1 */}
-          <div className="p-4 rounded-2xl bg-[#141517] border border-white/5 space-y-2.5 shadow-inner">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-300">กรรมการตรวจรับพัสดุ (คนที่ ๑)</span>
-              <span className="text-[11px] text-gray-400">กรรมการ (COM_1_NAME)</span>
-            </div>
-            <input
-              type="text"
-              id="field_monthly_com1_name"
-              value={data.committee1Name || ''}
-              onChange={(e) => updateField('committee1Name', e.target.value)}
-              placeholder="ชื่อ-สกุล กรรมการคนที่ ๑"
-              className={inputClass}
-            />
-            <input
-              type="text"
-              id="field_monthly_com1_pos"
-              value={data.committee1Pos || ''}
-              onChange={(e) => updateField('committee1Pos', e.target.value)}
-              placeholder="ตำแหน่ง (COM_1_POS)"
-              className={inputClass}
-            />
-          </div>
-
-          {/* Committee Member 2 */}
-          <div className="p-4 rounded-2xl bg-[#141517] border border-white/5 space-y-2.5 shadow-inner">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-300">กรรมการตรวจรับพัสดุ (คนที่ ๒)</span>
-              <span className="text-[11px] text-gray-400">กรรมการ (COM_2_NAME)</span>
-            </div>
-            <input
-              type="text"
-              id="field_monthly_com2_name"
-              value={data.committee2Name || ''}
-              onChange={(e) => updateField('committee2Name', e.target.value)}
-              placeholder="ชื่อ-สกุล กรรมการคนที่ ๒"
-              className={inputClass}
-            />
-            <input
-              type="text"
-              id="field_monthly_com2_pos"
-              value={data.committee2Pos || ''}
-              onChange={(e) => updateField('committee2Pos', e.target.value)}
-              placeholder="ตำแหน่ง (COM_2_POS)"
-              className={inputClass}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation Buttons Footer */}
-      <div className="flex items-center justify-between pt-4 border-t border-white/5">
-        {onNavigatePrev && (
-          <button
-            type="button"
-            onClick={onNavigatePrev}
-            className="px-4 py-2.5 rounded-2xl neu-button text-gray-300 hover:text-white text-xs font-bold flex items-center gap-2 border border-white/5 active:scale-95 transition-all cursor-pointer"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            <span>ย้อนกลับ: บันทึกรายวัน (หน้า ๓)</span>
-          </button>
-        )}
-
-        {onNavigateNext && (
-          <button
-            type="button"
-            onClick={onNavigateNext}
-            className="px-5 py-2.5 rounded-2xl neu-orange-btn text-white text-xs font-bold flex items-center gap-2 active:scale-95 shadow-md transition-all cursor-pointer ml-auto"
-          >
-            <span>ถัดไป: ศูนย์ส่งออกเอกสาร (หน้า ๕)</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        )}
-      </div>
-    </div>
-  );
+      );
 };

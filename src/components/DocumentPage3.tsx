@@ -1,6 +1,6 @@
 import React from 'react';
 import { ReportData, WeekData, LaborRow } from '../types';
-import { Calendar, Users, Plus, Trash2, ChevronLeft, ArrowRight } from 'lucide-react';
+import { Calendar, Users, Plus, Trash2, ChevronLeft, ArrowRight, RotateCcw } from 'lucide-react';
 import { WeatherSelector } from './WeatherSelector';
 import { WeekSelectorBar } from './WeekSelectorBar';
 import { toThaiDigits } from '../utils/weekUtils';
@@ -57,6 +57,22 @@ export const DocumentPage3: React.FC<Props> = ({
     if (!onChange) return;
     const updatedWeeks = weeks.map((w, idx) => (idx === activeIndex ? mutator(w) : w));
     onChange({ ...data, weeks: updatedWeeks });
+  };
+
+  const handleClearPage3 = () => {
+    if (!window.confirm(`คุณต้องการล้างข้อมูลบันทึกรายวัน (สัปดาห์ที่ ${toThaiDigits(currentWeek?.weekNo || activeIndex + 1)}) ใช่หรือไม่?`)) {
+      return;
+    }
+    updateCurrentWeek((w) => ({
+      ...w,
+      dailyNarrative: ['', '', '', '', '', '', ''],
+      dailyWeatherMorning: ['แจ่มใส', 'แจ่มใส', 'แจ่มใส', 'แจ่มใส', 'แจ่มใส', 'แจ่มใส', 'แจ่มใส'],
+      dailyWeatherAfternoon: ['แจ่มใส', 'แจ่มใส', 'แจ่มใส', 'แจ่มใส', 'แจ่มใส', 'แจ่มใส', 'แจ่มใส'],
+      laborRows: [],
+      problemAndObstacle: '',
+      guidelinesAndResolutions: '',
+      documentNumber: '',
+    }));
   };
 
   // Update Daily Log field (narrative, weather, date)
@@ -170,7 +186,7 @@ export const DocumentPage3: React.FC<Props> = ({
       <div className="print:hidden space-y-6">
         {/* Table 1 Card: Daily Log Details & Weather */}
         <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-2">
+          <div className="flex flex-wrap items-center justify-between border-b border-white/5 pb-4 mb-2 gap-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl neu-pressed flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0">
                 <Calendar className="w-5 h-5" />
@@ -184,6 +200,17 @@ export const DocumentPage3: React.FC<Props> = ({
                 </p>
               </div>
             </div>
+
+            {/* Clear Data Button */}
+            <button
+              type="button"
+              onClick={handleClearPage3}
+              className="px-3 py-2 neu-button text-rose-400 hover:text-rose-300 rounded-2xl text-xs font-bold border border-rose-500/20 hover:border-rose-500/40 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
+              title="ล้างข้อมูลบันทึกรายวันในสัปดาห์นี้"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-rose-400" />
+              <span>ล้างข้อมูล</span>
+            </button>
           </div>
 
           <div className="overflow-x-auto pb-4">
