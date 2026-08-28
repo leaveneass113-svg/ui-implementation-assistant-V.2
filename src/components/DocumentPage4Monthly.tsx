@@ -552,221 +552,45 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
                 </div>
 
                 {/* Section Divider: Progress */}
-                  <div className="pt-3 border-t border-white/5 space-y-3">
-                    <div className="flex items-center gap-1.5 text-orange-400 font-bold text-xs">
-                      <TrendingUp className="w-4 h-4" />
-                      <span>ข้อมูลผลงานและความก้าวหน้า (คำนวณจากสัปดาห์ล่าสุดอัตโนมัติ)</span>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {/* CURRENT_PCT */}
-                      <div className="p-4 rounded-2xl bg-[#141517] border border-orange-500/30 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)]">
-                        <label className="block text-orange-300 font-bold mb-1 text-xs">
-                          %ผลงานปัจจุบัน (ดึงจากสะสม WC)
-                        </label>
-                        <div id="field_monthly_percent" className="text-2xl font-black text-orange-400">
-                          {currentPctDisplay}
-                        </div>
-                        <span className="text-[10px] text-gray-400 block mt-1">
-                          อัปเดตอัตโนมัติจากแท็บบันทึกประจำสัปดาห์
-                        </span>
-                      </div>
-
-                      {/* REMAIN */}
-                      <div className="p-4 rounded-2xl bg-[#141517] border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)]">
-                        <label className="block text-gray-300 font-semibold mb-1 text-xs">
-                          ระยะเวลาก่อสร้างคงเหลือ
-                        </label>
-                        <div id="field_monthly_remain" className="text-2xl font-bold text-white">
-                          {activeWeek?.remainingDays || data.remainingDays ? (
-                            <>
-                              {toThaiDigits(activeWeek?.remainingDays || data.remainingDays)} <span className="text-xs font-normal text-gray-400">วัน</span>
-                            </>
-                          ) : (
-                            <span className="text-gray-400 text-xl">- วัน</span>
-                          )}
-                        </div>
-                        <span className="text-[10px] text-gray-400 block mt-1">
-                          {data.totalDays
-                            ? `คำนวณจาก ${toThaiDigits(data.totalDays)} วัน ลบด้วยวันที่ทำไปแล้ว`
-                            : 'รอข้อมูลวันที่สิ้นสุดสัญญา'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bento Card 3: บุคลากร (Staff Card) - Full Width */}
-            <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-5 flex flex-col justify-between lg:col-span-2">
-              <div className="space-y-4">
-                {/* Card Header */}
-                <div className="flex items-center gap-3 border-b border-white/5 pb-3.5 mb-4">
-                  <div className="w-10 h-10 rounded-2xl neu-pressed flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0">
-                    <UserCheck className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-sm sm:text-base text-orange-400 tracking-wide">
-                      Card บุคลากร & คณะกรรมการตรวจรับพัสดุ
-                    </h3>
-                    <p className="text-[11px] text-gray-400">ผู้ควบคุมงาน และ คณะกรรมการตรวจรับพัสดุ</p>
-                  </div>
-                </div>
-
-                {/* Form Fields: 2 Columns */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-                  {/* Supervisor */}
-                  <div className="space-y-3.5 pb-4 md:pb-0 border-b md:border-b-0 md:border-r border-white/5 md:pr-6">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
-                      <UserCheck className="w-4 h-4" />
-                      <span>ผู้ควบคุมงาน</span>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex flex-col gap-1.5 w-full">
-                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{SUP_NAME}}">
-                          ชื่อ-นามสกุล
-                          <span className="text-orange-500 font-bold">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="field_monthly_supervisor_name"
-                          name="supervisor_name"
-                          value={data.supervisorName || ''}
-                          onChange={(e) => updateField('supervisorName', e.target.value)}
-                          placeholder="เช่น นายธนิส บุญเป็ง"
-                          className={inputClass}
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1.5 w-full">
-                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{SUP_POS}}">
-                          ตำแหน่ง
-                        </label>
-                        <input
-                          type="text"
-                          id="field_monthly_supervisor_pos"
-                          name="supervisor_pos"
-                          value={data.supervisorPos || ''}
-                          onChange={(e) => updateField('supervisorPos', e.target.value)}
-                          placeholder="เช่น นายช่างโยธาอาวุโส"
-                          className={inputClass}
-                        />
-                      </div>
-                    </div>
+                <div className="pt-3 border-t border-white/5 space-y-3">
+                  <div className="flex items-center gap-1.5 text-orange-400 font-bold text-xs">
+                    <TrendingUp className="w-4 h-4" />
+                    <span>ข้อมูลผลงานและความก้าวหน้า (คำนวณจากสัปดาห์ล่าสุดอัตโนมัติ)</span>
                   </div>
 
-                  {/* Committee Chair */}
-                  <div className="space-y-3.5">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
-                      <UserCheck className="w-4 h-4" />
-                      <span>ประธานกรรมการตรวจรับพัสดุ</span>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex flex-col gap-1.5 w-full">
-                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_P_NAME}}">
-                          ชื่อ-นามสกุล
-                          <span className="text-orange-500 font-bold">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="field_monthly_committee_chair_name"
-                          name="committee_chair_name"
-                          value={data.committeeChairName || ''}
-                          onChange={(e) => updateField('committeeChairName', e.target.value)}
-                          placeholder="เช่น นายมนตรี ฟูฟ่า"
-                          className={inputClass}
-                        />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* CURRENT_PCT */}
+                    <div className="p-4 rounded-2xl bg-[#141517] border border-orange-500/30 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)]">
+                      <label className="block text-orange-300 font-bold mb-1 text-xs">
+                        %ผลงานปัจจุบัน (ดึงจากสะสม WC)
+                      </label>
+                      <div id="field_monthly_percent" className="text-2xl font-black text-orange-400">
+                        {currentPctDisplay}
                       </div>
-                      <div className="flex flex-col gap-1.5 w-full">
-                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_P_POS}}">
-                          ตำแหน่ง
-                        </label>
-                        <input
-                          type="text"
-                          id="field_monthly_committee_chair_pos"
-                          name="committee_chair_pos"
-                          value={data.committeeChairPos || ''}
-                          onChange={(e) => updateField('committeeChairPos', e.target.value)}
-                          placeholder="เช่น ผู้อำนวยการกองช่าง"
-                          className={inputClass}
-                        />
-                      </div>
+                      <span className="text-[10px] text-gray-400 block mt-1">
+                        อัปเดตอัตโนมัติจากแท็บบันทึกประจำสัปดาห์
+                      </span>
                     </div>
-                  </div>
 
-                  {/* Committee Member 1 */}
-                  <div className="space-y-3.5 pt-4 border-t border-white/5 md:pr-6 md:border-r">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
-                      <UserCheck className="w-4 h-4" />
-                      <span>กรรมการตรวจรับพัสดุ (คนที่ ๑)</span>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex flex-col gap-1.5 w-full">
-                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_1_NAME}}">
-                          ชื่อ-นามสกุล
-                        </label>
-                        <input
-                          type="text"
-                          id="field_monthly_committee1_name"
-                          name="committee1_name"
-                          value={data.committee1Name || ''}
-                          onChange={(e) => updateField('committee1Name', e.target.value)}
-                          placeholder="เช่น นางสาวธัญญารัตน์ กันทาสุข"
-                          className={inputClass}
-                        />
+                    {/* REMAIN */}
+                    <div className="p-4 rounded-2xl bg-[#141517] border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)]">
+                      <label className="block text-gray-300 font-semibold mb-1 text-xs">
+                        ระยะเวลาก่อสร้างคงเหลือ
+                      </label>
+                      <div id="field_monthly_remain" className="text-2xl font-bold text-white">
+                        {activeWeek?.remainingDays || data.remainingDays ? (
+                          <>
+                            {toThaiDigits(activeWeek?.remainingDays || data.remainingDays)} <span className="text-xs font-normal text-gray-400">วัน</span>
+                          </>
+                        ) : (
+                          <span className="text-gray-400 text-xl">- วัน</span>
+                        )}
                       </div>
-                      <div className="flex flex-col gap-1.5 w-full">
-                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_1_POS}}">
-                          ตำแหน่ง
-                        </label>
-                        <input
-                          type="text"
-                          id="field_monthly_committee1_pos"
-                          name="committee1_pos"
-                          value={data.committee1Pos || ''}
-                          onChange={(e) => updateField('committee1Pos', e.target.value)}
-                          placeholder="เช่น นักวิชาการเงินและบัญชีชำนาญการ"
-                          className={inputClass}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Committee Member 2 */}
-                  <div className="space-y-3.5 pt-4 border-t border-white/5">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
-                      <UserCheck className="w-4 h-4" />
-                      <span>กรรมการตรวจรับพัสดุ (คนที่ ๒)</span>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex flex-col gap-1.5 w-full">
-                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_2_NAME}}">
-                          ชื่อ-นามสกุล
-                        </label>
-                        <input
-                          type="text"
-                          id="field_monthly_committee2_name"
-                          name="committee2_name"
-                          value={data.committee2Name || ''}
-                          onChange={(e) => updateField('committee2Name', e.target.value)}
-                          placeholder="เช่น นายศราวุฒิ ทรายใจ"
-                          className={inputClass}
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1.5 w-full">
-                        <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_2_POS}}">
-                          ตำแหน่ง
-                        </label>
-                        <input
-                          type="text"
-                          id="field_monthly_committee2_pos"
-                          name="committee2_pos"
-                          value={data.committee2Pos || ''}
-                          onChange={(e) => updateField('committee2Pos', e.target.value)}
-                          placeholder="เช่น นักวิชาการศึกษาชำนาญการ"
-                          className={inputClass}
-                        />
-                      </div>
+                      <span className="text-[10px] text-gray-400 block mt-1">
+                        {data.totalDays
+                          ? `คำนวณจาก ${toThaiDigits(data.totalDays)} วัน ลบด้วยวันที่ทำไปแล้ว`
+                          : 'รอข้อมูลวันที่สิ้นสุดสัญญา'}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -774,117 +598,293 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
             </div>
           </div>
 
-          {/* Step Navigation Footer */}
-          <div className="flex items-center justify-between pt-4 border-t border-white/5 gap-3">
-            {onNavigatePrev && (
-              <button
-                onClick={onNavigatePrev}
-                className="neu-button px-4 py-2.5 rounded-2xl text-xs font-semibold text-gray-300 hover:text-white border border-white/5 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>ย้อนกลับ: บันทึกรายวัน (หน้า ๓)</span>
-              </button>
-            )}
-            {onNavigateNext && (
-              <button
-                onClick={onNavigateNext}
-                className="neu-orange-btn ml-auto px-5 py-2.5 rounded-2xl text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer hover:scale-[1.02]"
-              >
-                <span>ถัดไป: ข้อมูลโครงการ (หน้า ๕)</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            )}
+          {/* Bento Card 3: บุคลากร (Staff Card) - Full Width */}
+          <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-5 flex flex-col justify-between lg:col-span-2">
+            <div className="space-y-4">
+              {/* Card Header */}
+              <div className="flex items-center gap-3 border-b border-white/5 pb-3.5 mb-4">
+                <div className="w-10 h-10 rounded-2xl neu-pressed flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0">
+                  <UserCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm sm:text-base text-orange-400 tracking-wide">
+                    Card บุคลากร & คณะกรรมการตรวจรับพัสดุ
+                  </h3>
+                  <p className="text-[11px] text-gray-400">ผู้ควบคุมงาน และ คณะกรรมการตรวจรับพัสดุ</p>
+                </div>
+              </div>
+
+              {/* Form Fields: 2 Columns */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                {/* Supervisor */}
+                <div className="space-y-3.5 pb-4 md:pb-0 border-b md:border-b-0 md:border-r border-white/5 md:pr-6">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
+                    <UserCheck className="w-4 h-4" />
+                    <span>ผู้ควบคุมงาน</span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex flex-col gap-1.5 w-full">
+                      <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{SUP_NAME}}">
+                        ชื่อ-นามสกุล
+                        <span className="text-orange-500 font-bold">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="field_monthly_supervisor_name"
+                        name="supervisor_name"
+                        value={data.supervisorName || ''}
+                        onChange={(e) => updateField('supervisorName', e.target.value)}
+                        placeholder="เช่น นายธนิส บุญเป็ง"
+                        className={inputClass}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1.5 w-full">
+                      <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{SUP_POS}}">
+                        ตำแหน่ง
+                      </label>
+                      <input
+                        type="text"
+                        id="field_monthly_supervisor_pos"
+                        name="supervisor_pos"
+                        value={data.supervisorPos || ''}
+                        onChange={(e) => updateField('supervisorPos', e.target.value)}
+                        placeholder="เช่น นายช่างโยธาอาวุโส"
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Committee Chair */}
+                <div className="space-y-3.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
+                    <UserCheck className="w-4 h-4" />
+                    <span>ประธานกรรมการตรวจรับพัสดุ</span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex flex-col gap-1.5 w-full">
+                      <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_P_NAME}}">
+                        ชื่อ-นามสกุล
+                        <span className="text-orange-500 font-bold">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="field_monthly_committee_chair_name"
+                        name="committee_chair_name"
+                        value={data.committeeChairName || ''}
+                        onChange={(e) => updateField('committeeChairName', e.target.value)}
+                        placeholder="เช่น นายมนตรี ฟูฟ่า"
+                        className={inputClass}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1.5 w-full">
+                      <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_P_POS}}">
+                        ตำแหน่ง
+                      </label>
+                      <input
+                        type="text"
+                        id="field_monthly_committee_chair_pos"
+                        name="committee_chair_pos"
+                        value={data.committeeChairPos || ''}
+                        onChange={(e) => updateField('committeeChairPos', e.target.value)}
+                        placeholder="เช่น ผู้อำนวยการกองช่าง"
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Committee Member 1 */}
+                <div className="space-y-3.5 pt-4 border-t border-white/5 md:pr-6 md:border-r">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
+                    <UserCheck className="w-4 h-4" />
+                    <span>กรรมการตรวจรับพัสดุ (คนที่ ๑)</span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex flex-col gap-1.5 w-full">
+                      <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_1_NAME}}">
+                        ชื่อ-นามสกุล
+                      </label>
+                      <input
+                        type="text"
+                        id="field_monthly_committee1_name"
+                        name="committee1_name"
+                        value={data.committee1Name || ''}
+                        onChange={(e) => updateField('committee1Name', e.target.value)}
+                        placeholder="เช่น นางสาวธัญญารัตน์ กันทาสุข"
+                        className={inputClass}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1.5 w-full">
+                      <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_1_POS}}">
+                        ตำแหน่ง
+                      </label>
+                      <input
+                        type="text"
+                        id="field_monthly_committee1_pos"
+                        name="committee1_pos"
+                        value={data.committee1Pos || ''}
+                        onChange={(e) => updateField('committee1Pos', e.target.value)}
+                        placeholder="เช่น นักวิชาการเงินและบัญชีชำนาญการ"
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Committee Member 2 */}
+                <div className="space-y-3.5 pt-4 border-t border-white/5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
+                    <UserCheck className="w-4 h-4" />
+                    <span>กรรมการตรวจรับพัสดุ (คนที่ ๒)</span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex flex-col gap-1.5 w-full">
+                      <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_2_NAME}}">
+                        ชื่อ-นามสกุล
+                      </label>
+                      <input
+                        type="text"
+                        id="field_monthly_committee2_name"
+                        name="committee2_name"
+                        value={data.committee2Name || ''}
+                        onChange={(e) => updateField('committee2Name', e.target.value)}
+                        placeholder="เช่น นายศราวุฒิ ทรายใจ"
+                        className={inputClass}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1.5 w-full">
+                      <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COM_2_POS}}">
+                        ตำแหน่ง
+                      </label>
+                      <input
+                        type="text"
+                        id="field_monthly_committee2_pos"
+                        name="committee2_pos"
+                        value={data.committee2Pos || ''}
+                        onChange={(e) => updateField('committee2Pos', e.target.value)}
+                        placeholder="เช่น นักวิชาการศึกษาชำนาญการ"
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Print View: Document format conforming 100% to V2 Template1.docx */}
-        <div className="hidden print:block bg-white text-black p-8 sm:p-12 shadow-none font-sarabun max-w-[210mm] min-h-[297mm] mx-auto text-[15px] leading-relaxed relative select-text">
-          {/* Garuda Emblem Header */}
-          <div className="flex items-start justify-between relative mb-3">
-            <div className="absolute left-1/2 -translate-x-1/2 top-0">
-              <GarudaEmblem className="w-[3cm] h-[3cm]" />
-            </div>
-            <div className="font-bold text-2xl tracking-wider pt-2">บันทึกข้อความ</div>
-          </div>
+        {/* Step Navigation Footer */}
+        <div className="flex items-center justify-between pt-4 border-t border-white/5 gap-3">
+          {onNavigatePrev && (
+            <button
+              onClick={onNavigatePrev}
+              className="neu-button px-4 py-2.5 rounded-2xl text-xs font-semibold text-gray-300 hover:text-white border border-white/5 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>ย้อนกลับ: บันทึกรายวัน (หน้า ๓)</span>
+            </button>
+          )}
+          {onNavigateNext && (
+            <button
+              onClick={onNavigateNext}
+              className="neu-orange-btn ml-auto px-5 py-2.5 rounded-2xl text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer hover:scale-[1.02]"
+            >
+              <span>ถัดไป: ข้อมูลโครงการ (หน้า ๕)</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
 
-          {/* Memo Header Details */}
-          <div className="space-y-1 mt-6 text-[15px]">
-            <div className="flex items-baseline">
-              <span className="font-bold w-28 shrink-0">ส่วนราชการ</span>
-              <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5">
-                องค์การบริหารส่วนตำบลใหม่พัฒนา อำเภอเกาะคา จังหวัดลำปาง
-              </span>
-            </div>
-            <div className="flex items-baseline justify-between gap-4">
-              <div className="flex items-baseline flex-1">
-                <span className="font-bold w-12 shrink-0">ที่</span>
-                <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5 font-bold">
-                  {toThaiDigits(data.docNo) || '...........................'}
-                </span>
-              </div>
-              <div className="flex items-baseline flex-1">
-                <span className="font-bold w-12 shrink-0">เดือน</span>
-                <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5 font-bold">
-                  {toThaiDigits(data.rptMonth) || '...........................'}
-                </span>
-              </div>
-            </div>
-            <div className="flex items-baseline">
-              <span className="font-bold w-14 shrink-0">เรื่อง</span>
+      {/* Print View: Document format conforming 100% to V2 Template1.docx */}
+      <div className="hidden print:block bg-white text-black p-8 sm:p-12 shadow-none font-sarabun max-w-[210mm] min-h-[297mm] mx-auto text-[15px] leading-relaxed relative select-text">
+        {/* Garuda Emblem Header */}
+        <div className="flex items-start justify-between relative mb-3">
+          <div className="absolute left-1/2 -translate-x-1/2 top-0">
+            <GarudaEmblem className="w-[3cm] h-[3cm]" />
+          </div>
+          <div className="font-bold text-2xl tracking-wider pt-2">บันทึกข้อความ</div>
+        </div>
+
+        {/* Memo Header Details */}
+        <div className="space-y-1 mt-6 text-[15px]">
+          <div className="flex items-baseline">
+            <span className="font-bold w-28 shrink-0">ส่วนราชการ</span>
+            <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5">
+              องค์การบริหารส่วนตำบลใหม่พัฒนา อำเภอเกาะคา จังหวัดลำปาง
+            </span>
+          </div>
+          <div className="flex items-baseline justify-between gap-4">
+            <div className="flex items-baseline flex-1">
+              <span className="font-bold w-12 shrink-0">ที่</span>
               <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5 font-bold">
-                รายงานผลการปฏิบัติงานของผู้ควบคุมงาน ประจำเดือน {toThaiDigits(data.rptMonth) || '...........................'}
+                {toThaiDigits(data.docNo) || '...........................'}
+              </span>
+            </div>
+            <div className="flex items-baseline flex-1">
+              <span className="font-bold w-12 shrink-0">เดือน</span>
+              <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5 font-bold">
+                {toThaiDigits(data.rptMonth) || '...........................'}
               </span>
             </div>
           </div>
-
-          {/* Recipient */}
-          <div className="mt-4 font-bold">
-            เรียน ประธานกรรมการตรวจรับพัสดุ
+          <div className="flex items-baseline">
+            <span className="font-bold w-14 shrink-0">เรื่อง</span>
+            <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5 font-bold">
+              รายงานผลการปฏิบัติงานของผู้ควบคุมงาน ประจำเดือน {toThaiDigits(data.rptMonth) || '...........................'}
+            </span>
           </div>
+        </div>
 
-          {/* Body Content */}
-          <div className="mt-3 space-y-2 text-justify text-[15px] indent-8">
-            <p>
-              ตามคำสั่งองค์การบริหารส่วนตำบลใหม่พัฒนา ที่ ๒/๒๕๖๙ ลงวันที่ ๙ มิถุนายน ๒๕๖๙ ได้แต่งตั้งข้าพเจ้า{' '}
-              <span className="font-bold">{data.supervisorName || '...........................'}</span> ตำแหน่ง{' '}
-              <span>{data.supervisorPos || '...........................'}</span> เป็นผู้ควบคุมงานจ้าง{' '}
-              <span className="font-bold">{data.projectName || '...........................'}</span> สถานที่ก่อสร้าง{' '}
-              <span>{data.location || '...........................'}</span> ปริมาณงาน{' '}
-              <span>{toThaiDigits(data.quantity) || '...........................'}</span>
-            </p>
-            <p className="indent-8">
-              ตามสัญญาจ้างเลขที่ <span className="font-bold">{toThaiDigits(data.contractNo) || '...........................'}</span> ลงวันที่{' '}
-              <span>{toThaiDigits(data.contractDate) || '...........................'}</span> สิ้นสุดสัญญาวันที่{' '}
-              <span>{toThaiDigits(data.contractEndDate) || '...........................'}</span> รวมระยะเวลาทำการ{' '}
-              <span className="font-bold">{toThaiDigits(data.totalDays) || '......'}</span> วัน ค่าจ้างเป็นเงิน{' '}
-              <span className="font-bold">{toThaiDigits(data.constructionCost) || '...........................'}</span> บาท ค่าปรับวันละ{' '}
-              <span>{toThaiDigits(data.finePerDay) || '..........'}</span> บาท โดยมี{' '}
-              <span className="font-bold">{data.contractorName || '...........................'}</span> เป็นผู้รับจ้าง นั้น
-            </p>
-            <p className="indent-8">
-              บัดนี้ ผู้ควบคุมงานได้ควบคุมงานก่อสร้าง ประจำเดือน{' '}
-              <span className="font-bold">{toThaiDigits(data.rptMonth || '...........................')}</span> ตั้งแต่วันที่{' '}
-              <span className="font-bold">{toThaiDigits(activeWeek?.startDate || data.startDate || '...........................')}</span> ถึงวันที่{' '}
-              <span className="font-bold">{toThaiDigits(activeWeek?.endDate || data.endDate || '...........................')}</span> ผลงานก่อสร้างสะสมคิดเป็นร้อยละ{' '}
-              <span className="font-bold">{currentPctDisplay}</span> ระยะเวลาก่อสร้างคงเหลือ{' '}
-              <span className="font-bold">{toThaiDigits(activeWeek?.remainingDays || data.remainingDays || '..')}</span> วัน รายละเอียดตามเอกสารแนบท้ายนี้
-            </p>
+        {/* Recipient */}
+        <div className="mt-4 font-bold">
+          เรียน ประธานกรรมการตรวจรับพัสดุ
+        </div>
+
+        {/* Body Content */}
+        <div className="mt-3 space-y-2 text-justify text-[15px] indent-8">
+          <p>
+            ตามคำสั่งองค์การบริหารส่วนตำบลใหม่พัฒนา ที่ ๒/๒๕๖๙ ลงวันที่ ๙ มิถุนายน ๒๕๖๙ ได้แต่งตั้งข้าพเจ้า{' '}
+            <span className="font-bold">{data.supervisorName || '...........................'}</span> ตำแหน่ง{' '}
+            <span>{data.supervisorPos || '...........................'}</span> เป็นผู้ควบคุมงานจ้าง{' '}
+            <span className="font-bold">{data.projectName || '...........................'}</span> สถานที่ก่อสร้าง{' '}
+            <span>{data.location || '...........................'}</span> ปริมาณงาน{' '}
+            <span>{toThaiDigits(data.quantity) || '...........................'}</span>
+          </p>
+          <p className="indent-8">
+            ตามสัญญาจ้างเลขที่ <span className="font-bold">{toThaiDigits(data.contractNo) || '...........................'}</span> ลงวันที่{' '}
+            <span>{toThaiDigits(data.contractDate) || '...........................'}</span> สิ้นสุดสัญญาวันที่{' '}
+            <span>{toThaiDigits(data.contractEndDate) || '...........................'}</span> รวมระยะเวลาทำการ{' '}
+            <span className="font-bold">{toThaiDigits(data.totalDays) || '......'}</span> วัน ค่าจ้างเป็นเงิน{' '}
+            <span className="font-bold">{toThaiDigits(data.constructionCost) || '...........................'}</span> บาท ค่าปรับวันละ{' '}
+            <span>{toThaiDigits(data.finePerDay) || '..........'}</span> บาท โดยมี{' '}
+            <span className="font-bold">{data.contractorName || '...........................'}</span> เป็นผู้รับจ้าง นั้น
+          </p>
+          <p className="indent-8">
+            บัดนี้ ผู้ควบคุมงานได้ควบคุมงานก่อสร้าง ประจำเดือน{' '}
+            <span className="font-bold">{toThaiDigits(data.rptMonth || '...........................')}</span> ตั้งแต่วันที่{' '}
+            <span className="font-bold">{toThaiDigits(activeWeek?.startDate || data.startDate || '...........................')}</span> ถึงวันที่{' '}
+            <span className="font-bold">{toThaiDigits(activeWeek?.endDate || data.endDate || '...........................')}</span> ผลงานก่อสร้างสะสมคิดเป็นร้อยละ{' '}
+            <span className="font-bold">{currentPctDisplay}</span> ระยะเวลาก่อสร้างคงเหลือ{' '}
+            <span className="font-bold">{toThaiDigits(activeWeek?.remainingDays || data.remainingDays || '..')}</span> วัน รายละเอียดตามเอกสารแนบท้ายนี้
+          </p>
+        </div>
+
+        {/* Signatures */}
+        <div className="mt-8 grid grid-cols-2 gap-6 text-center text-[14px]">
+          <div className="space-y-1">
+            <p className="font-bold mb-8">ลงชื่อ................................................ผู้ควบคุมงาน</p>
+            <p className="font-bold">({data.supervisorName || '................................................'})</p>
+            <p className="text-gray-700">{data.supervisorPos || '................................................'}</p>
           </div>
-
-          {/* Signatures */}
-          <div className="mt-8 grid grid-cols-2 gap-6 text-center text-[14px]">
-            <div className="space-y-1">
-              <p className="font-bold mb-8">ลงชื่อ................................................ผู้ควบคุมงาน</p>
-              <p className="font-bold">({data.supervisorName || '................................................'})</p>
-              <p className="text-gray-700">{data.supervisorPos || '................................................'}</p>
-            </div>
-            <div className="space-y-1">
-              <p className="font-bold mb-8">ลงชื่อ................................................ประธานกรรมการ</p>
-              <p className="font-bold">({data.committeeChairName || '................................................'})</p>
-              <p className="text-gray-700">{data.committeeChairPos || '................................................'}</p>
-            </div>
+          <div className="space-y-1">
+            <p className="font-bold mb-8">ลงชื่อ................................................ประธานกรรมการ</p>
+            <p className="font-bold">({data.committeeChairName || '................................................'})</p>
+            <p className="text-gray-700">{data.committeeChairPos || '................................................'}</p>
           </div>
         </div>
       </div>
-      );
+    </div>
+  );
 };

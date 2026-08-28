@@ -37,54 +37,53 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
     data.milestones && data.milestones.length > 0
       ? data.milestones
       : [
-          {
-            id: 'ms-1',
-            installmentNo: 1,
-            description: 'ก่อสร้างถนนคอนกรีตเสริมเหล็ก กว้าง ๓.๐๐ ม. ยาว ๑๕๐.๐๐ ม. หนา ๐.๑๕ ม. แล้วเสร็จครบถ้วน',
-            amount: 277000,
-            contractDueDate: '๒๘ สิงหาคม ๒๕๖๙',
-            actualFinishDate: '๒๕ สิงหาคม ๒๕๖๙',
-            inspectionDate: '๒๘ สิงหาคม ๒๕๖๙',
-            paymentStatus: 'disbursed',
-            finishDateText: '๒๕ ส.ค. ๖๙',
-            inspectionDateText: '๒๘ ส.ค. ๖๙',
-            remarks: 'งวดเดียวจบ',
-          },
-        ];
+        {
+          id: 'ms-1',
+          installmentNo: 1,
+          description: '',
+          contractDueDate: '๒๘ สิงหาคม ๒๕๖๙',
+          actualFinishDate: '๒๕ สิงหาคม ๒๕๖๙',
+          inspectionDate: '๒๘ สิงหาคม ๒๕๖๙',
+          paymentStatus: 'disbursed',
+          finishDateText: '๒๕ ส.ค. ๖๙',
+          inspectionDateText: '๒๘ ส.ค. ๖๙',
+          remarks: 'งวดเดียวจบ',
+        },
+      ];
 
   const materialTests: MaterialTestItem[] =
     data.materialTests && data.materialTests.length > 0
       ? data.materialTests
       : [
-          {
-            id: 'mt-1',
-            item: 'รายงานผลการทดสอบการรับน้ำหนักและกำลังอัดคอนกรีต',
-            sampleCount: '๓ แท่งตัวอย่าง',
-            testDate: '๑๕ กรกฎาคม ๒๕๖๙',
-            testDateText: '๑๕ ก.ค. ๖๙',
-            testingAuthority: 'ศูนย์ทดสอบวัสดุมหาวิทยาลัย/หน่วยงานราชการ',
-            location: 'ผิวจราจร กม. ๐+๐๕๐',
-            result: 'passed',
-            resultText: 'ผ่านเกณฑ์ (กำลังอัดได้ตามแบบ)',
-            testCertNo: 'วส. ๑๒/๒๕๖๙',
-          },
-        ];
+        {
+          id: 'mt-1',
+          item: 'รายงานผลการทดสอบการรับน้ำหนักและกำลังอัดคอนกรีต',
+          sampleCount: '๓ แท่งตัวอย่าง',
+          testDate: '๑๕ กรกฎาคม ๒๕๖๙',
+          testDateText: '๑๕ ก.ค. ๖๙',
+          testingAuthority: 'ศูนย์ทดสอบวัสดุมหาวิทยาลัย/หน่วยงานราชการ',
+          location: 'ผิวจราจร กม. ๐+๐๕๐',
+          result: 'passed',
+          resultText: 'ผ่านเกณฑ์ (กำลังอัดได้ตามแบบ)',
+          testCertNo: 'วส. ๑๒/๒๕๖๙',
+        },
+      ];
 
   const materialApprovals: MaterialApprovalItem[] =
     data.materialApprovals && data.materialApprovals.length > 0
       ? data.materialApprovals
       : [
-          {
-            id: 'ma-1',
-            item: 'ขออนุมัติใช้ปูนซีเมนต์ปอร์ตแลนด์และเหล็กเสริมคอนกรีต',
-            requestDate: '๓๐ มิถุนายน ๒๕๖๙',
-            requestDateText: '๓๐ มิ.ย. ๖๙',
-            reviewer: 'นายช่างผู้ควบคุมงาน / คณะกรรมการ',
-            status: 'approved',
-            decisionText: 'อนุมัติให้ใช้งานได้',
-            approvalDate: '๒ กรกฎาคม ๒๕๖๙',
-          },
-        ];
+        {
+          id: 'ma-1',
+          item: 'ขออนุมัติใช้ปูนซีเมนต์ปอร์ตแลนด์และเหล็กเสริมคอนกรีต',
+          requestDate: '๓๐ มิถุนายน ๒๕๖๙',
+          requestDateText: '๓๐ มิ.ย. ๖๙',
+          reviewer: 'นายช่างผู้ควบคุมงาน / คณะกรรมการ',
+          status: 'approved',
+          decisionText: 'อนุมัติให้ใช้งานได้',
+          approvalDate: '๒ กรกฎาคม ๒๕๖๙',
+        },
+      ];
 
   const handleClearPage7 = () => {
     if (onChange) {
@@ -239,70 +238,72 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
             <tbody className="divide-y divide-white/5">
               {milestones.map((m, idx) => (
                 <tr key={m.id || idx} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="p-2.5 text-center font-bold text-orange-400">
-                    {toThaiDigits(m.installmentNo || idx + 1)}
+                  <td className="p-2 text-center align-middle">
+                    <div className="w-9 h-10 mx-auto flex items-center justify-center neu-pressed rounded-xl border border-white/5 font-bold text-orange-400 text-sm select-none">
+                      {toThaiDigits(m.installmentNo || idx + 1)}
+                    </div>
                   </td>
-                  <td className="p-2.5">
-                    <textarea
-                      rows={2}
+                  <td className="p-2 align-middle">
+                    <input
+                      type="text"
                       value={m.description || ''}
                       onChange={(e) => handleMilestoneChange(idx, 'description', e.target.value)}
-                      placeholder="ระบุรายละเอียดงานตามงวด..."
-                      className="w-full bg-[#141517] text-white text-xs p-2 rounded-xl border border-white/5 shadow-inner outline-none resize-none leading-relaxed"
+                      placeholder="0"
+                      className="w-full h-10 bg-[#141517] text-white text-xs px-3 rounded-xl border border-white/5 shadow-inner outline-none placeholder:text-gray-600 focus:border-orange-500/50 transition-all"
                     />
                   </td>
-                  <td className="p-2.5">
+                  <td className="p-2 align-middle">
                     <input
                       type="number"
                       value={m.amount || ''}
                       onChange={(e) => handleMilestoneChange(idx, 'amount', parseFloat(e.target.value) || 0)}
                       placeholder="0"
-                      className="w-full text-center bg-[#141517] text-emerald-400 font-bold text-xs p-2 rounded-xl border border-white/5 shadow-inner outline-none"
+                      className="w-full h-10 text-center bg-[#141517] text-emerald-400 font-bold text-xs px-2 rounded-xl border border-white/5 shadow-inner outline-none focus:border-orange-500/50 transition-all"
                     />
                   </td>
-                  <td className="p-2.5">
+                  <td className="p-2 align-middle">
                     <input
                       type="text"
                       value={m.contractDueDate || ''}
                       onChange={(e) => handleMilestoneChange(idx, 'contractDueDate', toThaiDigits(e.target.value))}
                       placeholder="เช่น ๒๘ ส.ค. ๖๙"
-                      className="w-full text-center bg-[#141517] text-gray-300 text-xs p-2 rounded-xl border border-white/5 shadow-inner outline-none"
+                      className="w-full h-10 text-center bg-[#141517] text-gray-300 text-xs px-2 rounded-xl border border-white/5 shadow-inner outline-none focus:border-orange-500/50 transition-all"
                     />
                   </td>
-                  <td className="p-2.5">
+                  <td className="p-2 align-middle">
                     <input
                       type="text"
                       value={m.actualFinishDate || ''}
                       onChange={(e) => handleMilestoneChange(idx, 'actualFinishDate', toThaiDigits(e.target.value))}
                       placeholder="เช่น ๒๕ ส.ค. ๖๙"
-                      className="w-full text-center bg-[#141517] text-gray-300 text-xs p-2 rounded-xl border border-white/5 shadow-inner outline-none"
+                      className="w-full h-10 text-center bg-[#141517] text-gray-300 text-xs px-2 rounded-xl border border-white/5 shadow-inner outline-none focus:border-orange-500/50 transition-all"
                     />
                   </td>
-                  <td className="p-2.5">
+                  <td className="p-2 align-middle">
                     <input
                       type="text"
                       value={m.inspectionDate || ''}
                       onChange={(e) => handleMilestoneChange(idx, 'inspectionDate', toThaiDigits(e.target.value))}
                       placeholder="เช่น ๒๘ ส.ค. ๖๙"
-                      className="w-full text-center bg-[#141517] text-gray-300 text-xs p-2 rounded-xl border border-white/5 shadow-inner outline-none"
+                      className="w-full h-10 text-center bg-[#141517] text-gray-300 text-xs px-2 rounded-xl border border-white/5 shadow-inner outline-none focus:border-orange-500/50 transition-all"
                     />
                   </td>
-                  <td className="p-2.5 text-center">
+                  <td className="p-2 text-center align-middle">
                     <select
                       value={m.paymentStatus || 'pending'}
                       onChange={(e) => handleMilestoneChange(idx, 'paymentStatus', e.target.value)}
-                      className="w-full bg-[#141517] text-orange-300 font-semibold text-[11px] p-2 rounded-xl border border-white/5 shadow-inner outline-none"
+                      className="w-full h-10 bg-[#141517] text-orange-300 font-semibold text-[11px] px-2 rounded-xl border border-white/5 shadow-inner outline-none cursor-pointer focus:border-orange-500/50 transition-all"
                     >
                       <option value="pending">รอดำเนินการ</option>
                       <option value="inspected">ตรวจรับแล้ว</option>
                       <option value="disbursed">เบิกจ่ายแล้ว</option>
                     </select>
                   </td>
-                  <td className="p-2.5 text-center">
+                  <td className="p-2 text-center align-middle">
                     <button
                       type="button"
                       onClick={() => handleDeleteMilestone(idx)}
-                      className="w-7 h-7 rounded-xl neu-button flex items-center justify-center text-rose-400 hover:text-rose-300 border border-white/5 transition-colors cursor-pointer"
+                      className="w-8 h-8 mx-auto rounded-xl neu-button flex items-center justify-center text-rose-400 hover:text-rose-300 border border-white/5 transition-all active:scale-95 cursor-pointer"
                       title="ลบงวดงานนี้"
                     >
                       <Trash2 className="w-3.5 h-3.5" />

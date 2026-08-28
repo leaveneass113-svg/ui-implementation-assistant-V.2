@@ -285,7 +285,6 @@ export const UploadContractScanner: React.FC<Props> = ({ onContractExtracted }) 
       committee2Pos: extractedData.committee2Pos || '',
 
       activeWeekIndex: 0,
-      monthlyRollup: filledSampleReportData.monthlyRollup,
       weeks: autoWeeks.length > 0 ? autoWeeks : filledSampleReportData.weeks,
     };
 

@@ -76,7 +76,7 @@ const MAX_PROMPT_LENGTH = 50_000; // 50 KB max prompt text
 
 async function startServer() {
   const app = express();
-  const PORT = parseInt(process.env.PORT || "3000", 10);
+  const PORT = parseInt(process.env.PORT || "3001", 10);
 
   // ─── C3: Security Headers (helmet) ──────────────────────────────────────────
   app.use(

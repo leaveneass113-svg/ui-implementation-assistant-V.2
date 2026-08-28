@@ -34,16 +34,6 @@ export interface WeekData {
   workProgress: WorkProgress;
 }
 
-export interface MonthlyRollupItem {
-  index: number;
-  label: string;       // MO_LABELi
-  desc: string;        // MO_DESCi
-  weight_MW: number;   // MWi
-  prevCum_MP: number;  // MPi
-  thisMonth_MM: number;// MMi
-  cum_MC?: number;     // MCi = MPi + MMi
-  total_MR?: number;   // MRi = MWi * MCi / 100
-}
 
 export interface MonthlyProgressEntry {
   id: string;
@@ -60,7 +50,7 @@ export interface MilestoneItem {
   id: string;
   installmentNo: number;
   description: string;
-  amount: number;
+  amount?: number;
   contractDueDate: string;
   actualFinishDate: string;
   inspectionDate: string;
@@ -161,9 +151,6 @@ export interface ReportData {
   committee2Pos: string;      // {{COM_2_POS}}
   rep1Name?: string;          // {{REP_1}} ผู้แทนผู้รับจ้าง e.g. นายพรหมมินทร์ ปะระมา
   rep2Name?: string;          // {{REP_2}} ผู้แทนผู้รับจ้างคนที่ 2 e.g. -
-
-  // Group G: Monthly Rollup items (up to 3 rows)
-  monthlyRollup?: MonthlyRollupItem[];
 
   // Page 6: Cumulative Monthly Progress Logs
   monthlyProgressLogs?: MonthlyProgressEntry[];

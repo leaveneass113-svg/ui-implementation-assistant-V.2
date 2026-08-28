@@ -39,11 +39,6 @@ export const placeholderReportData: ReportData = {
   rep2Name: '-',
 
   activeWeekIndex: 0,
-  monthlyRollup: [
-    { index: 1, label: '', desc: '', weight_MW: 100, prevCum_MP: 0, thisMonth_MM: 0 },
-    { index: 2, label: '', desc: '', weight_MW: 0, prevCum_MP: 0, thisMonth_MM: 0 },
-    { index: 3, label: '', desc: '', weight_MW: 0, prevCum_MP: 0, thisMonth_MM: 0 },
-  ],
   weeks: [
     {
       id: 'w-initial-1',
@@ -316,31 +311,5 @@ export const filledSampleReportData: ReportData = {
   rep2Name: '-',
 
   activeWeekIndex: 0, // โฟกัสสัปดาห์ที่ ๑
-  monthlyRollup: [
-    {
-      index: 1,
-      label: 'งานเตรียมพื้นที่และปรับระดับคันทางเดิม',
-      desc: 'ถางป่าขุดตอและปรับเกรดดินเดิมตลอดสายทาง 150 เมตร',
-      weight_MW: 20,
-      prevCum_MP: 0,
-      thisMonth_MM: 20,
-    },
-    {
-      index: 2,
-      label: 'งานชั้นพื้นทางหินคลุก หนา 0.15 ม.',
-      desc: 'ขนส่ง ลงหินคลุกและบดอัดแน่นด้วยรถบดสั่นสะเทือน',
-      weight_MW: 25,
-      prevCum_MP: 0,
-      thisMonth_MM: 25,
-    },
-    {
-      index: 3,
-      label: 'งานผิวจราจร คอร. หนา 0.15 ม. และถมไหล่ทาง',
-      desc: 'เทคอนกรีตผสมเสร็จ ผูกเหล็กไวร์เมช และถมไหล่ทางข้างละ 0.20 ม.',
-      weight_MW: 55,
-      prevCum_MP: 0,
-      thisMonth_MM: 55,
-    },
-  ],
   weeks: newContractWeeksData,
 };

@@ -5,12 +5,11 @@ import {
   buildDailyWorkSummary,
   bahttext,
   calculateWeeklyProgress,
-  calculateMonthlyProgress,
   toThaiDigits,
 } from './weekUtils';
 
 /**
- * สร้าง Object ข้อมูลสำหรับแมปลงใน template1.docx ตามข้อกำหนด Token Source Map (Group A - Group G) ทุกประการ
+ * สร้าง Object ข้อมูลสำหรับแมปลงใน template1.docx ตามข้อกำหนด Token Source Map (Group A - Group F) ทุกประการ
  */
 export function buildTemplateData(projectData: ReportData, targetWeekIndex = 0) {
   const isPlaceholder = projectData.isPlaceholderMode;
@@ -127,13 +126,6 @@ export function buildTemplateData(projectData: ReportData, targetWeekIndex = 0) 
   const rawPrev = currentWeek.workProgress?.prevPercent ?? 0;
   const weeklyCalc = calculateWeeklyProgress(rawThisWeek, rawPrev);
 
-  // Group G: Monthly Progress calculation
-  const monthlyItems = (projectData.monthlyRollup && projectData.monthlyRollup.length > 0)
-    ? projectData.monthlyRollup
-    : [
-        { weight_MW: 100, prevCum_MP: 0, thisMonth_MM: weeklyCalc.WC, label: projectData.projectName || 'งานก่อสร้างตามสัญญา', desc: wdText },
-      ];
-  const monthlyCalc = calculateMonthlyProgress(monthlyItems);
 
   const costVal = projectData.constructionCost || '';
   const fineVal = projectData.finePerDay || '';
@@ -226,9 +218,6 @@ export function buildTemplateData(projectData: ReportData, targetWeekIndex = 0) 
     // ตารางแรงงาน loop & totals
     laborRows: laborRowsData,
     ...laborTotals,
-
-    // ----------------- GROUP G: Monthly rollup section (up to 3 items) -----------------
-    ...monthlyCalc,
   };
 }
 

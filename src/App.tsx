@@ -571,7 +571,7 @@ export default function App() {
                 <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
                   <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    บันทึกข้อความ (รายงานประจำเดือน — Group G)
+                    บันทึกข้อความ (รายงานประจำเดือน)
                   </span>
                   <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
                 </div>
