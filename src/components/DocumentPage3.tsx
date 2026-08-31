@@ -192,8 +192,8 @@ export const DocumentPage3: React.FC<Props> = ({
                 <Calendar className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="font-bold text-sm sm:text-base text-orange-400 tracking-wide">
-                  บันทึกรายวัน (สัปดาห์ที่ {toThaiDigits(currentWeek?.weekNo || activeIndex + 1)} — ตาราง ๗ วันคงที่)
+                <h2 className="font-bold text-sm sm:text-base text-white tracking-wide">
+                  บันทึกรายวัน — สัปดาห์ {toThaiDigits(currentWeek?.weekNo || activeIndex + 1)}
                 </h2>
                 <p className="text-xs text-gray-400">
                   ระบุรายละเอียดการปฏิบัติงานประจำวัน (ข้อความจะถูกนำไปรวมในหน้าผลงานประจำสัปดาห์อัตโนมัติ)
@@ -263,12 +263,12 @@ export const DocumentPage3: React.FC<Props> = ({
 
                       {/* Daily Narrative Details */}
                       <div className="flex-1 flex min-w-0">
-                        <input
-                          type="text"
+                        <textarea
                           value={descVal}
                           onChange={(e) => handleUpdateDailyNarrative(idx, e.target.value)}
                           placeholder="ระบุการปฏิบัติงาน หรือ ปล่อยว่าง (ไม่ปฏิบัติงาน)..."
-                          className="w-full h-11 px-4 rounded-2xl bg-[#141517] text-slate-100 placeholder:text-zinc-500 placeholder:font-light text-xs sm:text-sm outline-none border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)] focus:border-orange-500/50 transition-all antialiased"
+                          rows={2}
+                          className="w-full min-h-11 resize-y px-4 py-2.5 rounded-2xl bg-[#141517] text-slate-100 placeholder:text-zinc-500 placeholder:font-light text-xs sm:text-sm leading-relaxed outline-none border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)] focus:border-orange-500/50 transition-all antialiased"
                         />
                       </div>
 
@@ -303,7 +303,7 @@ export const DocumentPage3: React.FC<Props> = ({
                 <Users className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="font-bold text-sm sm:text-base text-orange-400 tracking-wide">
+                <h2 className="font-bold text-sm sm:text-base text-white tracking-wide">
                   บัญชีแสดงจำนวนแรงงานและเครื่องจักร
                 </h2>
                 <p className="text-xs text-gray-400">
@@ -442,7 +442,7 @@ export const DocumentPage3: React.FC<Props> = ({
               className="neu-button px-4 py-2.5 rounded-2xl text-xs font-semibold text-gray-300 hover:text-white border border-white/5 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
-              <span>ย้อนกลับ: บันทึกสัปดาห์ (หน้า ๒)</span>
+              <span>ย้อนกลับ: บันทึกสัปดาห์</span>
             </button>
           )}
           {onNavigateNext && (
@@ -450,7 +450,7 @@ export const DocumentPage3: React.FC<Props> = ({
               onClick={onNavigateNext}
               className="neu-orange-btn ml-auto px-5 py-2.5 rounded-2xl text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer hover:scale-[1.02]"
             >
-              <span>ถัดไป: ดาวน์โหลด / พิมพ์ (หน้า ๔)</span>
+              <span>ถัดไป: ดาวน์โหลด / พิมพ์</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           )}

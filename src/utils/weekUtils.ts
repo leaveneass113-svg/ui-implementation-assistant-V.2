@@ -261,8 +261,11 @@ export function generateWeeksFromContract(
       dailyShortDates.push(formatThaiDateShort(cur, true));
     }
 
-    const daysSpent = Math.min(totalDays, weekNo * 7);
-    const remaining = Math.max(0, totalDays - daysSpent);
+    // REMAIN must be based on the contract end date and this week's end date.
+    // Keep the legacy total-days fallback only when no contract end date exists.
+    const remaining = contractEndDate
+      ? Math.max(0, Math.round((contractEndDate.getTime() - end.getTime()) / 86400000))
+      : Math.max(0, totalDays - Math.min(totalDays, weekNo * 7));
 
     const thisWeekVal = existing?.workProgress?.thisWeek ?? 0;
     const weightVal = existing?.workProgress?.weight ?? 100;
@@ -303,9 +306,8 @@ export function generateWeeksFromContract(
     if (!contractEndDate && result.length >= Math.ceil(totalDays / 7)) {
       break;
     }
-    if (result.length >= 25) break; // safety guard
-
     // Next week starts on Monday (end + 1 day)
+
     currentStart = new Date(end);
     currentStart.setDate(currentStart.getDate() + 1);
     weekNo++;

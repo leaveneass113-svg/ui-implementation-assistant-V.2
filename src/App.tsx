@@ -21,19 +21,20 @@ import {
   parseThaiDate,
   formatThaiDateFull,
 } from './utils/weekUtils';
-import { Check, Save, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Bug, Check, Save, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { normalizePersonnelFields } from './utils/personnel';
 
 // Navigation order for prev/next buttons
 const NAV_ORDER: { id: ViewState; label: string }[] = [
   { id: 'upload', label: 'อัปโหลด & สแกน' },
-  { id: 'contract-info', label: 'ข้อมูลสัญญา (หน้า ๑)' },
-  { id: 'weekly-log', label: 'บันทึกสัปดาห์ (หน้า ๒)' },
-  { id: 'daily-log', label: 'บันทึกรายวัน (หน้า ๓)' },
-  { id: 'monthly-memo', label: 'รายงานรายเดือน (หน้า ๔)' },
-  { id: 'project-details', label: 'ข้อมูลโครงการ (หน้า ๕)' },
-  { id: 'monthly-log', label: 'สรุปสะสมรายเดือน (หน้า ๖)' },
-  { id: 'milestones-materials', label: 'งวดงาน/วัสดุ (หน้า ๗)' },
-  { id: 'executive-summary', label: 'สรุปโครงการ (หน้า ๘)' },
+  { id: 'contract-info', label: 'ข้อมูลสัญญา' },
+  { id: 'weekly-log', label: 'บันทึกสัปดาห์' },
+  { id: 'daily-log', label: 'บันทึกรายวัน' },
+  { id: 'monthly-memo', label: 'รายงานรายเดือน' },
+  { id: 'project-details', label: 'ข้อมูลโครงการ' },
+  { id: 'monthly-log', label: 'สรุปสะสมรายเดือน' },
+  { id: 'milestones-materials', label: 'งวดงาน/วัสดุ' },
+  { id: 'executive-summary', label: 'สรุปโครงการ' },
   { id: 'export', label: 'ดาวน์โหลด / พิมพ์' },
 ];
 
@@ -85,6 +86,10 @@ function sanitizeProjectData(projectList: Project[]): Project[] {
       };
     });
 
+    const normalizedData: ReportData = {
+      ...p.data,
+      ...normalizePersonnelFields(p.data),
+    };
     const recalculated = recalculateWeekProgress(sanitizedWeeks);
     const activeIndex = Math.min(
       Math.max(0, p.data.activeWeekIndex ?? 0),
@@ -94,7 +99,7 @@ function sanitizeProjectData(projectList: Project[]): Project[] {
     return {
       ...p,
       data: {
-        ...p.data,
+        ...normalizedData,
         weeks: recalculated,
         activeWeekIndex: activeIndex,
       },
@@ -330,16 +335,17 @@ export default function App() {
   };
 
   const handleContractExtracted = (extracted: Partial<ReportData>) => {
+    const normalizedExtracted = normalizePersonnelFields(extracted);
     const merged: ReportData = {
       ...reportData,
-      ...extracted,
+      ...normalizedExtracted,
       isPlaceholderMode: false,
     };
 
-    if (extracted.startDate) {
-      const startDateStr = extracted.startDate;
-      const totalDaysStr = extracted.totalDays || reportData.totalDays || '60';
-      const contractEndDateStr = extracted.contractEndDate || reportData.contractEndDate;
+    if (normalizedExtracted.startDate) {
+      const startDateStr = normalizedExtracted.startDate;
+      const totalDaysStr = normalizedExtracted.totalDays || reportData.totalDays || '60';
+      const contractEndDateStr = normalizedExtracted.contractEndDate || reportData.contractEndDate;
       const generated = generateWeeksFromContract(
         startDateStr,
         totalDaysStr,
@@ -430,7 +436,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] text-gray-100 flex flex-col font-sarabun selection:bg-orange-500 selection:text-white relative">
+    <div className="min-h-screen text-gray-100 flex flex-col font-sarabun selection:bg-orange-500 selection:text-white relative">
       {/* Top Slim Header Bar */}
       <TopBar
         isPlaceholderMode={reportData.isPlaceholderMode}
@@ -468,8 +474,8 @@ export default function App() {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 py-3 sm:py-8 px-2 sm:px-6 overflow-y-auto">
-          <div className="w-full max-w-7xl mx-auto space-y-5 sm:space-y-8">
+        <main className="flex-1 py-4 sm:py-8 px-3 sm:px-6 lg:px-8 overflow-y-auto">
+          <div className="w-full max-w-[1440px] mx-auto space-y-5 sm:space-y-8">
 
             {/* Quick Nav Bar (Top) — prev / current page / next */}
             {(() => {
@@ -478,7 +484,7 @@ export default function App() {
               const next = NAV_ORDER[(currentIdx + 1) % NAV_ORDER.length];
               const current = NAV_ORDER[currentIdx];
               return (
-                <div className="flex items-center justify-between gap-2 print:hidden">
+                <div className="neu-flat flex items-center justify-between gap-2 px-2 py-2 rounded-2xl print:hidden">
                   <button
                     onClick={() => setActiveView(prev.id)}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-orange-400 hover:bg-white/[0.04] transition-all active:scale-95 cursor-pointer border border-white/5"
@@ -590,7 +596,7 @@ export default function App() {
                 <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
                   <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    ข้อมูลโครงการและสัญญาจ้างฉบับเต็ม (หน้า ๕)
+                    ข้อมูลโครงการและสัญญาจ้างฉบับเต็ม
                   </span>
                   <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
                 </div>
@@ -609,7 +615,7 @@ export default function App() {
                 <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
                   <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    ตารางผลการดำเนินงานสะสมรายเดือน (หน้า ๖)
+                    ตารางผลการดำเนินงานสะสมรายเดือน
                   </span>
                   <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
                 </div>
@@ -628,7 +634,7 @@ export default function App() {
                 <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
                   <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    งวดงาน การตรวจรับ & ผลทดสอบวัสดุ (หน้า ๗)
+                    งวดงาน การตรวจรับ & ผลทดสอบวัสดุ
                   </span>
                   <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
                 </div>
@@ -647,7 +653,7 @@ export default function App() {
                 <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
                   <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    สรุปผลโครงการ (Executive Dashboard — หน้า ๘)
+                    สรุปผลโครงการ
                   </span>
                   <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
                 </div>
@@ -667,6 +673,19 @@ export default function App() {
                 onSelectWeek={handleSelectWeekIndex}
               />
             )}
+          </div>
+
+          {/* Bottom system status / action prompt */}
+          <div
+            className="system-action rounded-2xl px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-3 print:hidden"
+            role="status"
+            tabIndex={0}
+            aria-label="ตรวจสอบแก้ไข บัค และปรับปรุงระบบ"
+          >
+            <div className="w-10 h-10 rounded-xl bg-orange-500/15 border border-orange-400/20 text-orange-300 flex items-center justify-center shrink-0">
+              <Bug className="w-5 h-5" aria-hidden="true" />
+            </div>
+            <p className="text-sm sm:text-base font-bold text-white leading-tight">ตรวจสอบแก้ไข บัค และปรับปรุงระบบ</p>
           </div>
         </main>
       </div>

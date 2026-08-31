@@ -17,7 +17,6 @@ import {
 } from 'lucide-react';
 import { GarudaEmblem } from './GarudaEmblem';
 import {
-  getLatestCumulativeProgress,
   getFirstWeekSunday,
   getNextMonday,
   parseThaiDate,
@@ -48,12 +47,13 @@ export const DocumentPage1: React.FC<Props> = ({
     }
   };
 
-  // Derive current cumulative % from latest week in state (using Thai digits)
-  const currentPctDisplay = getLatestCumulativeProgress(data.weeks || [], true);
-
   const [isBannerDismissed, setIsBannerDismissed] = useState(false);
   const activeIndex = data.activeWeekIndex ?? 0;
   const activeWeek = (data.weeks && data.weeks[activeIndex]) || data.weeks?.[0];
+
+  // Page 1 always reflects the selected active week, not the last non-zero week.
+  const activeCumulative = activeWeek?.workProgress?.cumulative ?? 0;
+  const currentPctDisplay = `${toThaiDigits(Number(activeCumulative.toFixed(2)))}%`;
 
   const isDataEmpty = !data.projectName && !data.contractNo;
 
@@ -311,7 +311,7 @@ export const DocumentPage1: React.FC<Props> = ({
                     const cum = w.workProgress?.cumulative ?? 0;
                     return (
                       <option key={w.id || idx} value={idx} className="bg-[#181818] text-white py-1">
-                        สัปดาห์ที่ {toThaiDigits(w.weekNo || idx + 1)} {w.startDate ? `(${w.startDate} ถึง ${w.endDate})` : ''} {cum > 0 ? `[สะสม ${toThaiDigits(cum)}%]` : ''}
+                        สัปดาห์ {toThaiDigits(w.weekNo || idx + 1)} {w.startDate ? `(${w.startDate} ถึง ${w.endDate})` : ''} {cum > 0 ? `[สะสม ${toThaiDigits(cum)}%]` : ''}
                       </option>
                     );
                   })}
@@ -381,7 +381,7 @@ export const DocumentPage1: React.FC<Props> = ({
                   </div>
                   <div>
                     <h3 className="font-bold text-sm sm:text-base text-orange-400 tracking-wide">
-                      Card โครงการ & หนังสือราชการ
+                      โครงการ & หนังสือราชการ
                     </h3>
                     <p className="text-[11px] text-gray-400">ข้อมูลหนังสือ โครงการ และสถานที่</p>
                   </div>
@@ -396,7 +396,7 @@ export const DocumentPage1: React.FC<Props> = ({
                   {/* DOC_NO */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{DOC_NO}}">
-                      เลขที่หนังสือ (ที่)
+                      เลขที่หนังสือ
                     </label>
                     <input
                       type="text"
@@ -404,7 +404,7 @@ export const DocumentPage1: React.FC<Props> = ({
                       name="doc_no"
                       value={data.docNo || ''}
                       onChange={(e) => updateField('docNo', toThaiDigits(e.target.value))}
-                      placeholder="เช่น ๐๒/๒๕๖๙ หรือ สถ ๐๐๒๓.๓/ว ๑๒๔"
+                      placeholder="เช่น ลป.๗๙๖๐๓/๑๒๗ หรือ สถ ๐๐๒๓.๓/ว ๑๒๔"
                       className={inputClass}
                     />
                   </div>
@@ -412,7 +412,7 @@ export const DocumentPage1: React.FC<Props> = ({
                   {/* R_DATE */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{R_DATE}}">
-                      วันที่รายงาน (วันจันทร์)
+                      วันที่รายงาน
                       <span className="text-orange-500 font-bold">*</span>
                     </label>
                     <input
@@ -433,7 +433,7 @@ export const DocumentPage1: React.FC<Props> = ({
                   {/* WEEK */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{WEEK}}">
-                      รายงานครั้งที่ / สัปดาห์ที่
+                      รายงานครั้งที่ / สัปดาห์
                       <span className="text-orange-500 font-bold">*</span>
                     </label>
                     <input
@@ -475,7 +475,7 @@ export const DocumentPage1: React.FC<Props> = ({
                   {/* END */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{END}}">
-                      ถึงวันที่ (วันอาทิตย์)
+                      ถึงวันที่
                       <span className="text-orange-500 font-bold">*</span>
                     </label>
                     <input
@@ -526,7 +526,7 @@ export const DocumentPage1: React.FC<Props> = ({
                 {/* QTY */}
                 <div className="flex flex-col gap-1.5 w-full">
                   <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{QTY}}">
-                    ปริมาณงาน (ขนาดและสเปก)
+                    ปริมาณงาน
                   </label>
                   <textarea
                     rows={2}
@@ -553,7 +553,7 @@ export const DocumentPage1: React.FC<Props> = ({
                   </div>
                   <div>
                     <h3 className="font-bold text-sm sm:text-base text-orange-400 tracking-wide">
-                      Card สัญญา & ผลงาน (เลขไทย)
+                      สัญญา & ผลงาน
                     </h3>
                     <p className="text-[11px] text-gray-400">สัญญาจ้าง ระยะเวลา ค่าก่อสร้าง และความก้าวหน้า</p>
                   </div>
@@ -602,7 +602,7 @@ export const DocumentPage1: React.FC<Props> = ({
                   {/* WS_DATE */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{WS_DATE}}">
-                      วันเริ่มงานตามสัญญา
+                      วันเริ่มงาน
                     </label>
                     <input
                       type="text"
@@ -639,7 +639,7 @@ export const DocumentPage1: React.FC<Props> = ({
                   {/* DAYS */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{DAYS}}">
-                      รวมระยะเวลา (วัน)
+                      ระยะเวลา
                       <span className="text-orange-500 font-bold">*</span>
                     </label>
                     <input
@@ -656,7 +656,7 @@ export const DocumentPage1: React.FC<Props> = ({
                   {/* COST */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{COST}}">
-                      ค่าก่อสร้าง (บาท)
+                      ค่าก่อสร้าง
                       <span className="text-orange-500 font-bold">*</span>
                     </label>
                     <input
@@ -673,7 +673,7 @@ export const DocumentPage1: React.FC<Props> = ({
                   {/* FINE */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{FINE}}">
-                      ค่าปรับวันละ (บาท)
+                      ค่าปรับรายวัน
                     </label>
                     <input
                       type="text"
@@ -714,13 +714,13 @@ export const DocumentPage1: React.FC<Props> = ({
                     {/* CURRENT_PCT */}
                     <div className="p-4 rounded-2xl bg-[#141517] border border-orange-500/30 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)]">
                       <label className="block text-orange-300 font-bold mb-1 text-xs">
-                        %ผลงานปัจจุบัน (ดึงจากสะสม WC)
+                        %ผลงานปัจจุบัน
                       </label>
                       <div id="field_percent" className="text-2xl font-black text-orange-400">
                         {currentPctDisplay}
                       </div>
                       <span className="text-[10px] text-gray-400 block mt-1">
-                        อัปเดตอัตโนมัติจากแท็บบันทึกประจำสัปดาห์
+                        อัปเดตอัตโนมัติ
                       </span>
                     </div>
 
@@ -760,7 +760,7 @@ export const DocumentPage1: React.FC<Props> = ({
                 </div>
                 <div>
                   <h3 className="font-bold text-sm sm:text-base text-orange-400 tracking-wide">
-                    Card บุคลากร & คณะกรรมการตรวจรับพัสดุ
+                    บุคลากร & คณะกรรมการตรวจรับพัสดุ
                   </h3>
                   <p className="text-[11px] text-gray-400">ผู้ควบคุมงาน และ คณะกรรมการตรวจรับพัสดุ</p>
                 </div>
@@ -825,7 +825,7 @@ export const DocumentPage1: React.FC<Props> = ({
                         name="committee_chair_name"
                         value={data.committeeChairName || ''}
                         onChange={(e) => updateField('committeeChairName', e.target.value)}
-                        placeholder="เช่น นายมนตรี ฟูฟ่า"
+                        placeholder="เช่น นายมนตรี ฟูคำ"
                         className={inputClass}
                       />
                     </div>
@@ -850,7 +850,7 @@ export const DocumentPage1: React.FC<Props> = ({
                 <div className="space-y-3.5 pt-4 border-t border-white/5 md:pr-6 md:border-r">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
                     <UserCheck className="w-4 h-4" />
-                    <span>กรรมการตรวจรับพัสดุ (คนที่ ๑)</span>
+                    <span>กรรมการตรวจรับพัสดุ ๑</span>
                   </div>
                   <div className="space-y-3">
                     <div className="flex flex-col gap-1.5 w-full">
@@ -888,7 +888,7 @@ export const DocumentPage1: React.FC<Props> = ({
                 <div className="space-y-3.5 pt-4 border-t border-white/5">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-orange-400">
                     <UserCheck className="w-4 h-4" />
-                    <span>กรรมการตรวจรับพัสดุ (คนที่ ๒)</span>
+                    <span>กรรมการตรวจรับพัสดุ ๒</span>
                   </div>
                   <div className="space-y-3">
                     <div className="flex flex-col gap-1.5 w-full">
@@ -942,7 +942,7 @@ export const DocumentPage1: React.FC<Props> = ({
               onClick={onNavigateNext}
               className="neu-orange-btn ml-auto px-5 py-2.5 rounded-2xl text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer hover:scale-[1.02]"
             >
-              <span>ถัดไป: บันทึกสัปดาห์ (หน้า ๒)</span>
+              <span>ถัดไป: บันทึกสัปดาห์</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           )}
@@ -984,7 +984,7 @@ export const DocumentPage1: React.FC<Props> = ({
           <div className="flex items-baseline">
             <span className="font-bold w-14 shrink-0">เรื่อง</span>
             <span className="flex-1 border-b border-dotted border-gray-400 pb-0.5 font-bold">
-              รายงานผลการปฏิบัติงานของผู้ควบคุมงาน ประจำสัปดาห์ที่ {toThaiDigits(activeWeek?.weekNo || data.weekNo || '๑')}
+              รายงานผลการปฏิบัติงานของผู้ควบคุมงาน ประจำสัปดาห์ {toThaiDigits(activeWeek?.weekNo || data.weekNo || '๑')}
             </span>
           </div>
         </div>
@@ -1014,7 +1014,7 @@ export const DocumentPage1: React.FC<Props> = ({
             <span className="font-bold">{data.contractorName || '...........................'}</span> เป็นผู้รับจ้าง นั้น
           </p>
           <p className="indent-8">
-            บัดนี้ ผู้ควบคุมงานได้ควบคุมงานก่อสร้าง ประจำสัปดาห์ที่{' '}
+            บัดนี้ ผู้ควบคุมงานได้ควบคุมงานก่อสร้าง ประจำสัปดาห์{' '}
             <span className="font-bold">{toThaiDigits(activeWeek?.weekNo || data.weekNo || '๑')}</span> ตั้งแต่วันที่{' '}
             <span className="font-bold">{toThaiDigits(activeWeek?.startDate || data.startDate || '...........................')}</span> ถึงวันที่{' '}
             <span className="font-bold">{toThaiDigits(activeWeek?.endDate || data.endDate || '...........................')}</span> ผลงานก่อสร้างสะสมคิดเป็นร้อยละ{' '}

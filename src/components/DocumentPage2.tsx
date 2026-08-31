@@ -142,11 +142,8 @@ export const DocumentPage2: React.FC<Props> = ({
                 <BarChart2 className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="font-bold text-sm sm:text-base text-orange-400 tracking-wide flex items-center gap-2">
-                  ผลการดำเนินงานในสัปดาห์ที่ {toThaiDigits(currentWeek?.weekNo || activeIndex + 1)}
-                  <span className="text-xs text-gray-400 font-normal">
-                    ({currentWeek?.startDate || '-'} ถึง {currentWeek?.endDate || '-'})
-                  </span>
+                <h2 className="font-bold text-sm sm:text-base text-white tracking-wide flex items-center gap-2">
+                  ผลการดำเนินงานสัปดาห์ {toThaiDigits(currentWeek?.weekNo || activeIndex + 1)}
                 </h2>
                 <p className="text-xs text-gray-400 mt-0.5">
                   ตารางสรุปผลงานประจำสัปดาห์ (งานที่ดำเนินการดึงจากบันทึกรายวันอัตโนมัติ)
@@ -312,7 +309,7 @@ export const DocumentPage2: React.FC<Props> = ({
               className="neu-button px-4 py-2.5 rounded-2xl text-xs font-semibold text-gray-300 hover:text-white border border-white/5 flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
-              <span>ย้อนกลับ: ข้อมูลสัญญา (หน้า ๑)</span>
+              <span>ย้อนกลับ: ข้อมูลสัญญา</span>
             </button>
           )}
           {onNavigateNext && (
@@ -320,7 +317,7 @@ export const DocumentPage2: React.FC<Props> = ({
               onClick={onNavigateNext}
               className="neu-orange-btn ml-auto px-5 py-2.5 rounded-2xl text-xs font-bold text-white flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer hover:scale-[1.02]"
             >
-              <span>ถัดไป: บันทึกรายวัน (หน้า ๓)</span>
+              <span>ถัดไป: บันทึกรายวัน</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           )}

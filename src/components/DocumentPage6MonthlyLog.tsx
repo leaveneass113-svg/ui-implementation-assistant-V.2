@@ -136,11 +136,8 @@ export const DocumentPage6MonthlyLog: React.FC<Props> = ({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-base sm:text-lg font-bold text-white tracking-wide">
-                ตารางผลการดำเนินงานสะสมรายเดือน (หน้า ๖)
+                ตารางผลการดำเนินงานสะสมรายเดือน
               </h2>
-              <span className="text-[11px] px-2.5 py-0.5 rounded-full neu-pressed text-orange-400 font-bold border border-orange-500/30">
-                Monthly Progress Log
-              </span>
             </div>
             <p className="text-xs text-gray-400 mt-0.5">
               ติดตามสัดส่วนงาน ผลงานสะสมต่อเนื่อง และส่งต่อสะสมอัตโนมัติ
@@ -318,7 +315,7 @@ export const DocumentPage6MonthlyLog: React.FC<Props> = ({
             className="px-4 py-2.5 rounded-2xl neu-button text-gray-300 hover:text-white text-xs font-bold flex items-center gap-2 border border-white/5 active:scale-95 transition-all cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
-            <span>ย้อนกลับ: รายละเอียดโครงการ (หน้า ๕)</span>
+            <span>ย้อนกลับ: รายละเอียดโครงการ</span>
           </button>
         )}
 
@@ -328,7 +325,7 @@ export const DocumentPage6MonthlyLog: React.FC<Props> = ({
             onClick={onNavigateNext}
             className="px-5 py-2.5 rounded-2xl neu-orange-btn text-white text-xs font-bold flex items-center gap-2 active:scale-95 shadow-md transition-all cursor-pointer ml-auto"
           >
-            <span>ถัดไป: งวดงานและวัสดุ (หน้า ๗)</span>
+            <span>ถัดไป: งวดงานและวัสดุ</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         )}

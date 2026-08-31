@@ -1,14 +1,11 @@
 import React from 'react';
-import { ReportData, ObstacleItem } from '../types';
+import { ReportData } from '../types';
 import { resetPage8Data } from '../utils/pageResetHelpers';
 import { ClearPageButton } from './ClearPageButton';
 import {
   TrendingUp,
-  AlertTriangle,
   Coins,
   ShieldCheck,
-  Plus,
-  Trash2,
   Sparkles,
   ChevronLeft,
   ArrowRight,
@@ -29,21 +26,6 @@ export const DocumentPage8ExecutiveSummary: React.FC<Props> = ({
   onNavigatePrev,
   onNavigateToExport,
 }) => {
-  const obstacles: ObstacleItem[] =
-    data.obstacles && data.obstacles.length > 0
-      ? data.obstacles
-      : [
-          {
-            id: 'obs-1',
-            issue: 'มีฝนตกชุกบางวันในช่วงบ่าย ทำให้การบดอัดดินคันทางต้องรอความชื้นเหมาะสม',
-            impact: 'ส่งผลให้การทำงานชะลอตัวเล็กน้อย',
-            mitigation: 'ผู้รับจ้างเพิ่มเครื่องจักรและกำลังคนเร่งดำเนินงานในวันที่อากาศแจ่มใส',
-            notified: true,
-            notifiedDate: '๕ กรกฎาคม ๒๕๖๙',
-            status: 'resolved',
-          },
-        ];
-
   const handleClearPage8 = () => {
     if (onChange) {
       onChange(resetPage8Data(data));
@@ -61,31 +43,6 @@ export const DocumentPage8ExecutiveSummary: React.FC<Props> = ({
   const completedValue = (actualProgressPct / 100) * costNum;
   const disbursedAmountNum = parseFloat((data.disbursedAmount || '0').replace(/,/g, '')) || 0;
   const disbursedPct = costNum > 0 ? ((disbursedAmountNum / costNum) * 100).toFixed(1) : '0';
-
-  // Obstacle Handlers
-  const handleObstacleChange = (idx: number, field: keyof ObstacleItem, value: any) => {
-    if (!onChange) return;
-    const updated = obstacles.map((obs, i) => (i === idx ? { ...obs, [field]: value } : obs));
-    onChange({ ...data, obstacles: updated });
-  };
-
-  const handleAddObstacle = () => {
-    if (!onChange) return;
-    const newObs: ObstacleItem = {
-      id: `obs-${Date.now()}`,
-      issue: '',
-      impact: '',
-      mitigation: '',
-      notified: false,
-      status: 'pending',
-    };
-    onChange({ ...data, obstacles: [...obstacles, newObs] });
-  };
-
-  const handleDeleteObstacle = (idx: number) => {
-    if (!onChange) return;
-    onChange({ ...data, obstacles: obstacles.filter((_, i) => i !== idx) });
-  };
 
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('th-TH', {
@@ -106,14 +63,11 @@ export const DocumentPage8ExecutiveSummary: React.FC<Props> = ({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-base sm:text-lg font-bold text-white tracking-wide">
-                สรุปผลโครงการ (Executive Dashboard — หน้า ๘)
+                สรุปผลโครงการ
               </h2>
-              <span className="text-[11px] px-2.5 py-0.5 rounded-full neu-pressed text-emerald-400 font-bold border border-emerald-500/30">
-                Dashboard & Issues
-              </span>
             </div>
             <p className="text-xs text-gray-400 mt-0.5">
-              ภาพรวมผลงาน ความก้าวหน้าทางการเงิน และปัญหาอุปสรรค
+              ภาพรวมผลงานและความก้าวหน้าทางการเงิน
             </p>
           </div>
         </div>
@@ -208,7 +162,7 @@ export const DocumentPage8ExecutiveSummary: React.FC<Props> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
             <div className="p-4 rounded-2xl bg-[#141517] border border-white/5 shadow-inner">
-              <span className="text-[11px] text-gray-400 block">มูลค่างานก่อสร้างตามสัญญา:</span>
+              <span className="text-[11px] text-gray-400 block">มูลค่างานก่อสร้าง:</span>
               <div className="text-base font-black text-white mt-1">
                 ฿{toThaiDigits(data.constructionCost || '๒๗๗,๐๐๐.๐๐')}
               </div>
@@ -228,111 +182,6 @@ export const DocumentPage8ExecutiveSummary: React.FC<Props> = ({
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* SECTION: ปัญหา อุปสรรค และแนวทางแก้ไข */}
-      <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-4">
-        <div className="flex items-center justify-between border-b border-white/5 pb-3">
-          <div className="flex items-center gap-2 text-orange-400 font-bold text-xs sm:text-sm">
-            <AlertTriangle className="w-4 h-4" />
-            <span>ปัญหา อุปสรรค และแนวทางแก้ไข (Obstacles & Mitigation)</span>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleAddObstacle}
-            className="px-3 py-1.5 rounded-full text-xs font-bold text-orange-400 bg-orange-500/10 border border-orange-500/30 flex items-center gap-1 hover:bg-orange-500/20 active:scale-95 transition-all cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            + เพิ่มปัญหา/อุปสรรค
-          </button>
-        </div>
-
-        <div className="space-y-3">
-          {obstacles.map((obs, idx) => (
-            <div key={obs.id || idx} className="p-4 rounded-2xl bg-[#141517] border border-white/5 space-y-3 shadow-inner">
-              <div className="flex items-start justify-between gap-2">
-                <span className="text-xs font-bold text-orange-400">
-                  ปัญหา/อุปสรรค ที่ {toThaiDigits(idx + 1)}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleDeleteObstacle(idx)}
-                  className="text-rose-400 hover:text-rose-300 p-1 cursor-pointer"
-                  title="ลบรายการนี้"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold text-slate-400 mb-1">
-                  ปัญหา/อุปสรรคที่พบ:
-                </label>
-                <textarea
-                  rows={2}
-                  value={obs.issue || ''}
-                  onChange={(e) => handleObstacleChange(idx, 'issue', e.target.value)}
-                  placeholder="ระบุปัญหา อุปสรรค..."
-                  className="w-full bg-black/20 text-white text-xs p-2 rounded-xl border border-white/5 outline-none resize-none leading-relaxed"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-400 mb-1">
-                    ผลกระทบต่อโครงการ:
-                  </label>
-                  <input
-                    type="text"
-                    value={obs.impact || ''}
-                    onChange={(e) => handleObstacleChange(idx, 'impact', e.target.value)}
-                    placeholder="ผลกระทบ..."
-                    className="w-full bg-black/20 text-gray-300 text-xs p-2 rounded-xl border border-white/5 outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-400 mb-1">
-                    แนวทางแก้ไข / มาตรการรองรับ:
-                  </label>
-                  <input
-                    type="text"
-                    value={obs.mitigation || ''}
-                    onChange={(e) => handleObstacleChange(idx, 'mitigation', e.target.value)}
-                    placeholder="แนวทางแก้ไข..."
-                    className="w-full bg-black/20 text-emerald-300 text-xs p-2 rounded-xl border border-white/5 outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-1 text-xs">
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id={`check-notified-${idx}`}
-                    checked={obs.notified}
-                    onChange={(e) => handleObstacleChange(idx, 'notified', e.target.checked)}
-                    className="w-4 h-4 rounded text-orange-500 bg-black/30 border-white/10"
-                  />
-                  <label htmlFor={`check-notified-${idx}`} className="text-gray-300 text-xs">
-                    แจ้งผู้รับจ้าง/ผู้เกี่ยวข้องแล้ว
-                  </label>
-                </div>
-
-                <select
-                  value={obs.status || 'pending'}
-                  onChange={(e) => handleObstacleChange(idx, 'status', e.target.value)}
-                  className="bg-black/30 text-orange-300 font-semibold text-[11px] px-2.5 py-1 rounded-lg border border-white/10 outline-none"
-                >
-                  <option value="pending">รอดำเนินการ</option>
-                  <option value="in_progress">กำลังแก้ไข</option>
-                  <option value="resolved">แก้ไขแล้วเสร็จ</option>
-                </select>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 
@@ -369,7 +218,7 @@ export const DocumentPage8ExecutiveSummary: React.FC<Props> = ({
             className="px-4 py-2.5 rounded-2xl neu-button text-gray-300 hover:text-white text-xs font-bold flex items-center gap-2 border border-white/5 active:scale-95 transition-all cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
-            <span>ย้อนกลับ: งวดงานและวัสดุ (หน้า ๗)</span>
+            <span>ย้อนกลับ: งวดงานและวัสดุ</span>
           </button>
         )}
 
@@ -379,7 +228,7 @@ export const DocumentPage8ExecutiveSummary: React.FC<Props> = ({
             onClick={onNavigateToExport}
             className="px-5 py-2.5 rounded-2xl neu-orange-btn text-white text-xs font-bold flex items-center gap-2 active:scale-95 shadow-md transition-all cursor-pointer ml-auto"
           >
-            <span>ถัดไป: ดาวน์โหลด / พิมพ์ (หน้า ๙)</span>
+            <span>ถัดไป: ดาวน์โหลด / พิมพ์</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         )}

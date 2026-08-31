@@ -188,11 +188,8 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-base sm:text-lg font-bold text-white tracking-wide">
-                งวดงาน การตรวจรับ & ผลทดสอบวัสดุ (หน้า ๗)
+                งวดงาน การตรวจรับ & ผลทดสอบวัสดุ
               </h2>
-              <span className="text-[11px] px-2.5 py-0.5 rounded-full neu-pressed text-orange-400 font-bold border border-orange-500/30">
-                Milestones & QA/QC
-              </span>
             </div>
             <p className="text-xs text-gray-400 mt-0.5">
               แผนการเบิกจ่ายค่างวดงาน รายงานผลการทดสอบวัสดุ และการขออนุมัติใช้วัสดุ
@@ -208,13 +205,13 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
         <div className="flex items-center justify-between border-b border-white/5 pb-3">
           <div className="flex items-center gap-2 text-orange-400 font-bold text-xs sm:text-sm">
             <Clock className="w-4 h-4" />
-            <span>๑. แผนการเบิกจ่ายค่างวดงานและการตรวจรับพัสดุ (Milestones)</span>
+            <span>๑. แผนการเบิกจ่ายค่างวดงานและการตรวจรับพัสดุ</span>
           </div>
 
           <button
             type="button"
             onClick={handleAddMilestone}
-            className="px-3 py-1.5 rounded-full text-xs font-bold text-orange-400 bg-orange-500/10 border border-orange-500/30 flex items-center gap-1 hover:bg-orange-500/20 active:scale-95 transition-all cursor-pointer"
+            className="px-3 py-1.5 rounded-full text-xs font-bold text-orange-400 neu-button flex items-center gap-1 hover:text-orange-300 active:scale-95 transition-all cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
             + เพิ่มงวดงาน
@@ -227,8 +224,8 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
               <tr className="text-gray-400 font-bold text-center border-b border-white/5">
                 <th className="py-2.5 px-2 w-12 neu-pressed rounded-l-2xl border border-white/5">งวดที่</th>
                 <th className="py-2.5 px-3 text-left neu-pressed border border-white/5 min-w-[240px]">รายละเอียดงานงวด</th>
-                <th className="py-2.5 px-2 w-32 neu-pressed border border-white/5">จำนวนเงิน (บาท)</th>
-                <th className="py-2.5 px-2 w-28 neu-pressed border border-white/5">กำหนดตามสัญญา</th>
+                <th className="py-2.5 px-2 w-32 neu-pressed border border-white/5">จำนวนเงิน</th>
+                <th className="py-2.5 px-2 w-28 neu-pressed border border-white/5">กำหนดส่ง</th>
                 <th className="py-2.5 px-2 w-28 neu-pressed border border-white/5">ส่งมอบจริง</th>
                 <th className="py-2.5 px-2 w-28 neu-pressed border border-white/5">วันที่ตรวจรับ</th>
                 <th className="py-2.5 px-2 w-28 neu-pressed border border-white/5">สถานะ</th>
@@ -249,7 +246,7 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
                       value={m.description || ''}
                       onChange={(e) => handleMilestoneChange(idx, 'description', e.target.value)}
                       placeholder="0"
-                      className="w-full h-10 bg-[#141517] text-white text-xs px-3 rounded-xl border border-white/5 shadow-inner outline-none placeholder:text-gray-600 focus:border-orange-500/50 transition-all"
+                      className="w-full h-10 neu-pressed text-primary text-xs px-3 rounded-xl outline-none placeholder:text-gray-500 focus:text-white transition-all"
                     />
                   </td>
                   <td className="p-2 align-middle">
@@ -258,7 +255,7 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
                       value={m.amount || ''}
                       onChange={(e) => handleMilestoneChange(idx, 'amount', parseFloat(e.target.value) || 0)}
                       placeholder="0"
-                      className="w-full h-10 text-center bg-[#141517] text-emerald-400 font-bold text-xs px-2 rounded-xl border border-white/5 shadow-inner outline-none focus:border-orange-500/50 transition-all"
+                      className="w-full h-10 text-center neu-pressed text-emerald-400 font-bold text-xs px-2 rounded-xl outline-none focus:text-orange-400 transition-all"
                     />
                   </td>
                   <td className="p-2 align-middle">
@@ -267,7 +264,7 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
                       value={m.contractDueDate || ''}
                       onChange={(e) => handleMilestoneChange(idx, 'contractDueDate', toThaiDigits(e.target.value))}
                       placeholder="เช่น ๒๘ ส.ค. ๖๙"
-                      className="w-full h-10 text-center bg-[#141517] text-gray-300 text-xs px-2 rounded-xl border border-white/5 shadow-inner outline-none focus:border-orange-500/50 transition-all"
+                      className="w-full h-10 text-center neu-pressed text-gray-300 text-xs px-2 rounded-xl outline-none focus:text-white transition-all"
                     />
                   </td>
                   <td className="p-2 align-middle">
@@ -276,7 +273,7 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
                       value={m.actualFinishDate || ''}
                       onChange={(e) => handleMilestoneChange(idx, 'actualFinishDate', toThaiDigits(e.target.value))}
                       placeholder="เช่น ๒๕ ส.ค. ๖๙"
-                      className="w-full h-10 text-center bg-[#141517] text-gray-300 text-xs px-2 rounded-xl border border-white/5 shadow-inner outline-none focus:border-orange-500/50 transition-all"
+                      className="w-full h-10 text-center neu-pressed text-gray-300 text-xs px-2 rounded-xl outline-none focus:text-white transition-all"
                     />
                   </td>
                   <td className="p-2 align-middle">
@@ -285,14 +282,14 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
                       value={m.inspectionDate || ''}
                       onChange={(e) => handleMilestoneChange(idx, 'inspectionDate', toThaiDigits(e.target.value))}
                       placeholder="เช่น ๒๘ ส.ค. ๖๙"
-                      className="w-full h-10 text-center bg-[#141517] text-gray-300 text-xs px-2 rounded-xl border border-white/5 shadow-inner outline-none focus:border-orange-500/50 transition-all"
+                      className="w-full h-10 text-center neu-pressed text-gray-300 text-xs px-2 rounded-xl outline-none focus:text-white transition-all"
                     />
                   </td>
                   <td className="p-2 text-center align-middle">
                     <select
                       value={m.paymentStatus || 'pending'}
                       onChange={(e) => handleMilestoneChange(idx, 'paymentStatus', e.target.value)}
-                      className="w-full h-10 bg-[#141517] text-orange-300 font-semibold text-[11px] px-2 rounded-xl border border-white/5 shadow-inner outline-none cursor-pointer focus:border-orange-500/50 transition-all"
+                      className="w-full h-10 neu-pressed text-orange-300 font-semibold text-[11px] px-2 rounded-xl outline-none cursor-pointer focus:text-orange-400 transition-all"
                     >
                       <option value="pending">รอดำเนินการ</option>
                       <option value="inspected">ตรวจรับแล้ว</option>
@@ -323,13 +320,13 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
           <div className="flex items-center justify-between border-b border-white/5 pb-3">
             <div className="flex items-center gap-2 text-orange-400 font-bold text-xs sm:text-sm">
               <FlaskConical className="w-4 h-4" />
-              <span>๒. รายงานผลการทดสอบวัสดุ (Material Tests)</span>
+              <span>๒. รายงานผลการทดสอบวัสดุ</span>
             </div>
 
             <button
               type="button"
               onClick={handleAddTest}
-              className="px-3 py-1.5 rounded-full text-xs font-bold text-orange-400 bg-orange-500/10 border border-orange-500/30 flex items-center gap-1 hover:bg-orange-500/20 active:scale-95 transition-all cursor-pointer"
+              className="px-3 py-1.5 rounded-full text-xs font-bold text-orange-400 neu-button flex items-center gap-1 hover:text-orange-300 active:scale-95 transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               + เพิ่ม
@@ -338,7 +335,7 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
 
           <div className="space-y-3">
             {materialTests.map((test, idx) => (
-              <div key={test.id || idx} className="p-3.5 rounded-2xl bg-[#141517] border border-white/5 space-y-2 shadow-inner">
+              <div key={test.id || idx} className="p-3.5 rounded-2xl neu-pressed space-y-2">
                 <div className="flex items-start justify-between gap-2">
                   <span className="text-xs font-bold text-orange-400">
                     รายการทดสอบที่ {toThaiDigits(idx + 1)}
@@ -404,13 +401,13 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
           <div className="flex items-center justify-between border-b border-white/5 pb-3">
             <div className="flex items-center gap-2 text-orange-400 font-bold text-xs sm:text-sm">
               <FileCheck2 className="w-4 h-4" />
-              <span>๓. การขออนุมัติใช้วัสดุ (Material Approvals)</span>
+              <span>๓. การขออนุมัติใช้วัสดุ</span>
             </div>
 
             <button
               type="button"
               onClick={handleAddApproval}
-              className="px-3 py-1.5 rounded-full text-xs font-bold text-orange-400 bg-orange-500/10 border border-orange-500/30 flex items-center gap-1 hover:bg-orange-500/20 active:scale-95 transition-all cursor-pointer"
+              className="px-3 py-1.5 rounded-full text-xs font-bold text-orange-400 neu-button flex items-center gap-1 hover:text-orange-300 active:scale-95 transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               + เพิ่ม
@@ -419,7 +416,7 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
 
           <div className="space-y-3">
             {materialApprovals.map((appr, idx) => (
-              <div key={appr.id || idx} className="p-3.5 rounded-2xl bg-[#141517] border border-white/5 space-y-2 shadow-inner">
+              <div key={appr.id || idx} className="p-3.5 rounded-2xl neu-pressed space-y-2">
                 <div className="flex items-start justify-between gap-2">
                   <span className="text-xs font-bold text-orange-400">
                     การขออนุมัติที่ {toThaiDigits(idx + 1)}
@@ -481,7 +478,7 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
             className="px-4 py-2.5 rounded-2xl neu-button text-gray-300 hover:text-white text-xs font-bold flex items-center gap-2 border border-white/5 active:scale-95 transition-all cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
-            <span>ย้อนกลับ: สรุปสะสมรายเดือน (หน้า ๖)</span>
+            <span>ย้อนกลับ: สรุปสะสมรายเดือน</span>
           </button>
         )}
 
@@ -491,7 +488,7 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
             onClick={onNavigateNext}
             className="px-5 py-2.5 rounded-2xl neu-orange-btn text-white text-xs font-bold flex items-center gap-2 active:scale-95 shadow-md transition-all cursor-pointer ml-auto"
           >
-            <span>ถัดไป: สรุปผลโครงการ (หน้า ๘)</span>
+            <span>ถัดไป: สรุปผลโครงการ</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         )}

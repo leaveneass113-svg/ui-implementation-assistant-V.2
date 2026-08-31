@@ -177,11 +177,11 @@ export const SidebarNav: React.FC<Props> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`sidebar-nav-item group w-full flex items-center gap-3 rounded-xl transition-all duration-200 cursor-pointer relative
+                  className={`sidebar-nav-item group w-full flex items-center gap-3 rounded-2xl transition-all duration-200 cursor-pointer relative
                     ${isCollapsed ? 'justify-center px-2 py-2.5' : 'px-3 py-2.5'}
                     ${isActive
                       ? 'sidebar-nav-active text-white font-bold'
-                      : 'text-gray-400 hover:text-gray-100 hover:bg-white/[0.04]'
+                      : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
                     }`}
                   title={isCollapsed ? item.label : undefined}
                 >
@@ -235,9 +235,9 @@ export const SidebarNav: React.FC<Props> = ({
     <>
       {/* Desktop / Tablet Sidebar */}
       <aside
-        className={`sidebar-desktop hidden md:flex flex-col bg-[#161616]/95 backdrop-blur-xl border-r border-white/5 shrink-0 print:hidden
+        className={`sidebar-desktop hidden md:flex flex-col bg-[#11161d]/92 backdrop-blur-xl border-r border-white/10 shrink-0 print:hidden
           transition-all duration-300 ease-in-out overflow-hidden sticky top-[52px] z-30
-          ${isCollapsed ? 'w-[64px]' : 'w-[260px]'}`}
+          ${isCollapsed ? 'w-[68px]' : 'w-[272px]'}`}
         style={{ height: 'calc(100vh - 52px)' }}
       >
         {sidebarContent}

@@ -57,7 +57,7 @@ export const WeekSelectorBar: React.FC<Props> = ({
                   const cum = w.workProgress?.cumulative ?? 0;
                   return (
                     <option key={w.id || idx} value={idx} className="bg-[#181818] text-white py-1">
-                      สัปดาห์ที่ {toThaiDigits(w.weekNo || idx + 1)} {w.startDate ? `(${w.startDate} ถึง ${w.endDate})` : ''} {cum > 0 ? `[สะสม ${toThaiDigits(cum)}%]` : ''}
+                      สัปดาห์ {toThaiDigits(w.weekNo || idx + 1)} {w.startDate ? `(${w.startDate} ถึง ${w.endDate})` : ''} {cum > 0 ? `[สะสม ${toThaiDigits(cum)}%]` : ''}
                     </option>
                   );
                 })}

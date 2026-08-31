@@ -33,20 +33,20 @@ export const WeatherSelector: React.FC<WeatherSelectorProps> = ({ value, onChang
         return {
           label: 'ฝนตก',
           icon: CloudRain,
-          style: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/30 hover:border-cyan-400',
+          style: 'neu-button text-sky-300 hover:text-sky-200',
         };
       case 'ครึ้มฝน':
         return {
           label: 'ครึ้มฝน',
           icon: Cloud,
-          style: 'bg-sky-500/20 text-sky-200 border-sky-500/40 hover:bg-sky-500/30 hover:border-sky-400',
+          style: 'neu-button text-gray-300 hover:text-gray-100',
         };
       case 'แจ่มใส':
       default:
         return {
           label: 'แจ่มใส',
           icon: Sun,
-          style: 'bg-amber-500/20 text-amber-300 border-amber-500/40 hover:bg-amber-500/30 hover:border-amber-400',
+          style: 'neu-button text-orange-400 hover:text-orange-300',
         };
     }
   };
@@ -59,7 +59,7 @@ export const WeatherSelector: React.FC<WeatherSelectorProps> = ({ value, onChang
       type="button"
       onClick={handleCycle}
       title="คลิกเพื่อเปลี่ยนสภาพอากาศ (แจ่มใส ➔ ครึ้มฝน ➔ ฝนตก)"
-      className={`w-full h-10 px-2 rounded-xl border flex items-center justify-center gap-1.5 font-bold text-xs transition-all duration-200 active:scale-95 cursor-pointer select-none shadow-sm ${config.style} ${className}`}
+      className={`w-full h-10 px-2 rounded-xl flex items-center justify-center gap-1.5 font-bold text-xs transition-all duration-200 active:scale-95 cursor-pointer select-none ${config.style} ${className}`}
     >
       <Icon className="w-4 h-4 flex-shrink-0 animate-pulse" />
       <span className="truncate">{config.label}</span>
