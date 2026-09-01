@@ -2,10 +2,32 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    color-scheme: dark;
+    --app-bg: #0b0616;
+    --shadow-light: #241a3e;
+    --shadow-dark: #05030b;
+    --text-primary: #f6f1ff;
+    --text-muted: #a9a1bd;
+    --accent: #8b5cf6;
+    --accent-hover: #a78bfa;
+  }
+
   body {
     font-family: 'Sarabun', 'TH Sarabun PSK', sans-serif;
-    background-color: #121212;
-    color: #f3f4f6;
+    background: var(--app-bg);
+    color: var(--text-primary);
+    min-width: 320px;
+    line-height: 1.5;
+  }
+
+  button, input, textarea, select {
+    font: inherit;
+  }
+
+  :where(button, input, textarea, select, a):focus-visible {
+    outline: 2px solid var(--app-accent);
+    outline-offset: 3px;
   }
 }
 
@@ -23,43 +45,46 @@
 }
 
 .neu-flat {
-  background: #1e1e1e;
-  box-shadow: 6px 6px 14px #0c0c0c, -6px -6px 14px #2a2a2a;
+  background: #0b0616;
+  box-shadow: 8px 8px 16px #05030b, -8px -8px 16px #241a3e;
+  border-radius: 16px;
 }
 
 .neu-button {
-  background: #1e1e1e;
-  box-shadow: 4px 4px 10px #0c0c0c, -4px -4px 10px #2a2a2a;
+  background: #0b0616;
+  box-shadow: 4px 4px 8px #05030b, -4px -4px 8px #241a3e;
   transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
 .neu-button:hover {
-  box-shadow: 6px 6px 14px #0a0a0a, -6px -6px 14px #2e2e2e;
+  box-shadow: 5px 5px 10px #05030b, -5px -5px 10px #241a3e;
 }
 
-.neu-button:active, .neu-button-active {
-  background: #1a1a1a;
-  box-shadow: inset 3px 3px 6px #0d0d0d, inset -3px -3px 6px #272727;
+.neu-button:active, .neu-button-active, .neu-button.active {
+  background: #0b0616;
+  box-shadow: inset 4px 4px 8px #05030b, inset -4px -4px 8px #241a3e;
 }
 
 .neu-pressed {
-  background: #181818;
-  box-shadow: inset 4px 4px 8px #0a0a0a, inset -4px -4px 8px #262626;
+  background: #0b0616;
+  box-shadow: inset 6px 6px 12px #05030b, inset -6px -6px 12px #241a3e;
+  border-radius: 12px;
 }
 
 .neu-orange-btn {
-  background: linear-gradient(145deg, #f97316, #ea580c);
-  box-shadow: 4px 4px 12px rgba(249, 115, 22, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.05);
+  background: linear-gradient(145deg, #8b5cf6, #6d28d9);
+  box-shadow: 4px 4px 12px rgba(139, 92, 246, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.08);
 }
 
 .neu-orange-btn:hover {
-  background: linear-gradient(145deg, #fb923c, #f97316);
-  box-shadow: 6px 6px 16px rgba(249, 115, 22, 0.4), -2px -2px 8px rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, #a78bfa, #8b5cf6);
+  box-shadow: 6px 6px 16px rgba(139, 92, 246, 0.4), -2px -2px 8px rgba(255, 255, 255, 0.14);
 }
 
 .neu-purple-btn {
   background: linear-gradient(145deg, #8b5cf6, #7c3aed);
-  box-shadow: 4px 4px 12px rgba(139, 92, 246, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.05);
+  box-shadow: 4px 4px 12px rgba(139, 92, 246, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.08);
 }
 
 .neu-purple-btn:hover {
@@ -67,11 +92,55 @@
   box-shadow: 6px 6px 16px rgba(139, 92, 246, 0.4);
 }
 
+.system-action {
+  background: #0b0616;
+  border: 1px solid transparent;
+  box-shadow: 4px 4px 8px #05030b, -4px -4px 8px #241a3e;
+}
+
+.system-action:hover {
+  border-color: rgba(139, 92, 246, 0.45);
+  box-shadow: 5px 5px 10px #05030b, -5px -5px 10px #241a3e;
+}
+
+.borderless-matrix {
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
+
+.borderless-matrix th,
+.borderless-matrix td {
+  border: 0;
+  padding: 0.75rem;
+}
+
+.borderless-matrix thead th {
+  background: #0b0616;
+  box-shadow: 4px 4px 8px #05030b, -4px -4px 8px #241a3e;
+}
+
+.borderless-matrix tbody tr:hover td {
+  background: rgba(0, 0, 0, 0.08);
+  box-shadow: inset 2px 2px 5px #05030b, inset -2px -2px 5px #241a3e;
+}
+
+.borderless-matrix tfoot td {
+  background: #0b0616;
+  box-shadow: inset 6px 6px 12px #05030b, inset -6px -6px 12px #241a3e;
+}
+
+[contenteditable='true']:focus,
+.editable-cell:focus {
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: inset 2px 2px 5px #05030b, inset -2px -2px 5px #241a3e;
+  outline: none;
+}
+
 /* === Sidebar Navigation Styles === */
 
 .sidebar-nav-active {
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(249, 115, 22, 0.04) 100%);
-  box-shadow: 0 0 20px rgba(249, 115, 22, 0.06);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(139, 92, 246, 0.04) 100%);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.06);
 }
 
 .sidebar-nav-item {
@@ -97,7 +166,7 @@
 }
 
 .sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(249, 115, 22, 0.3);
+  background: rgba(139, 92, 246, 0.3);
 }
 
 /* Sidebar desktop subtle left border glow */
@@ -117,7 +186,7 @@
 
 @media print {
   body {
-    background-color: white !important;
+    background: white !important;
     color: black !important;
   }
   .print\:hidden {
@@ -139,3 +208,331 @@
   }
 }
 
+
+
+/* Design.md compatibility layer: map legacy utility surfaces to the approved palette. */
+:is(.bg-\[\#090510\], .bg-\[\#100a1f\], .bg-\[\#120b24\], .bg-\[\#100a1f\], .bg-\[\#100a1f\], .bg-\[\#120b24\], .bg-\[\#100a1f\], .bg-\[\#100a1f\]) {
+  background-color: #0b0616 !important;
+}
+
+:is(.text-gray-100, .text-gray-200, .text-gray-300, .text-gray-400, .text-gray-500) {
+  color: #f6f1ff;
+}
+
+:is(.text-zinc-400, .text-slate-300, .text-slate-400, .text-gray-600) {
+  color: #a9a1bd;
+}
+
+.neu-orange-btn,
+.neu-purple-btn {
+  background: #8b5cf6;
+  box-shadow: 4px 4px 8px #05030b, -4px -4px 8px #241a3e;
+}
+
+.neu-orange-btn:hover,
+.neu-purple-btn:hover {
+  background: #6d28d9;
+  box-shadow: 5px 5px 10px #05030b, -5px -5px 10px #241a3e;
+}
+
+/* Borderless matrix defaults for existing data tables. */
+table {
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
+
+table thead th {
+  background: #0b0616;
+  box-shadow: 4px 4px 8px #05030b, -4px -4px 8px #241a3e;
+}
+
+table tbody tr:hover td {
+  background: rgba(0, 0, 0, 0.08);
+  box-shadow: inset 2px 2px 5px #05030b, inset -2px -2px 5px #241a3e;
+}
+
+table tfoot td {
+  background: #0b0616;
+  box-shadow: inset 6px 6px 12px #05030b, inset -6px -6px 12px #241a3e;
+}
+
+input,
+textarea,
+select {
+  color: #f6f1ff;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #a9a1bd;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* === Full Violet-Black Lighting Pass === */
+:root {
+  --violet-500: #8b5cf6;
+  --violet-400: #a78bfa;
+  --violet-300: #c4b5fd;
+  --violet-deep: #120827;
+  --violet-glow: rgba(139, 92, 246, 0.28);
+  --violet-glow-soft: rgba(139, 92, 246, 0.12);
+}
+
+body {
+  background:
+    radial-gradient(900px 560px at 18% 4%, rgba(124, 58, 237, 0.14), transparent 62%),
+    radial-gradient(760px 520px at 92% 88%, rgba(76, 29, 149, 0.12), transparent 60%),
+    var(--app-bg);
+  background-attachment: fixed;
+}
+
+.neu-flat {
+  background: #0b0616;
+  box-shadow: 10px 10px 22px #05030b, -10px -10px 22px #241a3e, 0 0 28px rgba(91, 33, 182, 0.08);
+}
+
+.neu-button {
+  background: #0b0616;
+  box-shadow: 5px 5px 12px #05030b, -5px -5px 12px #241a3e;
+}
+
+.neu-button:hover {
+  color: var(--violet-300);
+  box-shadow: 6px 6px 14px #05030b, -6px -6px 14px #34235a, 0 0 16px var(--violet-glow-soft);
+}
+
+.neu-button:active, .neu-button-active, .neu-button.active {
+  background: #0b0616;
+  box-shadow: inset 5px 5px 11px #05030b, inset -5px -5px 11px #241a3e, inset 0 0 12px rgba(91, 33, 182, 0.12);
+}
+
+.neu-pressed {
+  background: #0b0616;
+  box-shadow: inset 7px 7px 15px #05030b, inset -7px -7px 15px #241a3e;
+}
+
+.system-action,
+.sidebar-desktop {
+  background-color: #090510;
+  box-shadow: 5px 5px 12px #05030b, -5px -5px 12px #241a3e, 0 0 18px rgba(91, 33, 182, 0.08);
+}
+
+.sidebar-nav-active {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.22), rgba(76, 29, 149, 0.08)) !important;
+  border-color: rgba(167, 139, 250, 0.38) !important;
+  box-shadow: inset 4px 4px 9px rgba(5, 3, 11, 0.85), inset -4px -4px 9px rgba(52, 35, 90, 0.7), 0 0 22px rgba(139, 92, 246, 0.14) !important;
+}
+
+.sidebar-nav-item:hover {
+  background: rgba(139, 92, 246, 0.08);
+}
+
+/* Legacy orange/amber utility classes are recolored without changing markup or behavior. */
+[class*="text-orange-"], [class*="text-amber-"] {
+  color: var(--violet-400) !important;
+}
+
+[class*="bg-orange-"], [class*="bg-amber-"] {
+  background-color: rgba(139, 92, 246, 0.12) !important;
+}
+
+[class*="border-orange-"], [class*="border-amber-"] {
+  border-color: rgba(167, 139, 250, 0.36) !important;
+}
+
+[class*="from-orange-"], [class*="via-orange-"], [class*="to-orange-"],
+[class*="from-amber-"], [class*="via-amber-"], [class*="to-amber-"] {
+  --tw-gradient-from: rgba(139, 92, 246, 0.16) !important;
+  --tw-gradient-via: rgba(91, 33, 182, 0.08) !important;
+  --tw-gradient-to: transparent !important;
+}
+
+.neu-orange-btn, .neu-purple-btn {
+  background: linear-gradient(145deg, #8b5cf6 0%, #6d28d9 100%) !important;
+  box-shadow: 5px 5px 14px rgba(5, 3, 11, 0.9), -4px -4px 12px rgba(167, 139, 250, 0.22), 0 0 22px rgba(139, 92, 246, 0.24) !important;
+}
+
+.neu-orange-btn:hover, .neu-purple-btn:hover {
+  background: linear-gradient(145deg, #a78bfa 0%, #7c3aed 100%) !important;
+  box-shadow: 6px 6px 17px rgba(5, 3, 11, 0.92), -4px -4px 13px rgba(196, 181, 253, 0.3), 0 0 28px rgba(139, 92, 246, 0.38) !important;
+}
+
+input, textarea, select {
+  background-color: #100a1f;
+  box-shadow: inset 4px 4px 8px #05030b, inset -3px -3px 7px #241a3e;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(167, 139, 250, 0.72) !important;
+  box-shadow: inset 4px 4px 8px #05030b, inset -3px -3px 7px #241a3e, 0 0 0 3px rgba(139, 92, 246, 0.16), 0 0 18px rgba(139, 92, 246, 0.16);
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.45);
+}
+
+:where(button, input, textarea, select, a):focus-visible {
+  outline-color: var(--violet-400);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.22);
+}
+
+@media (prefers-contrast: more) {
+  .neu-flat, .neu-button, .neu-pressed, input, textarea, select {
+    border-color: rgba(196, 181, 253, 0.5) !important;
+  }
+}
+
+@media print {
+  body { background: white !important; }
+}
+
+/* End violet-black lighting pass */
+
+
+/* === Soft White Drop Shadow Pass ===
+   X: 0px | Y: 0px | Blur: 20px | Spread: 2px | Color: #FFFFFF | Opacity: 30% */
+.neu-flat {
+  box-shadow:
+    10px 10px 22px #05030b,
+    -10px -10px 22px #241a3e,
+    0 0 20px 2px rgba(255, 255, 255, 0.30),
+    0 0 32px rgba(139, 92, 246, 0.10);
+}
+
+.neu-button,
+.system-action {
+  box-shadow:
+    5px 5px 12px #05030b,
+    -5px -5px 12px #241a3e,
+    0 0 18px 2px rgba(255, 255, 255, 0.22),
+    0 0 20px rgba(139, 92, 246, 0.10);
+}
+
+.neu-button:hover,
+.system-action:hover {
+  box-shadow:
+    6px 6px 14px #05030b,
+    -6px -6px 14px #34235a,
+    0 0 22px 2px rgba(255, 255, 255, 0.34),
+    0 0 28px rgba(139, 92, 246, 0.18);
+}
+
+.neu-button:active,
+.neu-button-active,
+.neu-button.active {
+  box-shadow:
+    inset 5px 5px 11px #05030b,
+    inset -5px -5px 11px #241a3e,
+    0 0 16px 1px rgba(255, 255, 255, 0.20),
+    inset 0 0 12px rgba(91, 33, 182, 0.12);
+}
+
+.neu-pressed {
+  box-shadow:
+    inset 7px 7px 15px #05030b,
+    inset -7px -7px 15px #241a3e,
+    0 0 18px 2px rgba(255, 255, 255, 0.24);
+}
+
+.sidebar-desktop {
+  box-shadow:
+    5px 5px 12px #05030b,
+    -5px -5px 12px #241a3e,
+    0 0 20px 2px rgba(255, 255, 255, 0.20),
+    0 0 24px rgba(91, 33, 182, 0.12);
+}
+
+.neu-orange-btn,
+.neu-purple-btn {
+  box-shadow:
+    5px 5px 14px rgba(5, 3, 11, 0.9),
+    -4px -4px 12px rgba(167, 139, 250, 0.22),
+    0 0 20px 2px rgba(255, 255, 255, 0.28),
+    0 0 26px rgba(139, 92, 246, 0.26) !important;
+}
+
+.neu-orange-btn:hover,
+.neu-purple-btn:hover {
+  box-shadow:
+    6px 6px 17px rgba(5, 3, 11, 0.92),
+    -4px -4px 13px rgba(196, 181, 253, 0.3),
+    0 0 24px 2px rgba(255, 255, 255, 0.38),
+    0 0 32px rgba(139, 92, 246, 0.40) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neu-flat,
+  .neu-button,
+  .neu-pressed,
+  .system-action,
+  .sidebar-desktop {
+    transition: none !important;
+  }
+}
+
+/* End soft white drop shadow pass */
+
+
+/* === White heading hierarchy === */
+@media screen {
+  h1, h2, h3, h4,
+  .neu-section-capsule h2,
+  [id^="page-"] h2,
+  [id^="page-"] h3,
+  [id^="page-"] h4 {
+    color: #ffffff !important;
+  }
+}
+
+
+/* Heading color wins over legacy accent utility rules. */
+h1[class*="text-orange-"],
+h2[class*="text-orange-"],
+h3[class*="text-orange-"],
+h4[class*="text-orange-"],
+h1[class*="text-amber-"],
+h2[class*="text-amber-"],
+h3[class*="text-amber-"],
+h4[class*="text-amber-"] {
+  color: #ffffff !important;
+}
+
+@media screen {
+  .neu-flat h1,
+  .neu-flat h2,
+  .neu-flat h3,
+  .neu-flat h4,
+  .neu-section-capsule h1,
+  .neu-section-capsule h2,
+  .neu-section-capsule h3,
+  .neu-section-capsule h4 {
+    color: #ffffff !important;
+  }
+}
+
+
+/* Section titles that are implemented as bold accent containers. */
+div[class*="font-bold"][class*="text-orange-"],
+div[class*="font-semibold"][class*="text-orange-"] {
+  color: #ffffff !important;
+}
+
+
+/* Keep compact field rows aligned when labels wrap to two lines. */
+@media screen and (min-width: 640px) {
+  .grid label {
+    min-height: 2.5rem;
+    align-content: flex-start;
+  }
+}

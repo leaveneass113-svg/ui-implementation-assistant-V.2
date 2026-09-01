@@ -565,7 +565,7 @@ export const UploadContractScanner: React.FC<Props> = ({ onContractExtracted }) 
 
             {/* Total Days & Cost */}
             <div className="space-y-1.5">
-              <label className="font-semibold text-gray-300">ระยะเวลาตามสัญญา (วัน)</label>
+              <label className="font-semibold text-gray-300">ระยะเวลา</label>
               <input
                 type="text"
                 value={extractedData.totalDays || ''}
@@ -576,7 +576,7 @@ export const UploadContractScanner: React.FC<Props> = ({ onContractExtracted }) 
 
             <div className="space-y-1.5">
               <label className="font-semibold text-gray-300 flex items-center gap-1.5">
-                <DollarSign className="w-3.5 h-3.5 text-orange-400" /> ค่าก่อสร้าง (บาท)
+                <DollarSign className="w-3.5 h-3.5 text-orange-400" /> ค่าก่อสร้าง
               </label>
               <input
                 type="text"

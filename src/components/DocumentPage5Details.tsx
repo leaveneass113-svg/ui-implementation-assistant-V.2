@@ -48,7 +48,7 @@ export const DocumentPage5Details: React.FC<Props> = ({
           <span className="w-2 h-2 rounded-full bg-orange-500 shadow-sm" />
           <FileSpreadsheet className="w-4 h-4 text-orange-500" />
           <h2 className="text-base sm:text-lg font-bold tracking-tight text-slate-100">
-            ข้อมูลโครงการและสัญญาจ้างฉบับเต็ม
+            ข้อมูลโครงการและสัญญาจ้าง
           </h2>
         </div>
 
@@ -140,7 +140,7 @@ export const DocumentPage5Details: React.FC<Props> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label htmlFor="field-contract-amt" className="block text-xs font-bold text-orange-400 mb-1">
-                  วงเงินค่าก่อสร้างตามสัญญา (บาท):
+                  วงเงินค่าก่อสร้าง:
                 </label>
                 <input
                   id="field-contract-amt"
@@ -198,7 +198,7 @@ export const DocumentPage5Details: React.FC<Props> = ({
 
               <div>
                 <label htmlFor="field-duration-days" className="block text-xs font-bold text-slate-400 mb-1">
-                  ระยะเวลาสัญญา (วัน):
+                  ระยะเวลา:
                 </label>
                 <input
                   id="field-duration-days"
@@ -292,7 +292,7 @@ export const DocumentPage5Details: React.FC<Props> = ({
           <div className="p-4 rounded-2xl neu-flat-sm space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-300">
-                ๒. กรรมการตรวจรับพัสดุ (คนที่ ๑)
+                ๒. กรรมการตรวจรับพัสดุ ๑
               </span>
               <span className="neu-pill-inset px-2.5 py-0.5 text-[11px] font-semibold text-slate-300 border border-white/10">
                 กรรมการ
@@ -332,7 +332,7 @@ export const DocumentPage5Details: React.FC<Props> = ({
           <div className="p-4 rounded-2xl neu-flat-sm space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-300">
-                ๓. กรรมการตรวจรับพัสดุ (คนที่ ๒)
+                ๓. กรรมการตรวจรับพัสดุ ๒
               </span>
               <span className="neu-pill-inset px-2.5 py-0.5 text-[11px] font-semibold text-slate-300 border border-white/10">
                 กรรมการ
@@ -471,7 +471,7 @@ export const DocumentPage5Details: React.FC<Props> = ({
             className="px-4 py-2.5 rounded-2xl neu-button text-gray-300 hover:text-white text-xs font-bold flex items-center gap-2 border border-white/5 active:scale-95 transition-all cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
-            <span>ย้อนกลับ: รายงานรายเดือน (หน้า ๔)</span>
+            <span>ย้อนกลับ: รายงานรายเดือน</span>
           </button>
         )}
 
@@ -481,7 +481,7 @@ export const DocumentPage5Details: React.FC<Props> = ({
             onClick={onNavigateNext}
             className="px-5 py-2.5 rounded-2xl neu-orange-btn text-white text-xs font-bold flex items-center gap-2 active:scale-95 shadow-md transition-all cursor-pointer ml-auto"
           >
-            <span>ถัดไป: สรุปสะสมรายเดือน (หน้า ๖)</span>
+            <span>ถัดไป: สรุปสะสมรายเดือน</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         )}

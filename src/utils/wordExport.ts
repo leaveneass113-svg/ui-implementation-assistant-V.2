@@ -11,8 +11,42 @@ import {
 /**
  * สร้าง Object ข้อมูลสำหรับแมปลงใน template1.docx ตามข้อกำหนด Token Source Map (Group A - Group F) ทุกประการ
  */
+export function addWeeklySummaryPageBreak(docXml: string): string {
+  if (docXml.includes('w:type="page"')) {
+    // Only add the missing break when the weekly-summary table is not already preceded by one.
+    const weeklyToken = docXml.indexOf('WN');
+    if (weeklyToken >= 0) {
+      const tableMarkup = /<w:tbl\b|<\/w:tbl>/g;
+      let depth = 0;
+      let outerTableStart = -1;
+      let match: RegExpExecArray | null;
+      while ((match = tableMarkup.exec(docXml)) && match.index < weeklyToken) {
+        if (match[0] === '<w:tbl') {
+          if (depth === 0) outerTableStart = match.index;
+          depth += 1;
+        } else {
+          depth = Math.max(0, depth - 1);
+        }
+      }
+      const tableStart = outerTableStart;
+      if (tableStart < 0) return docXml;
+      const beforeTable = docXml.slice(Math.max(0, tableStart - 300), tableStart);
+      if (beforeTable.includes('w:type="page"')) return docXml;
+      const pageBreak = '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+      return `${docXml.slice(0, tableStart)}${pageBreak}${docXml.slice(tableStart)}`;
+    }
+  }
+  return docXml;
+}
+
+function normalizeDocNo(value: string | undefined): string {
+  const raw = (value || '').trim();
+  return raw.replace(/^ลป\.๗๙๖๐๓\s*\/\s*/u, '').replace(/^ลป\.79603\s*\/\s*/u, '');
+}
+
 export function buildTemplateData(projectData: ReportData, targetWeekIndex = 0) {
   const isPlaceholder = projectData.isPlaceholderMode;
+  const normalizedDocNo = normalizeDocNo(projectData.docNo);
   const weeks = projectData.weeks && projectData.weeks.length > 0 ? projectData.weeks : [];
   const currentWeek: WeekData = weeks[targetWeekIndex] || {
     id: 'w-fallback',
@@ -135,7 +169,7 @@ export function buildTemplateData(projectData: ReportData, targetWeekIndex = 0) 
   // Full Template Data conforming strictly to V2 Template Specification & Aliases
   return {
     // ----------------- GROUP A: Report/document metadata -----------------
-    DOC_NO: isPlaceholder ? '{{DOC_NO}}' : projectData.docNo || '',
+    DOC_NO: isPlaceholder ? '{{DOC_NO}}' : normalizedDocNo,
     R_DATE: isPlaceholder ? '{{R_DATE}}' : currentWeek.reportDate || projectData.reportDate || '',
     REPORT_DATE: isPlaceholder ? '{{R_DATE}}' : currentWeek.reportDate || projectData.reportDate || '',
     WEEK: isPlaceholder ? '{{WEEK}}' : currentWeek.weekNo || projectData.weekNo || '๑',
@@ -240,6 +274,9 @@ export async function generateDocxBlob(projectData: ReportData, weekIndex = 0): 
     docXml = docXml.replace(/\{\{D7\}\}\}/g, '{{D7}}');
     zip.file('word/document.xml', docXml);
   }
+
+  docXml = addWeeklySummaryPageBreak(docXml);
+  zip.file('word/document.xml', docXml);
 
   const doc = new Docxtemplater(zip, {
     paragraphLoop: true,
