@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ReportData, WeekData, LaborRow } from '../types';
 import { Calendar, Users, Plus, Trash2, ChevronLeft, ArrowRight, RotateCcw } from 'lucide-react';
 import { WeatherSelector } from './WeatherSelector';
@@ -47,6 +47,19 @@ export const DocumentPage3: React.FC<Props> = ({
       rowTotal: 0,
     },
   };
+
+  const narrativeRefs = useRef<Array<HTMLTextAreaElement | null>>([]);
+
+  const autoResizeNarrative = (element: HTMLTextAreaElement) => {
+    element.style.height = 'auto';
+    element.style.height = `${Math.max(44, element.scrollHeight)}px`;
+  };
+
+  useEffect(() => {
+    narrativeRefs.current.forEach((element) => {
+      if (element) autoResizeNarrative(element);
+    });
+  }, [activeIndex, currentWeek.dailyNarrative]);
 
   const handleSelectWeek = (idx: number) => {
     if (!onChange) return;
@@ -244,7 +257,7 @@ export const DocumentPage3: React.FC<Props> = ({
                   const weatherA = currentWeek?.dailyWeatherAfternoon?.[idx] || 'แจ่มใส';
 
                   return (
-                    <div key={`day-${idx}`} className="flex gap-2 items-center text-sm">
+                    <div key={`day-${idx}`} className="flex gap-2 items-start text-sm">
                       {/* Day Number */}
                       <div className="w-14 h-11 flex items-center justify-center font-bold text-orange-400 text-xs neu-pressed rounded-2xl border border-white/5 flex-shrink-0">
                         วัน {toThaiDigits(dayNum)}
@@ -264,11 +277,16 @@ export const DocumentPage3: React.FC<Props> = ({
                       {/* Daily Narrative Details */}
                       <div className="flex-1 flex min-w-0">
                         <textarea
+                          ref={(element) => {
+                            narrativeRefs.current[idx] = element;
+                            if (element) autoResizeNarrative(element);
+                          }}
                           value={descVal}
                           onChange={(e) => handleUpdateDailyNarrative(idx, e.target.value)}
+                          onInput={(e) => autoResizeNarrative(e.currentTarget)}
                           placeholder="ระบุการปฏิบัติงาน หรือ ปล่อยว่าง (ไม่ปฏิบัติงาน)..."
-                          rows={2}
-                          className="w-full min-h-11 resize-y px-4 py-2.5 rounded-2xl bg-[#141517] text-slate-100 placeholder:text-zinc-500 placeholder:font-light text-xs sm:text-sm leading-relaxed outline-none border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)] focus:border-orange-500/50 transition-all antialiased"
+                          rows={1}
+                          className="w-full min-h-11 overflow-hidden resize-none px-4 py-2.5 rounded-2xl bg-[#141517] text-slate-100 placeholder:text-zinc-500 placeholder:font-light text-xs sm:text-sm leading-relaxed outline-none border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)] focus:border-orange-500/50 transition-all antialiased"
                         />
                       </div>
 

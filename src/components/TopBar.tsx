@@ -31,8 +31,8 @@ export const TopBar: React.FC<Props> = ({
   lastSavedTime,
 }) => {
   return (
-    <header className="bg-[#11161d]/90 border-b border-white/10 text-gray-100 sticky top-0 z-50 shadow-[0_8px_28px_rgba(0,0,0,0.28)] print:hidden backdrop-blur-xl transition-all">
-      <div className="px-3 sm:px-6 py-2.5 sm:py-3">
+    <header className="bg-[#161616]/95 border-b border-white/5 text-gray-100 sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,0,0,0.5)] print:hidden backdrop-blur-xl transition-all">
+      <div className="px-3 sm:px-5 py-2 sm:py-2.5">
         <div className="flex items-center justify-between gap-3 min-w-0">
 
           {/* Left: Hamburger(s), CS Logo & Project Name */}
@@ -57,20 +57,20 @@ export const TopBar: React.FC<Props> = ({
               <Menu className="w-4 h-4 sm:w-[18px] sm:h-[18px] group-hover:scale-110 transition-transform" />
             </button>
 
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl neu-pressed border border-orange-500/30 flex items-center justify-center text-orange-400 font-black text-xs sm:text-sm shadow-inner shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl neu-pressed border border-orange-500/20 flex items-center justify-center text-orange-500 font-black text-xs sm:text-sm shadow-inner shrink-0">
               CS
             </div>
 
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-sm sm:text-base text-white leading-tight tracking-wide truncate">
+                <span className="font-bold text-xs sm:text-sm text-white leading-tight tracking-wide truncate">
                   ContractScan AI
                 </span>
                 <span className="hidden lg:inline-block text-[10px] bg-orange-500/15 text-orange-400 px-2 py-0.5 rounded-full border border-orange-500/30 font-medium shrink-0">
                   ระบบราชการ
                 </span>
               </div>
-              <p className="text-[11px] sm:text-xs text-slate-300/80 truncate max-w-[140px] sm:max-w-xs md:max-w-md leading-tight mt-0.5">
+              <p className="text-[10px] sm:text-xs text-gray-400 truncate max-w-[140px] sm:max-w-xs md:max-w-md leading-tight">
                 {activeProjectName || 'ยังไม่ได้ระบุโครงการ'}
               </p>
             </div>
