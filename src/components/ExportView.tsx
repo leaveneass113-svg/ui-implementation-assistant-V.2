@@ -83,8 +83,8 @@ export const ExportView: React.FC<Props> = ({ data, onSelectWeek }) => {
           </div>
           <div>
             <div className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-              เลือกสัปดาห์ส่งออก:
-              <span className="text-orange-400">สัปดาห์ {toThaiDigits(currentWeek?.weekNo || activeIndex + 1)}</span>
+              เลือกสัปดาห์ที่ต้องการส่งออก:
+              <span className="text-orange-400">สัปดาห์ที่ {toThaiDigits(currentWeek?.weekNo || activeIndex + 1)}</span>
             </div>
             <div className="text-xs text-gray-400 mt-0.5">
               ช่วงวันที่: {currentWeek?.startDate || '-'} ถึง {currentWeek?.endDate || '-'} (สะสม: {toThaiDigits(currentWeek?.workProgress?.cumulative ?? 0)}%)
@@ -94,7 +94,7 @@ export const ExportView: React.FC<Props> = ({ data, onSelectWeek }) => {
 
         {weeks.length > 1 && (
           <div className="flex items-center gap-2">
-            <label className="text-xs text-gray-400 font-semibold">เปลี่ยนสัปดาห์:</label>
+            <label className="text-xs text-gray-400 font-semibold">สลับสัปดาห์:</label>
             <select
               value={activeIndex}
               onChange={(e) => onSelectWeek && onSelectWeek(parseInt(e.target.value, 10))}
@@ -102,7 +102,7 @@ export const ExportView: React.FC<Props> = ({ data, onSelectWeek }) => {
             >
               {weeks.map((w, idx) => (
                 <option key={`opt-w-${idx}`} value={idx} className="bg-[#181818] text-white">
-                  สัปดาห์ {toThaiDigits(w.weekNo || idx + 1)} ({w.startDate ? w.startDate.split(' ')[0] + ' ' + (w.startDate.split(' ')[1] || '') : `ว.${toThaiDigits(idx + 1)}`})
+                  สัปดาห์ที่ {toThaiDigits(w.weekNo || idx + 1)} ({w.startDate ? w.startDate.split(' ')[0] + ' ' + (w.startDate.split(' ')[1] || '') : `ว.${toThaiDigits(idx + 1)}`})
                 </option>
               ))}
             </select>
@@ -151,7 +151,7 @@ export const ExportView: React.FC<Props> = ({ data, onSelectWeek }) => {
             ) : (
               <>
                 <Download className="w-4 h-4" />
-                <span className="text-xs">ดาวน์โหลด สัปดาห์ {toThaiDigits(currentWeek?.weekNo || activeIndex + 1)} (.docx)</span>
+                <span className="text-xs">ดาวน์โหลด สัปดาห์ที่ {toThaiDigits(currentWeek?.weekNo || activeIndex + 1)} (.docx)</span>
               </>
             )}
           </button>
