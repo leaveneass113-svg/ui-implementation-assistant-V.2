@@ -169,7 +169,7 @@ export function buildTemplateData(projectData: ReportData, targetWeekIndex = 0) 
   // Full Template Data conforming strictly to V2 Template Specification & Aliases
   return {
     // ----------------- GROUP A: Report/document metadata -----------------
-    DOC_NO: isPlaceholder ? '{{DOC_NO}}' : normalizedDocNo,
+    DOC_NO: isPlaceholder ? '{{DOC_NO}}' : normalizeDocNo(currentWeek.docNo || normalizedDocNo),
     R_DATE: isPlaceholder ? '{{R_DATE}}' : currentWeek.reportDate || projectData.reportDate || '',
     REPORT_DATE: isPlaceholder ? '{{R_DATE}}' : currentWeek.reportDate || projectData.reportDate || '',
     WEEK: isPlaceholder ? '{{WEEK}}' : currentWeek.weekNo || projectData.weekNo || '๑',
@@ -258,8 +258,14 @@ export function buildTemplateData(projectData: ReportData, targetWeekIndex = 0) 
 /**
  * โหลด template1.docx และ Render ออกมาเป็น Blob (.docx)
  */
-export async function generateDocxBlob(projectData: ReportData, weekIndex = 0): Promise<Blob> {
-  const templateUrl = '/templates/template1.docx';
+export async function generateDocxBlob(
+  projectData: ReportData,
+  weekIndex = 0,
+  templateType: 'weekly' | 'monthly' = 'weekly'
+): Promise<Blob> {
+  const templateUrl = templateType === 'monthly'
+    ? '/templates/template_monthly.docx'
+    : '/templates/template1.docx';
   const response = await fetch(templateUrl);
   if (!response.ok) {
     throw new Error(`ไม่สามารถโหลดไฟล์แม่แบบ ${templateUrl} ได้ (HTTP ${response.status})`);
@@ -275,7 +281,8 @@ export async function generateDocxBlob(projectData: ReportData, weekIndex = 0): 
     zip.file('word/document.xml', docXml);
   }
 
-  docXml = addWeeklySummaryPageBreak(docXml);
+  // The split weekly template already contains its official page breaks.
+  // Do not inject another break; it creates a blank/heading-only page.
   zip.file('word/document.xml', docXml);
 
   const doc = new Docxtemplater(zip, {

@@ -179,6 +179,7 @@ export function createDefaultWeek(
   return {
     id: `week-${weekNo}-${Date.now()}`,
     weekNo: toThaiDigits(weekNo),
+    docNo: '',
     startDate: formatThaiDateFull(start, true),
     endDate: formatThaiDateFull(end, true),
     reportDate: formatThaiDateFull(reportDate, true),
@@ -275,6 +276,7 @@ export function generateWeeksFromContract(
     const newWeek: WeekData = {
       id: existing?.id || `week-${weekNo}-${Date.now()}`,
       weekNo: toThaiDigits(weekNo),
+      docNo: existing?.docNo || '',
       startDate: formatThaiDateFull(currentStart, true),
       endDate: formatThaiDateFull(end, true),
       reportDate: formatThaiDateFull(reportDate, true),

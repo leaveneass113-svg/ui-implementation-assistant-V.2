@@ -396,14 +396,14 @@ export const DocumentPage1: React.FC<Props> = ({
                   {/* DOC_NO */}
                   <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-xs font-medium text-slate-300 flex items-center gap-1" title="แมปกับตัวแปร Word: {{DOC_NO}}">
-                      เลขที่หนังสือ
+                      เลขที่หนังสือ (สัปดาห์นี้)
                     </label>
                     <input
                       type="text"
                       id="field_doc_no"
                       name="doc_no"
-                      value={data.docNo || ''}
-                      onChange={(e) => updateField('docNo', toThaiDigits(e.target.value))}
+                      value={activeWeek?.docNo ?? data.docNo ?? ''}
+                      onChange={(e) => updateActiveWeekField('docNo', toThaiDigits(e.target.value))}
                       placeholder="เช่น ลป.๗๙๖๐๓/๑๒๗ หรือ สถ ๐๐๒๓.๓/ว ๑๒๔"
                       className={inputClass}
                     />

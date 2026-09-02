@@ -12,6 +12,8 @@ interface Props {
 export const ExportView: React.FC<Props> = ({ data, onSelectWeek }) => {
   const [isExportingDocx, setIsExportingDocx] = useState(false);
   const [docxSuccess, setDocxSuccess] = useState(false);
+  const [isExportingMonthly, setIsExportingMonthly] = useState(false);
+  const [monthlySuccess, setMonthlySuccess] = useState(false);
 
   const weeks = data.weeks && data.weeks.length > 0 ? data.weeks : [];
   const activeIndex = Math.min(Math.max(0, data.activeWeekIndex ?? 0), Math.max(0, weeks.length - 1));
@@ -37,18 +39,20 @@ export const ExportView: React.FC<Props> = ({ data, onSelectWeek }) => {
     },
   };
 
-  const getSafeFileName = (weekNo: string, ext: string) => {
+  const isProjectComplete = weeks.length > 0 && ['๐', '0'].includes(weeks[weeks.length - 1]?.remainingDays || '');
+
+  const getSafeFileName = (weekNo: string, ext: string, suffix = '') => {
     const rawName = data.projectName || 'รายงานผลการปฏิบัติงาน';
     const cleanName = rawName.replace(/[/\\?%*:|"<>]/g, '_').substring(0, 35);
     const weekStr = weekNo ? `_สัปดาห์ที่_${toThaiDigits(weekNo)}` : '';
-    return `${cleanName}${weekStr}.${ext}`;
+    return `${cleanName}${weekStr}${suffix}.${ext}`;
   };
 
   const handleExportDocx = async () => {
     try {
       setIsExportingDocx(true);
       setDocxSuccess(false);
-      const blob = await generateDocxBlob(data, activeIndex);
+      const blob = await generateDocxBlob(data, activeIndex, 'weekly');
       const filename = getSafeFileName(currentWeek?.weekNo || String(activeIndex + 1), 'docx');
       downloadFile(blob, filename);
       setDocxSuccess(true);
@@ -58,6 +62,25 @@ export const ExportView: React.FC<Props> = ({ data, onSelectWeek }) => {
       alert(`เกิดข้อผิดพลาดในการสร้างไฟล์ Word (.docx): ${err?.message || 'กรุณาลองใหม่อีกครั้ง'}`);
     } finally {
       setIsExportingDocx(false);
+    }
+  };
+
+  const handleExportMonthlyDocx = async () => {
+    if (!isProjectComplete) return;
+    try {
+      setIsExportingMonthly(true);
+      setMonthlySuccess(false);
+      const lastWeekIndex = Math.max(0, weeks.length - 1);
+      const blob = await generateDocxBlob(data, lastWeekIndex, 'monthly');
+      const filename = getSafeFileName('', 'docx', '_รายเดือน');
+      downloadFile(blob, filename);
+      setMonthlySuccess(true);
+      setTimeout(() => setMonthlySuccess(false), 4000);
+    } catch (err: any) {
+      console.error('Failed to export monthly .docx', err);
+      alert(`เกิดข้อผิดพลาดในการสร้างไฟล์รายเดือน: ${err?.message || 'กรุณาลองใหม่อีกครั้ง'}`);
+    } finally {
+      setIsExportingMonthly(false);
     }
   };
 
@@ -111,7 +134,7 @@ export const ExportView: React.FC<Props> = ({ data, onSelectWeek }) => {
       </div>
 
       {/* Cards Grid: 2 Cards (.docx and PDF Print) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {/* Card 1: Word (.docx) powered by Docxtemplater & template1.docx */}
         <div className="neu-flat p-6 sm:p-7 rounded-3xl border border-white/5 flex flex-col justify-between items-center text-center group hover:border-orange-500/40 transition-all space-y-6">
           <div className="flex flex-col items-center">
@@ -157,7 +180,31 @@ export const ExportView: React.FC<Props> = ({ data, onSelectWeek }) => {
           </button>
         </div>
 
-        {/* Card 2: PDF / Print */}
+        {/* Card 2: Monthly DOCX */}
+        <div className={`neu-flat p-6 sm:p-7 rounded-3xl border border-white/5 flex flex-col justify-between items-center text-center group transition-all space-y-6 ${isProjectComplete ? 'hover:border-violet-500/40' : 'opacity-70'}`}>
+          <div className="flex flex-col items-center">
+            <div className="w-16 h-16 rounded-2xl neu-pressed flex items-center justify-center text-violet-400 mb-4 group-hover:scale-110 transition-transform bg-violet-500/10 border border-violet-500/20">
+              <Layers className="w-8 h-8" />
+            </div>
+            <span className="px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-[11px] font-bold border border-violet-500/30 mb-2">
+              แม่แบบสรุปรายเดือน (.DOCX)
+            </span>
+            <h3 className="text-lg font-bold text-white mb-2">สรุปโครงการรายเดือน</h3>
+            <p className="text-xs text-gray-400 leading-relaxed">
+              ใช้เมื่อโครงการสิ้นสุดแล้ว โดยสร้างจาก <code className="text-violet-300">template_monthly.docx</code> แยกจากรายงานรายสัปดาห์ และคงโครงสร้างแม่แบบไว้ครบ
+            </p>
+          </div>
+
+          <button
+            onClick={handleExportMonthlyDocx}
+            disabled={!isProjectComplete || isExportingMonthly}
+            className={`w-full py-3.5 px-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all ${monthlySuccess ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : isProjectComplete ? 'neu-orange-btn text-white shadow-lg active:scale-95 cursor-pointer' : 'bg-white/5 text-gray-500 border border-white/10 cursor-not-allowed'}`}
+          >
+            {isExportingMonthly ? <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div><span className="text-xs">กำลังสร้างรายเดือน...</span></> : monthlySuccess ? <><CheckCircle2 className="w-4 h-4 text-emerald-400" /><span className="text-xs">ดาวน์โหลดสำเร็จ!</span></> : <><Download className="w-4 h-4" /><span className="text-xs">{isProjectComplete ? 'ดาวน์โหลดชุดรายเดือน' : 'รอจบโครงการก่อนดาวน์โหลด'}</span></>}
+          </button>
+        </div>
+
+        {/* Card 3: PDF / Print */}
         <div className="neu-flat p-6 sm:p-7 rounded-3xl border border-white/5 flex flex-col justify-between items-center text-center group hover:border-emerald-500/40 transition-all space-y-6">
           <div className="flex flex-col items-center">
             <div className="w-16 h-16 rounded-2xl neu-pressed flex items-center justify-center text-emerald-400 mb-4 group-hover:scale-110 transition-transform bg-emerald-500/10 border border-emerald-500/20">
@@ -168,7 +215,7 @@ export const ExportView: React.FC<Props> = ({ data, onSelectWeek }) => {
             </span>
             <h3 className="text-lg font-bold text-white mb-2">พิมพ์ / บันทึกเป็น PDF</h3>
             <p className="text-xs text-gray-400 leading-relaxed">
-              สั่งพิมพ์รายงาน 3 หน้าขนาด A4 มาตรฐานราชการ หรือบันทึกเป็นไฟล์ PDF ทันทีผ่านหน้าต่างพิมพ์ของเบราว์เซอร์
+              สั่งพิมพ์หน้าจอรายงานหรือบันทึกเป็นไฟล์ PDF ผ่านหน้าต่างพิมพ์ของเบราว์เซอร์
             </p>
           </div>
 

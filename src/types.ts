@@ -15,6 +15,7 @@ export interface WorkProgress {
 export interface WeekData {
   id: string;
   weekNo: string;        // WN / WEEK: สัปดาห์ที่ (เช่น 1, 2, 3...)
+  docNo?: string;        // เลขที่หนังสือเฉพาะสัปดาห์ (ถ้าไม่ระบุใช้ค่าโครงการเป็นค่าเริ่มต้น)
   startDate: string;     // START: วันเริ่มต้นสัปดาห์ (เช่น 8 มกราคม 2569)
   endDate: string;       // END: วันสิ้นสุดสัปดาห์ (เช่น 14 มกราคม 2569)
   reportDate: string;    // R_DATE: วันที่รายงาน (วันจันทร์ถัดไป เช่น 15 มกราคม 2569)
