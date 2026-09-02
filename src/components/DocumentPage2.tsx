@@ -236,7 +236,7 @@ export const DocumentPage2: React.FC<Props> = ({
                     step="0.01"
                     value={wp.weight !== undefined && wp.weight !== 0 ? wp.weight : (wp.weight === 0 ? '' : 0)}
                     onChange={(e) => handleUpdateProgressField('weight', parseFloat(e.target.value) || 0)}
-                    placeholder="100"
+                    placeholder="0"
                     className="w-full h-14 text-center rounded-2xl bg-[#141517] text-slate-100 placeholder:text-zinc-500 text-sm outline-none border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)] focus:border-orange-500/50 font-bold transition-all antialiased px-2"
                   />
                 </div>
