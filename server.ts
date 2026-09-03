@@ -195,7 +195,9 @@ async function startServer() {
   // ─── Vite development middleware / Static production serving ────────────────
   const distPath = path.join(process.cwd(), "dist");
   const hasDist = fs.existsSync(path.join(distPath, "index.html"));
-  const isProduction = process.env.NODE_ENV === "production";
+  // Render's Node service should serve the compiled SPA. The hasDist fallback
+  // also prevents an accidental dev-mode host check when NODE_ENV is omitted.
+  const isProduction = process.env.NODE_ENV === "production" || (process.env.RENDER === "true" && hasDist);
 
   // Create HTTP server so Vite HMR WebSocket shares the same port (no separate 24678)
   const server = http.createServer(app);

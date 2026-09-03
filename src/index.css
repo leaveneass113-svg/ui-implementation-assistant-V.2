@@ -139,3 +139,57 @@
   }
 }
 
+
+/* System status action: visually separates the next action from document content. */
+.system-action {
+  margin-top: 1.5rem;
+  border: 1px solid rgba(249, 115, 22, 0.24);
+  background: linear-gradient(120deg, rgba(249, 115, 22, 0.12), rgba(30, 30, 30, 0.94) 46%, rgba(124, 58, 237, 0.12));
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.system-action:hover {
+  border-color: rgba(249, 115, 22, 0.5);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.34), 0 0 0 3px rgba(249, 115, 22, 0.06);
+  transform: translateY(-1px);
+}
+
+.system-action:active {
+  transform: translateY(0);
+}
+
+.system-action:focus-visible,
+.neu-button:focus-visible,
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(251, 146, 60, 0.75);
+  outline-offset: 3px;
+}
+
+.system-action__icon {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.system-action:hover .system-action__icon {
+  background-color: rgba(249, 115, 22, 0.24);
+  transform: scale(1.04);
+}
+
+@media (max-width: 640px) {
+  .system-action {
+    margin-top: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

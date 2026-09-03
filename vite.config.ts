@@ -20,6 +20,9 @@ export default defineConfig(() => {
       headers: {
         'X-Frame-Options': 'ALLOWALL',
       },
+      // Render may proxy the app through an onrender.com hostname during previews.
+      // Keep the allowlist scoped to Render subdomains instead of disabling host checks globally.
+      allowedHosts: ['.onrender.com'],
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modify—file watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',

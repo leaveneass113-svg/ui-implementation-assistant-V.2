@@ -138,3 +138,20 @@ NODE_ENV=production
 - build สำเร็จแล้ว
 - สามารถ deploy ต่อได้ใน environment ที่รองรับ Node.js
 - API key ต้องได้รับการตั้งค่าใน environment ของ deployment target ก่อนใช้งานจริง
+
+## Render deployment checklist
+
+เว็บไซต์ต้อง deploy ด้วย production command ไม่ใช่ `npm run dev` เพราะคำสั่ง dev จะเปิด Vite middleware ซึ่งตรวจสอบ `Host` header และอาจตอบกลับด้วยข้อความ `Blocked request ... server.allowedHosts` เมื่อเข้าผ่านโดเมน Render
+
+ให้ตั้งค่า Render เป็นดังนี้:
+
+```text
+Build Command: npm ci && npm run build
+Start Command: npm run start
+Health Check Path: /health
+Environment: NODE_ENV=production
+```
+
+ไฟล์ `render.yaml` ใน repository มีค่าดังกล่าวเป็นตัวอย่างแบบกำหนดชัดเจนแล้ว และเซิร์ฟเวอร์จะเสิร์ฟไฟล์จาก `dist/` ใน production ส่วน `vite.config.ts` อนุญาตเฉพาะโดเมนย่อยของ `onrender.com` สำหรับกรณี preview/dev ที่จำเป็น โดยไม่ปิด host validation แบบกว้างทั้งหมด
+
+หากยังเปิดไม่ได้หลัง deploy ให้ตรวจ Deploy Logs ว่ามีบรรทัด `Server running ... [production]` และตรวจ `GET /health` ต้องตอบ HTTP 200 ก่อนทดสอบหน้าเว็บ

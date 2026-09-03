@@ -676,17 +676,17 @@ export default function App() {
           </div>
 
           {/* Bottom system status / action prompt */}
-          <div
-            className="system-action rounded-2xl px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-3 print:hidden"
-            role="status"
-            tabIndex={0}
+          <button
+            type="button"
+            className="system-action group rounded-2xl px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-3 print:hidden w-full max-w-[1440px] mx-auto text-left cursor-pointer"
+            onClick={() => setToastMessage('ตรวจสอบแก้ไข บัค และปรับปรุงระบบ')}
             aria-label="ตรวจสอบแก้ไข บัค และปรับปรุงระบบ"
           >
-            <div className="w-10 h-10 rounded-xl bg-orange-500/15 border border-orange-400/20 text-orange-300 flex items-center justify-center shrink-0">
+            <span className="system-action__icon w-10 h-10 rounded-xl bg-orange-500/15 border border-orange-400/20 text-orange-300 flex items-center justify-center shrink-0">
               <Bug className="w-5 h-5" aria-hidden="true" />
-            </div>
-            <p className="text-sm sm:text-base font-bold text-white leading-tight">ตรวจสอบแก้ไข บัค และปรับปรุงระบบ</p>
-          </div>
+            </span>
+            <span className="min-w-0 flex-1 text-sm sm:text-base font-bold text-white leading-tight">ตรวจสอบแก้ไข บัค และปรับปรุงระบบ</span>
+          </button>
         </main>
       </div>
 
