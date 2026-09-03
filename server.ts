@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import http from "http";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
@@ -78,26 +79,22 @@ async function startServer() {
   const app = express();
   const PORT = parseInt(process.env.PORT || "3001", 10);
 
-  // ─── C3: Security Headers (helmet) ──────────────────────────────────────────
+  // ─── C3: Security Headers & Allow in-IDE previews (Jetski Preview, Simple Browser) ───
   app.use(
     helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"],
-          styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-          fontSrc: ["'self'", "https://fonts.gstatic.com"],
-          imgSrc: ["'self'", "data:", "blob:"],
-          connectSrc: ["'self'"],
-          frameAncestors: ["'self'", "*"],
-        },
-      },
-      frameguard: false, // Allow in-IDE previews (Jetski Preview, VS Code Simple Browser)
-      crossOriginEmbedderPolicy: false, // Allow fonts & images from CDN
+      frameguard: false, // ปิดการบล็อก iframe
+      crossOriginEmbedderPolicy: false,
       crossOriginResourcePolicy: false,
       crossOriginOpenerPolicy: false,
+      contentSecurityPolicy: false, // ให้ middleware กำหนดอย่างอิสระ
     })
   );
+
+  app.use((_req, res, next) => {
+    res.setHeader("X-Frame-Options", "ALLOWALL");
+    res.setHeader("Content-Security-Policy", "frame-ancestors 'self' *");
+    next();
+  });
 
   app.use(express.json({ limit: "10mb" }));
 
@@ -200,9 +197,15 @@ async function startServer() {
   const hasDist = fs.existsSync(path.join(distPath, "index.html"));
   const isProduction = process.env.NODE_ENV === "production";
 
+  // Create HTTP server so Vite HMR WebSocket shares the same port (no separate 24678)
+  const server = http.createServer(app);
+
   if (!isProduction) {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        hmr: { server }, // HMR WebSocket ใช้พอร์ตเดียวกับ Express (3001)
+      },
       appType: "spa",
     });
     app.use(vite.middlewares);
@@ -213,7 +216,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  server.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://0.0.0.0:${PORT} [${isProduction ? "production" : "development"}]`);
   });
 }
