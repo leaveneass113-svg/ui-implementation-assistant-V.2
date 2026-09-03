@@ -89,9 +89,13 @@ async function startServer() {
           fontSrc: ["'self'", "https://fonts.gstatic.com"],
           imgSrc: ["'self'", "data:", "blob:"],
           connectSrc: ["'self'"],
+          frameAncestors: ["'self'", "*"],
         },
       },
+      frameguard: false, // Allow in-IDE previews (Jetski Preview, VS Code Simple Browser)
       crossOriginEmbedderPolicy: false, // Allow fonts & images from CDN
+      crossOriginResourcePolicy: false,
+      crossOriginOpenerPolicy: false,
     })
   );
 
@@ -194,7 +198,7 @@ async function startServer() {
   // ─── Vite development middleware / Static production serving ────────────────
   const distPath = path.join(process.cwd(), "dist");
   const hasDist = fs.existsSync(path.join(distPath, "index.html"));
-  const isProduction = process.env.NODE_ENV === "production" || (hasDist && process.env.NODE_ENV !== "development");
+  const isProduction = process.env.NODE_ENV === "production";
 
   if (!isProduction) {
     const vite = await createViteServer({
