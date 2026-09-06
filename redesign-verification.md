@@ -22,3 +22,8 @@ The Project Drawer remains backed by the existing `contractscan_projects_v4_clea
 ## Follow-up observation
 
 The bundle warning remains approximately 757.6 kB minified / 204.3 kB gzip. It does not block the app, but document-level dynamic imports would be a reasonable follow-up performance task after this UX redesign is accepted.
+
+
+## Persistence reload check
+
+After a page reload, the Project Drawer still displayed two separate project records, confirming that the newly added project persisted under the existing localStorage key. The document navigation and original report fields remained available after reload.
