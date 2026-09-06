@@ -133,7 +133,6 @@ export default function App() {
 
   const [activeProjectId, setActiveProjectId] = useState<string>(() => projects[0]?.id || 'proj-1');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isSidebarMobileOpen, setIsSidebarMobileOpen] = useState(false);
   const [activeView, setActiveView] = useState<ViewState>('contract-info');
 
   // Save State Management
@@ -234,20 +233,21 @@ export default function App() {
 
   const handleSelectProject = (id: string) => {
     setActiveProjectId(id);
+    setIsDrawerOpen(false);
   };
 
   const handleAddProject = () => {
     const newId = `proj-${Date.now()}`;
-    const newCount = projects.length + 1;
     const newProjectData: ReportData = {
       ...placeholderReportData,
-      projectName: `โครงการใหม่ที่ ${newCount}`,
-      docNo: `${String(newCount).padStart(2, '0')}/2569`,
+      projectName: '',
+      docNo: '',
+      isPlaceholderMode: true,
     };
 
     const newProject: Project = {
       id: newId,
-      name: newProjectData.projectName,
+      name: 'ยังไม่ได้ระบุโครงการ',
       updatedAt: new Date().toLocaleDateString('th-TH', {
         day: 'numeric',
         month: 'short',
@@ -258,6 +258,7 @@ export default function App() {
 
     setProjects((prev) => [newProject, ...prev]);
     setActiveProjectId(newId);
+    setIsDrawerOpen(false);
   };
 
   const handleDeleteProject = (id: string) => {
@@ -442,7 +443,6 @@ export default function App() {
         isPlaceholderMode={reportData.isPlaceholderMode}
         onTogglePreset={togglePreset}
         onOpenDrawer={() => setIsDrawerOpen(true)}
-        onOpenSidebar={() => setIsSidebarMobileOpen(true)}
         activeProjectName={reportData.projectName}
         onSaveProject={handleManualSave}
         isSaveSuccess={isSaveSuccess}
@@ -464,17 +464,16 @@ export default function App() {
       />
 
       {/* Sidebar + Main Content Layout */}
-      <div className="flex flex-1 min-h-0">
-        {/* Sidebar Navigation */}
+      <div className="flex flex-1 min-h-0 flex-col">
+        {/* Responsive document navigation */}
         <SidebarNav
           activeView={activeView}
           onViewChange={setActiveView}
-          isMobileOpen={isSidebarMobileOpen}
-          onMobileClose={() => setIsSidebarMobileOpen(false)}
+          onOpenProjects={() => setIsDrawerOpen(true)}
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 py-4 sm:py-8 px-3 sm:px-6 lg:px-8 overflow-y-auto">
+        <main className="flex-1 py-4 pb-28 sm:py-8 sm:pb-8 px-3 sm:px-6 lg:px-8 overflow-y-auto">
           <div className="w-full max-w-[1440px] mx-auto space-y-5 sm:space-y-8">
 
             {/* Quick Nav Bar (Top) — prev / current page / next */}
@@ -691,7 +690,7 @@ export default function App() {
       </div>
 
       {/* Floating Action Bar (Back to Top, Save) */}
-      <div className="fixed bottom-6 right-6 z-40 print:hidden flex items-center gap-2.5">
+      <div className="fixed bottom-24 sm:bottom-6 right-4 sm:right-6 z-40 print:hidden flex items-center gap-2.5">
         {/* Floating Back to Top Button */}
         {showBackToTop && (
           <button
@@ -730,7 +729,7 @@ export default function App() {
 
       {/* Floating Save Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-fadeIn">
+        <div className="fixed bottom-24 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 animate-fadeIn">
           <div className="bg-[#1a1a1a]/95 text-white text-xs font-semibold px-4 py-3 rounded-2xl border border-emerald-500/40 shadow-[0_10px_30px_rgba(0,0,0,0.8)] backdrop-blur-xl flex items-center gap-2.5 max-w-md mx-auto">
             <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
               <Check className="w-3.5 h-3.5" />

@@ -61,11 +61,11 @@ export const ProjectDrawer: React.FC<Props> = ({
 
       {/* Slide-out Left Drawer */}
       <aside
-        className="fixed top-0 left-0 bottom-0 w-64 sm:w-72 max-w-[50vw] bg-[#181818] border-r border-white/10 z-50 flex flex-col shadow-[10px_0_30px_rgba(0,0,0,0.7)] transform transition-transform duration-300 ease-out print:hidden"
+        className="fixed top-0 left-0 bottom-0 w-[min(92vw,24rem)] sm:w-96 max-w-[92vw] bg-[#292d32] border-r border-white/10 z-50 flex flex-col shadow-[10px_0_30px_rgba(0,0,0,0.7)] transform transition-transform duration-300 ease-out print:hidden"
         aria-label="การจัดการโครงการ"
       >
         {/* Header */}
-        <div className="p-3 sm:p-3.5 border-b border-white/10 flex items-center justify-between bg-[#1f1f1f]/80 backdrop-blur-md">
+        <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-[#292d32]/90 backdrop-blur-md">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl neu-pressed flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0">
               <Building2 className="w-4 h-4" />
@@ -90,7 +90,7 @@ export const ProjectDrawer: React.FC<Props> = ({
         </div>
 
         {/* Add Project Action & Search */}
-        <div className="p-3 border-b border-white/5 space-y-2 bg-[#151515]">
+        <div className="p-4 border-b border-white/5 space-y-2.5 bg-[#24282d]/80">
           <button
             onClick={() => {
               onAddProject();
@@ -155,10 +155,20 @@ export const ProjectDrawer: React.FC<Props> = ({
                   onClick={() => {
                     onSelectProject(project.id);
                   }}
+                  onKeyDown={(event) => {
+                    if (event.target !== event.currentTarget) return;
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      onSelectProject(project.id);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-current={isActive ? 'page' : undefined}
                   className={`group relative p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col gap-2 ${
                     isActive
                       ? 'bg-gradient-to-r from-orange-500/15 to-orange-600/5 border-orange-500/50 shadow-[0_4px_20px_rgba(249,115,22,0.15)] text-white'
-                      : 'bg-[#1e1e1e] border-white/5 hover:border-white/20 text-gray-300 hover:text-white hover:bg-[#232323]'
+                      : 'bg-[#292d32] border-white/5 hover:border-orange-500/30 text-gray-300 hover:text-white hover:bg-[#30353b]'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -219,7 +229,7 @@ export const ProjectDrawer: React.FC<Props> = ({
         </div>
 
         {/* Footer: Export/Import + Info */}
-        <div className="p-3 border-t border-white/10 bg-[#151515] space-y-2">
+        <div className="p-4 border-t border-white/10 bg-[#24282d]/80 space-y-2.5">
           {/* Export / Import JSON Backup */}
           <div className="flex items-center gap-2">
             {onExportJson && (
@@ -258,8 +268,8 @@ export const ProjectDrawer: React.FC<Props> = ({
               </>
             )}
           </div>
-          <p className="text-[10px] text-gray-500 text-center">
-            ระบบจัดการหลายโครงการ (Multi-Project Support)
+          <p className="text-[10px] text-gray-500 text-center leading-relaxed">
+            ข้อมูลจะบันทึกอัตโนมัติในเครื่องนี้ และสามารถสำรองเป็น JSON ได้
           </p>
         </div>
       </aside>

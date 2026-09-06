@@ -13,7 +13,6 @@ interface Props {
   isPlaceholderMode: boolean;
   onTogglePreset: () => void;
   onOpenDrawer: () => void;
-  onOpenSidebar: () => void;
   activeProjectName?: string;
   onSaveProject?: () => void;
   isSaveSuccess?: boolean;
@@ -24,35 +23,24 @@ export const TopBar: React.FC<Props> = ({
   isPlaceholderMode,
   onTogglePreset,
   onOpenDrawer,
-  onOpenSidebar,
   activeProjectName,
   onSaveProject,
   isSaveSuccess,
   lastSavedTime,
 }) => {
   return (
-    <header className="bg-[#161616]/95 border-b border-white/5 text-gray-100 sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,0,0,0.5)] print:hidden backdrop-blur-xl transition-all">
+    <header className="bg-[#292d32]/95 border-b border-white/5 text-gray-100 sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,0,0,0.5)] print:hidden backdrop-blur-xl transition-all">
       <div className="px-3 sm:px-5 py-2 sm:py-2.5">
         <div className="flex items-center justify-between gap-3 min-w-0">
 
           {/* Left: Hamburger(s), CS Logo & Project Name */}
           <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-            {/* Mobile sidebar toggle */}
-            <button
-              onClick={onOpenSidebar}
-              className="md:hidden p-2 rounded-xl neu-button text-gray-200 hover:text-orange-400 border border-white/5 transition-all flex items-center justify-center group active:scale-95 shrink-0 cursor-pointer"
-              title="เปิดเมนูเอกสาร"
-              aria-label="เปิดเมนูเอกสาร"
-            >
-              <Menu className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            </button>
-
-            {/* Project drawer toggle */}
+            {/* Project drawer toggle: the document navigation lives in the responsive nav below. */}
             <button
               onClick={onOpenDrawer}
-              className="hidden md:flex p-2 sm:p-2.5 rounded-xl neu-button text-gray-200 hover:text-orange-400 border border-white/5 transition-all items-center justify-center group active:scale-95 shrink-0 cursor-pointer"
-              title="เปิดเมนูจัดการโครงการ"
-              aria-label="เปิดเมนูจัดการโครงการ"
+              className="p-2 sm:p-2.5 rounded-xl neu-button text-gray-200 hover:text-orange-400 border border-white/5 transition-all flex items-center justify-center group active:scale-95 shrink-0 cursor-pointer"
+              title="เปิดศูนย์จัดการโครงการ"
+              aria-label="เปิดศูนย์จัดการโครงการ"
             >
               <Menu className="w-4 h-4 sm:w-[18px] sm:h-[18px] group-hover:scale-110 transition-transform" />
             </button>
@@ -82,7 +70,7 @@ export const TopBar: React.FC<Props> = ({
             {lastSavedTime && (
               <div
                 id="autosave_indicator"
-                className="hidden xl:flex items-center gap-1.5 text-[11px] text-zinc-400 bg-[#141517] px-2.5 py-1.5 rounded-xl border border-white/5 select-none"
+                className="hidden xl:flex items-center gap-1.5 text-[11px] text-zinc-400 bg-[#24282d] px-2.5 py-1.5 rounded-xl border border-white/5 select-none"
                 title={`บันทึกอัตโนมัติล่าสุดเมื่อ ${lastSavedTime}`}
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
