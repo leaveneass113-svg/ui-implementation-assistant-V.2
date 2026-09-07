@@ -1,19 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { placeholderReportData, filledSampleReportData } from './data/presets';
 import { ReportData, Project, WeekData } from './types';
 import { TopBar, ViewState } from './components/TopBar';
 import { SidebarNav } from './components/SidebarNav';
 import { ProjectDrawer } from './components/ProjectDrawer';
 import { DocumentPage1 } from './components/DocumentPage1';
-import { DocumentPage2 } from './components/DocumentPage2';
-import { DocumentPage3 } from './components/DocumentPage3';
-import { DocumentPage4Monthly } from './components/DocumentPage4Monthly';
-import { DocumentPage5Details } from './components/DocumentPage5Details';
-import { DocumentPage6MonthlyLog } from './components/DocumentPage6MonthlyLog';
-import { DocumentPage7MilestonesMaterials } from './components/DocumentPage7MilestonesMaterials';
-import { DocumentPage8ExecutiveSummary } from './components/DocumentPage8ExecutiveSummary';
-import { ExportView } from './components/ExportView';
-import { UploadContractScanner } from './components/UploadContractScanner';
+
+const UploadContractScanner = lazy(() =>
+  import('./components/UploadContractScanner').then((m) => ({ default: m.UploadContractScanner }))
+);
+const DocumentPage2 = lazy(() =>
+  import('./components/DocumentPage2').then((m) => ({ default: m.DocumentPage2 }))
+);
+const DocumentPage3 = lazy(() =>
+  import('./components/DocumentPage3').then((m) => ({ default: m.DocumentPage3 }))
+);
+const DocumentPage4Monthly = lazy(() =>
+  import('./components/DocumentPage4Monthly').then((m) => ({ default: m.DocumentPage4Monthly }))
+);
+const DocumentPage5Details = lazy(() =>
+  import('./components/DocumentPage5Details').then((m) => ({ default: m.DocumentPage5Details }))
+);
+const DocumentPage6MonthlyLog = lazy(() =>
+  import('./components/DocumentPage6MonthlyLog').then((m) => ({ default: m.DocumentPage6MonthlyLog }))
+);
+const DocumentPage7MilestonesMaterials = lazy(() =>
+  import('./components/DocumentPage7MilestonesMaterials').then((m) => ({
+    default: m.DocumentPage7MilestonesMaterials,
+  }))
+);
+const DocumentPage8ExecutiveSummary = lazy(() =>
+  import('./components/DocumentPage8ExecutiveSummary').then((m) => ({
+    default: m.DocumentPage8ExecutiveSummary,
+  }))
+);
+const ExportView = lazy(() =>
+  import('./components/ExportView').then((m) => ({ default: m.ExportView }))
+);
 import {
   createDefaultWeek,
   generateWeeksFromContract,
@@ -105,6 +128,19 @@ function sanitizeProjectData(projectList: Project[]): Project[] {
       },
     };
   });
+}
+
+function PageLoadingFallback() {
+  return (
+    <div
+      className="neu-flat p-8 rounded-2xl text-center text-gray-300 max-w-lg mx-auto my-12 animate-pulse flex flex-col items-center justify-center gap-3"
+      role="status"
+      aria-label="กำลังโหลดเนื้อหาหน้า..."
+    >
+      <div className="w-8 h-8 rounded-full border-2 border-orange-500/30 border-t-orange-500 animate-spin" />
+      <span className="text-sm font-medium text-gray-400">กำลังโหลดเนื้อหาหน้า...</span>
+    </div>
+  );
 }
 
 export default function App() {
@@ -510,10 +546,12 @@ export default function App() {
             })()}
             {/* Tab 1: Upload & Scan */}
             {activeView === 'upload' && (
-              <UploadContractScanner onContractExtracted={handleContractExtracted} />
+              <Suspense fallback={<PageLoadingFallback />}>
+                <UploadContractScanner onContractExtracted={handleContractExtracted} />
+              </Suspense>
             )}
 
-            {/* Tab 2: Contract Info (Page 1) */}
+            {/* Tab 2: Contract Info (Page 1 - Static Landing Page) */}
             {activeView === 'contract-info' && (
               <div className="space-y-3">
                 <DocumentPage1
@@ -528,149 +566,158 @@ export default function App() {
 
             {/* Tab 3: Weekly Log (Page 2) */}
             {activeView === 'weekly-log' && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
-                  <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    บันทึกประจำสัปดาห์ (Weekly Log — ตารางแถวเดียว)
-                  </span>
-                  <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+              <Suspense fallback={<PageLoadingFallback />}>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
+                    <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                      บันทึกประจำสัปดาห์ (Weekly Log — ตารางแถวเดียว)
+                    </span>
+                    <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+                  </div>
+                  <DocumentPage2
+                    data={reportData}
+                    onChange={handleUpdateReportData}
+                    onAddWeek={handleAddWeek}
+                    onDeleteWeek={handleDeleteWeek}
+                    onAutoGenerateWeeks={handleAutoGenerateWeeks}
+                    onNavigatePrev={() => setActiveView('contract-info')}
+                    onNavigateNext={() => setActiveView('daily-log')}
+                  />
                 </div>
-                <DocumentPage2
-                  data={reportData}
-                  onChange={handleUpdateReportData}
-                  onAddWeek={handleAddWeek}
-                  onDeleteWeek={handleDeleteWeek}
-                  onAutoGenerateWeeks={handleAutoGenerateWeeks}
-                  onNavigatePrev={() => setActiveView('contract-info')}
-                  onNavigateNext={() => setActiveView('daily-log')}
-                />
-              </div>
+              </Suspense>
             )}
 
             {/* Tab 4: Daily Log (Page 3) */}
             {activeView === 'daily-log' && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
-                  <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    บันทึกรายวัน (Daily Log — ตาราง 7 วัน + ตารางแรงงาน loop)
-                  </span>
-                  <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+              <Suspense fallback={<PageLoadingFallback />}>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
+                    <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                      บันทึกรายวัน (Daily Log — ตาราง 7 วัน + ตารางแรงงาน loop)
+                    </span>
+                    <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+                  </div>
+                  <DocumentPage3
+                    data={reportData}
+                    onChange={handleUpdateReportData}
+                    onAddWeek={handleAddWeek}
+                    onDeleteWeek={handleDeleteWeek}
+                    onAutoGenerateWeeks={handleAutoGenerateWeeks}
+                    onNavigatePrev={() => setActiveView('weekly-log')}
+                    onNavigateNext={() => setActiveView('monthly-memo')}
+                  />
                 </div>
-                <DocumentPage3
-                  data={reportData}
-                  onChange={handleUpdateReportData}
-                  onAddWeek={handleAddWeek}
-                  onDeleteWeek={handleDeleteWeek}
-                  onAutoGenerateWeeks={handleAutoGenerateWeeks}
-                  onNavigatePrev={() => setActiveView('weekly-log')}
-                  onNavigateNext={() => setActiveView('monthly-memo')}
-                />
-              </div>
+              </Suspense>
             )}
 
             {/* Tab 5: Monthly Memo (Page 4) */}
             {activeView === 'monthly-memo' && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
-                  <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    บันทึกข้อความ (รายงานประจำเดือน)
-                  </span>
-                  <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+              <Suspense fallback={<PageLoadingFallback />}>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
+                    <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                      บันทึกข้อความ (รายงานประจำเดือน)
+                    </span>
+                    <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+                  </div>
+                  <DocumentPage4Monthly
+                    data={reportData}
+                    onChange={handleUpdateReportData}
+                    onNavigatePrev={() => setActiveView('daily-log')}
+                    onNavigateNext={() => setActiveView('project-details')}
+                  />
                 </div>
-                <DocumentPage4Monthly
-                  data={reportData}
-                  onChange={handleUpdateReportData}
-                  onNavigatePrev={() => setActiveView('daily-log')}
-                  onNavigateNext={() => setActiveView('project-details')}
-                />
-              </div>
+              </Suspense>
             )}
 
             {/* Tab 6: Project Details (Page 5) */}
             {activeView === 'project-details' && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
-                  <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    ข้อมูลโครงการและสัญญาจ้างฉบับเต็ม
-                  </span>
-                  <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+              <Suspense fallback={<PageLoadingFallback />}>
+                <div className="space-y-3">
+                  <DocumentPage5Details
+                    data={reportData}
+                    onChange={handleUpdateReportData}
+                    onNavigatePrev={() => setActiveView('monthly-memo')}
+                    onNavigateNext={() => setActiveView('monthly-log')}
+                  />
                 </div>
-                <DocumentPage5Details
-                  data={reportData}
-                  onChange={handleUpdateReportData}
-                  onNavigatePrev={() => setActiveView('monthly-memo')}
-                  onNavigateNext={() => setActiveView('monthly-log')}
-                />
-              </div>
+              </Suspense>
             )}
 
             {/* Tab 7: Monthly Progress Log (Page 6) */}
             {activeView === 'monthly-log' && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
-                  <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    ตารางผลการดำเนินงานสะสมรายเดือน
-                  </span>
-                  <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+              <Suspense fallback={<PageLoadingFallback />}>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
+                    <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                      ตารางผลการดำเนินงานสะสมรายเดือน
+                    </span>
+                    <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+                  </div>
+                  <DocumentPage6MonthlyLog
+                    data={reportData}
+                    onChange={handleUpdateReportData}
+                    onNavigatePrev={() => setActiveView('project-details')}
+                    onNavigateNext={() => setActiveView('milestones-materials')}
+                  />
                 </div>
-                <DocumentPage6MonthlyLog
-                  data={reportData}
-                  onChange={handleUpdateReportData}
-                  onNavigatePrev={() => setActiveView('project-details')}
-                  onNavigateNext={() => setActiveView('milestones-materials')}
-                />
-              </div>
+              </Suspense>
             )}
 
             {/* Tab 8: Milestones & Materials (Page 7) */}
             {activeView === 'milestones-materials' && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
-                  <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    งวดงาน การตรวจรับ & ผลทดสอบวัสดุ
-                  </span>
-                  <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+              <Suspense fallback={<PageLoadingFallback />}>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
+                    <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                      งวดงาน การตรวจรับ & ผลทดสอบวัสดุ
+                    </span>
+                    <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+                  </div>
+                  <DocumentPage7MilestonesMaterials
+                    data={reportData}
+                    onChange={handleUpdateReportData}
+                    onNavigatePrev={() => setActiveView('monthly-log')}
+                    onNavigateNext={() => setActiveView('executive-summary')}
+                  />
                 </div>
-                <DocumentPage7MilestonesMaterials
-                  data={reportData}
-                  onChange={handleUpdateReportData}
-                  onNavigatePrev={() => setActiveView('monthly-log')}
-                  onNavigateNext={() => setActiveView('executive-summary')}
-                />
-              </div>
+              </Suspense>
             )}
 
             {/* Tab 9: Executive Dashboard & Obstacles (Page 8) */}
             {activeView === 'executive-summary' && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
-                  <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                    สรุปผลโครงการ
-                  </span>
-                  <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+              <Suspense fallback={<PageLoadingFallback />}>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs text-gray-400 max-w-[210mm] mx-auto print:hidden">
+                    <span className="font-semibold text-orange-400/90 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                      สรุปผลโครงการ
+                    </span>
+                    <span className="text-gray-500">ขนาด A4 มาตรฐานราชการ</span>
+                  </div>
+                  <DocumentPage8ExecutiveSummary
+                    data={reportData}
+                    onChange={handleUpdateReportData}
+                    onNavigatePrev={() => setActiveView('milestones-materials')}
+                    onNavigateToExport={() => setActiveView('export')}
+                  />
                 </div>
-                <DocumentPage8ExecutiveSummary
-                  data={reportData}
-                  onChange={handleUpdateReportData}
-                  onNavigatePrev={() => setActiveView('milestones-materials')}
-                  onNavigateToExport={() => setActiveView('export')}
-                />
-              </div>
+              </Suspense>
             )}
 
             {/* Tab 10: Export View */}
             {activeView === 'export' && (
-              <ExportView
-                data={reportData}
-                onSelectWeek={handleSelectWeekIndex}
-              />
+              <Suspense fallback={<PageLoadingFallback />}>
+                <ExportView
+                  data={reportData}
+                  onSelectWeek={handleSelectWeekIndex}
+                />
+              </Suspense>
             )}
           </div>
 

@@ -26,6 +26,8 @@ export const resetPage5Data = (current: ReportData): ReportData => {
     contractorSupervisor: '',
     rep1Name: '',
     rep2Name: '',
+    extendedEndDate: '',
+    extendedDays: '',
   };
 };
 

@@ -1,5 +1,3 @@
-import PizZip from 'pizzip';
-import Docxtemplater from 'docxtemplater';
 import { ReportData, WeekData } from '../types';
 import {
   buildDailyWorkSummary,
@@ -272,6 +270,10 @@ export async function generateDocxBlob(
   }
 
   const arrayBuffer = await response.arrayBuffer();
+  const [{ default: PizZip }, { default: Docxtemplater }] = await Promise.all([
+    import('pizzip'),
+    import('docxtemplater'),
+  ]);
   const zip = new PizZip(arrayBuffer);
 
   // Clean any stray formatting artifacts if present

@@ -22,7 +22,7 @@
   body {
     margin: 0;
     min-width: 320px;
-    font-family: 'Sarabun', 'TH Sarabun PSK', sans-serif;
+    font-family: 'Prompt', 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--cs-bg);
     color: var(--cs-text);
   }
@@ -95,6 +95,25 @@
 .neu-purple-btn:hover {
   background: linear-gradient(145deg, #a78bfa, #8b5cf6);
   box-shadow: 6px 6px 16px rgba(139, 92, 246, 0.4);
+}
+
+.neu-input {
+  background-color: #141517;
+  color: var(--cs-text);
+  border: 1px solid var(--cs-border);
+  box-shadow: inset 3px 3px 6px #0a0b0c, inset -2px -2px 5px rgba(255, 255, 255, 0.03);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.neu-input:focus {
+  border-color: rgba(249, 115, 22, 0.5);
+}
+
+.neu-pill-inset {
+  background: var(--cs-surface);
+  box-shadow: inset 2px 2px 4px var(--cs-shadow-dark), inset -2px -2px 4px var(--cs-shadow-light);
+  border-radius: 9999px;
 }
 
 /* Desktop document navigation: one horizontal, scrollable row below the app header. */

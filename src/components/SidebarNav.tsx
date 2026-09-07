@@ -59,7 +59,7 @@ const getProgress = (activeView: ViewState) => {
   };
 };
 
-export const SidebarNav: React.FC<Props> = ({ activeView, onViewChange, onOpenProjects }) => {
+export const SidebarNav: FC<Props> = ({ activeView, onViewChange, onOpenProjects }) => {
   const { activeIndex, percent } = getProgress(activeView);
 
   const renderProjectButton = (mobile = false) => (
