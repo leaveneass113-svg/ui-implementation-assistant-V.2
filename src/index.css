@@ -12,6 +12,7 @@
   --cs-surface-raised: #30353b;
   --cs-surface-deep: #24282d;
   --cs-border: rgba(224, 229, 236, 0.08);
+  --cs-sidebar-width: 288px;
 }
 
 @layer base {
@@ -23,7 +24,7 @@
     margin: 0;
     min-width: 320px;
     font-family: 'Prompt', 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--cs-bg);
+    background: radial-gradient(circle at 72% 8%, rgba(249, 115, 22, 0.08), transparent 28rem), radial-gradient(circle at 40% 88%, rgba(56, 189, 248, 0.04), transparent 30rem), var(--cs-bg);
     color: var(--cs-text);
   }
 
@@ -33,6 +34,21 @@
   textarea {
     font: inherit;
   }
+}
+
+.app-shell { background: transparent; }
+
+.app-header {
+  margin-left: var(--cs-sidebar-width);
+  min-height: 72px;
+  background: rgba(14, 17, 24, 0.86) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+}
+
+.app-main {
+  margin-left: var(--cs-sidebar-width);
+  padding-top: 2rem;
 }
 
 .font-sarabun {
@@ -118,22 +134,24 @@
 
 /* Desktop document navigation: one horizontal, scrollable row below the app header. */
 .desktop-document-nav {
-  position: sticky;
-  top: 58px;
-  z-index: 35;
-  padding: 0.75rem clamp(0.75rem, 2vw, 2rem);
-  background: color-mix(in srgb, var(--cs-bg) 92%, transparent);
-  backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--cs-border);
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 45;
+  width: var(--cs-sidebar-width);
+  padding: 1.5rem;
+  background: linear-gradient(180deg, rgba(20, 25, 34, 0.94), rgba(12, 15, 22, 0.98));
+  backdrop-filter: blur(24px) saturate(190%);
+  border-right: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow: 8px 0 28px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
 }
 
 .desktop-document-nav__inner {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0.65rem 0.8rem 0.5rem;
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--cs-surface) 92%, transparent);
-  box-shadow: 5px 5px 12px var(--cs-shadow-dark), -5px -5px 12px var(--cs-shadow-light);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: transparent;
 }
 
 .desktop-document-nav__meta {
@@ -141,7 +159,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0 0.45rem 0.55rem;
+  padding: 0.85rem 0.45rem 0.75rem;
 }
 
 .desktop-document-nav__progress,
@@ -167,27 +185,69 @@
 
 .desktop-document-nav__scroller {
   display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  overflow-x: auto;
-  padding: 0.25rem 0.35rem 0.35rem;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.55rem;
+  overflow-y: auto;
+  padding: 0.4rem 0.1rem 1rem;
   scrollbar-width: thin;
   scrollbar-color: rgba(249, 115, 22, 0.45) transparent;
 }
 
 .desktop-document-nav__divider {
-  width: 1px;
-  height: 2rem;
+  width: 100%;
+  height: 1px;
   flex: 0 0 auto;
+  margin: 0.2rem 0;
   background: rgba(224, 229, 236, 0.12);
 }
 
 .nav-project-button,
 .nav-document-item {
-  min-height: 3rem;
+  min-height: 3.15rem;
   background: var(--cs-surface);
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 4px 4px 8px var(--cs-shadow-dark), -4px -4px 8px var(--cs-shadow-light);
+}
+
+.nav-project-button {
+  width: 100%;
+  justify-content: flex-start;
+  margin-bottom: 0.45rem;
+  background: rgba(11, 14, 20, 0.72);
+}
+
+.desktop-document-nav .nav-document-item {
+  width: 100%;
+  justify-content: flex-start;
+  border-radius: 0.85rem;
+}
+
+.desktop-document-nav .desktop-document-nav__progress { width: 7.5rem; }
+
+.desktop-document-nav::before {
+  content: 'ContractScan  V2';
+  display: block;
+  padding: 0 0.35rem 0.15rem;
+  color: var(--cs-text);
+  font-family: 'Sarabun', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.desktop-document-nav::after {
+  content: '●  สถานะการตรวจสอบ   ออนไลน์';
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.9rem;
+  color: #ffb690;
+  background: rgba(24, 29, 37, 0.9);
+  font-size: 0.72rem;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .nav-project-button:hover,
@@ -320,6 +380,11 @@ textarea:focus-visible {
 .system-action:hover .system-action__icon {
   background-color: rgba(249, 115, 22, 0.24);
   transform: scale(1.04);
+}
+
+@media (max-width: 767px) {
+  .app-header { margin-left: 0; }
+  .app-main { margin-left: 0; }
 }
 
 @media (max-width: 640px) {

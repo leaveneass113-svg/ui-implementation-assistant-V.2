@@ -29,7 +29,7 @@ export const TopBar: React.FC<Props> = ({
   lastSavedTime,
 }) => {
   return (
-    <header className="bg-[#292d32]/95 border-b border-white/5 text-gray-100 sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,0,0,0.5)] print:hidden backdrop-blur-xl transition-all">
+    <header className="app-header bg-[#292d32]/95 border-b border-white/5 text-gray-100 sticky top-0 z-50 shadow-[0_4px_20px_rgba(0,0,0,0.5)] print:hidden backdrop-blur-xl transition-all">
       <div className="px-3 sm:px-5 py-2 sm:py-2.5">
         <div className="flex items-center justify-between gap-3 min-w-0">
 

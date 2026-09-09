@@ -473,7 +473,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen text-gray-100 flex flex-col font-sarabun selection:bg-orange-500 selection:text-white relative">
+    <div className="app-shell min-h-screen text-gray-100 flex flex-col font-sarabun selection:bg-orange-500 selection:text-white relative">
       {/* Top Slim Header Bar */}
       <TopBar
         isPlaceholderMode={reportData.isPlaceholderMode}
@@ -509,7 +509,7 @@ export default function App() {
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 py-4 pb-28 sm:py-8 sm:pb-8 px-3 sm:px-6 lg:px-8 overflow-y-auto">
+        <main className="app-main flex-1 py-4 pb-28 sm:py-8 sm:pb-8 px-3 sm:px-6 lg:px-8 overflow-y-auto">
           <div className="w-full max-w-[1440px] mx-auto space-y-5 sm:space-y-8">
 
             {/* Quick Nav Bar (Top) — prev / current page / next */}
