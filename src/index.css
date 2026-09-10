@@ -1,17 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  --cs-bg: #292d32;
-  --cs-shadow-light: #353a40;
-  --cs-shadow-dark: #1d2024;
+  --cs-bg: #0b0f14;
+  --cs-shadow-light: rgba(255, 255, 255, 0.06);
+  --cs-shadow-dark: rgba(0, 0, 0, 0.55);
   --cs-text: #e0e5ec;
   --cs-muted: #9ca3af;
+  --cs-text-variant: #e0c0b1;
   --cs-accent: #f97316;
   --cs-accent-hover: #ea580c;
-  --cs-surface: #292d32;
-  --cs-surface-raised: #30353b;
-  --cs-surface-deep: #24282d;
-  --cs-border: rgba(224, 229, 236, 0.08);
+  --cs-accent-tint: #ffb690;
+  --cs-accent-fixed: #ffdbca;
+  --cs-accent-glow: rgba(249, 115, 22, 0.45);
+  --cs-weather-rain: #38bdf8;
+  --cs-error: #ffb4ab;
+  --cs-surface-lowest: #0a0f13;
+  --cs-surface-dim: #101418;
+  --cs-surface-low: #181c21;
+  --cs-surface: #1c2025;
+  --cs-surface-raised: #262a2f;
+  --cs-surface-highest: #31353a;
+  --cs-surface-bright: #36393f;
+  --cs-surface-deep: #101418;
+  --cs-border: rgba(255, 255, 255, 0.1);
   --cs-sidebar-width: 288px;
 }
 
@@ -24,7 +35,13 @@
     margin: 0;
     min-width: 320px;
     font-family: 'Prompt', 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: radial-gradient(circle at 72% 8%, rgba(249, 115, 22, 0.08), transparent 28rem), radial-gradient(circle at 40% 88%, rgba(56, 189, 248, 0.04), transparent 30rem), var(--cs-bg);
+    background-color: var(--cs-bg);
+    background-image:
+      radial-gradient(at 15% 15%, rgba(249, 115, 22, 0.08) 0, transparent 45%),
+      radial-gradient(at 85% 20%, rgba(56, 189, 248, 0.05) 0, transparent 40%),
+      radial-gradient(at 50% 80%, rgba(249, 115, 22, 0.06) 0, transparent 50%),
+      radial-gradient(at 90% 85%, rgba(255, 182, 144, 0.04) 0, transparent 40%);
+    background-attachment: fixed;
     color: var(--cs-text);
   }
 
@@ -41,8 +58,8 @@
 .app-header {
   margin-left: var(--cs-sidebar-width);
   min-height: 72px;
-  background: rgba(14, 17, 24, 0.86) !important;
-  border-color: rgba(255, 255, 255, 0.08) !important;
+  background: linear-gradient(180deg, rgba(22, 27, 36, 0.86), rgba(14, 17, 24, 0.92)) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
   backdrop-filter: blur(20px) saturate(180%);
 }
 
@@ -79,37 +96,48 @@
 }
 
 .neu-flat {
-  background: var(--cs-surface);
-  box-shadow: 8px 8px 16px var(--cs-shadow-dark), -8px -8px 16px var(--cs-shadow-light);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(20, 24, 30, 0.78) 100%);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 16px 36px -8px rgba(0, 0, 0, 0.65), 0 4px 12px rgba(0, 0, 0, 0.4);
   border-radius: 16px;
 }
 
 .neu-button {
-  background: var(--cs-surface);
-  box-shadow: 4px 4px 8px var(--cs-shadow-dark), -4px -4px 8px var(--cs-shadow-light);
-  border: 1px solid transparent;
+  background: linear-gradient(145deg, #232833, #181d25);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.55), -2px -2px 6px rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.2s ease;
 }
 
 .neu-button:hover {
-  box-shadow: 6px 6px 12px var(--cs-shadow-dark), -6px -6px 12px var(--cs-shadow-light);
+  background: linear-gradient(145deg, #29303d, #1c222c);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 5px 5px 14px rgba(0, 0, 0, 0.65), -3px -3px 8px rgba(255, 255, 255, 0.09);
 }
 
 .neu-button:active,
 .neu-button-active {
-  background: var(--cs-surface-deep);
-  box-shadow: inset 4px 4px 8px var(--cs-shadow-dark), inset -4px -4px 8px var(--cs-shadow-light);
+  background: linear-gradient(145deg, #151922, #1c212b);
+  box-shadow: inset 3px 3px 7px rgba(0, 0, 0, 0.65), inset -2px -2px 5px rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 .neu-pressed {
-  background: var(--cs-surface);
-  box-shadow: inset 6px 6px 12px var(--cs-shadow-dark), inset -6px -6px 12px var(--cs-shadow-light);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(15, 18, 24, 0.85) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.65), inset -1px -1px 3px rgba(255, 255, 255, 0.05);
   border-radius: 12px;
 }
 
 .neu-orange-btn {
-  background: linear-gradient(145deg, var(--cs-accent), var(--cs-accent-hover));
-  box-shadow: 4px 4px 12px rgba(249, 115, 22, 0.28), -2px -2px 8px rgba(224, 229, 236, 0.06);
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
 }
 
 .neu-orange-btn:hover {
@@ -128,10 +156,11 @@
 }
 
 .neu-input {
-  background-color: #141517;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(15, 18, 24, 0.85) 100%);
+  background-color: var(--cs-surface-lowest);
   color: var(--cs-text);
-  border: 1px solid var(--cs-border);
-  box-shadow: inset 3px 3px 6px #0a0b0c, inset -2px -2px 5px rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.65), inset -1px -1px 3px rgba(255, 255, 255, 0.05);
   outline: none;
   transition: all 0.2s ease;
 }
@@ -146,6 +175,15 @@
   border-radius: 9999px;
 }
 
+.milestone-description-input {
+  display: block;
+  width: 280px;
+  min-width: 280px;
+  max-width: 280px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
 /* Desktop document navigation: one horizontal, scrollable row below the app header. */
 .desktop-document-nav {
   position: fixed;
@@ -153,7 +191,7 @@
   z-index: 45;
   width: var(--cs-sidebar-width);
   padding: 1.5rem;
-  background: linear-gradient(180deg, rgba(20, 25, 34, 0.94), rgba(12, 15, 22, 0.98));
+  background: linear-gradient(180deg, rgba(20, 25, 34, 0.88), rgba(12, 15, 22, 0.94));
   backdrop-filter: blur(24px) saturate(190%);
   border-right: 1px solid rgba(255, 255, 255, 0.09);
   box-shadow: 8px 0 28px rgba(0, 0, 0, 0.55);
@@ -219,7 +257,7 @@
 .nav-project-button,
 .nav-document-item {
   min-height: 3.15rem;
-  background: var(--cs-surface);
+  background: linear-gradient(145deg, #232833, #181d25);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 4px 4px 8px var(--cs-shadow-dark), -4px -4px 8px var(--cs-shadow-light);
 }
@@ -228,7 +266,7 @@
   width: 100%;
   justify-content: flex-start;
   margin-bottom: 0.45rem;
-  background: rgba(11, 14, 20, 0.72);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(15, 18, 24, 0.85) 100%);
 }
 
 .desktop-document-nav .nav-document-item {
@@ -273,8 +311,8 @@
 .nav-project-button:active,
 .nav-document-item:active,
 .nav-document-item--active {
-  background: var(--cs-accent);
-  box-shadow: inset 4px 4px 8px rgba(185, 63, 0, 0.35), inset -4px -4px 8px rgba(255, 194, 145, 0.26), 0 4px 20px rgba(249, 115, 22, 0.28);
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
 /* Mobile document navigation: reachable by thumb, horizontally scrollable, and safe-area aware. */
@@ -285,7 +323,7 @@
   left: 0;
   z-index: 45;
   padding: 0.45rem 0.5rem calc(0.45rem + env(safe-area-inset-bottom));
-  background: color-mix(in srgb, var(--cs-bg) 94%, transparent);
+  background: linear-gradient(180deg, rgba(22, 27, 36, 0.86), rgba(14, 17, 24, 0.92));
   backdrop-filter: blur(20px);
   border-top: 1px solid var(--cs-border);
   box-shadow: 0 -8px 24px rgba(29, 32, 36, 0.36);
@@ -361,7 +399,7 @@
 .system-action {
   margin-top: 1rem;
   border: 1px solid rgba(249, 115, 22, 0.24);
-  background: linear-gradient(120deg, rgba(249, 115, 22, 0.12), rgba(41, 45, 50, 0.94) 46%, rgba(124, 58, 246, 0.12));
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.18), rgba(20, 24, 30, 0.82) 52%, rgba(56, 189, 248, 0.08));
   box-shadow: 8px 8px 16px rgba(29, 32, 36, 0.58), -4px -4px 12px rgba(53, 58, 64, 0.18);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }

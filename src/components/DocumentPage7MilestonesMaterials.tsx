@@ -223,7 +223,7 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
             <thead>
               <tr className="text-gray-400 font-bold text-center border-b border-white/5">
                 <th className="py-2.5 px-2 w-12 neu-pressed rounded-l-2xl border border-white/5">งวดที่</th>
-                <th className="py-2.5 px-3 text-left neu-pressed border border-white/5 min-w-[240px]">รายละเอียดงานงวด</th>
+                <th className="py-2.5 px-3 text-left neu-pressed border border-white/5 w-[280px] min-w-[280px]">รายละเอียดงานงวด</th>
                 <th className="py-2.5 px-2 w-32 neu-pressed border border-white/5">จำนวนเงิน</th>
                 <th className="py-2.5 px-2 w-28 neu-pressed border border-white/5">กำหนดส่ง</th>
                 <th className="py-2.5 px-2 w-28 neu-pressed border border-white/5">ส่งมอบจริง</th>
@@ -246,7 +246,7 @@ export const DocumentPage7MilestonesMaterials: React.FC<Props> = ({
                       value={m.description || ''}
                       onChange={(e) => handleMilestoneChange(idx, 'description', e.target.value)}
                       placeholder="0"
-                      className="w-full h-10 neu-pressed text-primary text-xs px-3 rounded-xl outline-none placeholder:text-gray-500 focus:text-white transition-all"
+                      className="milestone-description-input h-10 neu-pressed text-primary text-xs px-3 rounded-xl outline-none placeholder:text-gray-500 focus:text-white transition-all"
                     />
                   </td>
                   <td className="p-2 align-middle">
