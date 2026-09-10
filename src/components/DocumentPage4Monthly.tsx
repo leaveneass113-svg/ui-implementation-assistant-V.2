@@ -7,6 +7,7 @@ import {
   TrendingUp,
   ChevronLeft,
   Plus,
+  Trash2,
   ArrowRight,
   RotateCcw,
 } from 'lucide-react';
@@ -30,15 +31,44 @@ interface Props {
 }
 
 export const DocumentPage4Monthly: React.FC<Props> = ({
-  data,
+  data: initialData,
   onChange,
   onNavigatePrev,
   onNavigateNext,
 }) => {
+  const monthlyFieldKeys: (keyof ReportData)[] = [
+    'docNo', 'rptMonth', 'projectName', 'location', 'quantity', 'contractNo',
+    'totalDays', 'constructionCost', 'finePerDay', 'installN', 'contractorName',
+    'supervisorName', 'supervisorPos', 'committeeChairName', 'committeeChairPos',
+    'committee1Name', 'committee1Pos', 'committee2Name', 'committee2Pos',
+  ];
+  const snapshotMonthlyData = (source: ReportData): Partial<ReportData> =>
+    Object.fromEntries(monthlyFieldKeys.map((key) => [key, source[key]]));
+  const monthlyPages = initialData.monthlyPages?.length
+    ? initialData.monthlyPages
+    : [{ id: 'monthly-1', data: snapshotMonthlyData(initialData) }];
+  const activeMonthlyPageIndex = Math.min(
+    Math.max(0, initialData.activeMonthlyPageIndex ?? 0),
+    monthlyPages.length - 1,
+  );
+  const activeMonthlyPage = monthlyPages[activeMonthlyPageIndex];
+  const data: ReportData = { ...initialData, ...(activeMonthlyPage?.data || {}) };
+
+  const commitMonthlyData = (updatedData: ReportData) => {
+    if (!onChange) return;
+    const updatedPages = monthlyPages.map((page, index) =>
+      index === activeMonthlyPageIndex ? { ...page, data: snapshotMonthlyData(updatedData) } : page,
+    );
+    onChange({
+      ...initialData,
+      ...updatedData,
+      monthlyPages: updatedPages,
+      activeMonthlyPageIndex,
+    });
+  };
+
   const updateField = (field: keyof ReportData, value: any) => {
-    if (onChange) {
-      onChange({ ...data, [field]: value });
-    }
+    commitMonthlyData({ ...data, [field]: value });
   };
 
   // Derive current cumulative % from latest week in state (using Thai digits)
@@ -55,10 +85,7 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
       }
       return w;
     });
-    onChange({
-      ...data,
-      weeks: updatedWeeks,
-    });
+    commitMonthlyData({ ...data, weeks: updatedWeeks });
   };
 
   const handleStartDateChange = (val: string) => {
@@ -105,7 +132,7 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
       return w;
     });
 
-    onChange({
+    commitMonthlyData({
       ...data,
       startDate: toThaiDigits(val),
       endDate: formattedEnd,
@@ -132,7 +159,7 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
       return w;
     });
 
-    onChange({
+    commitMonthlyData({
       ...data,
       endDate: toThaiDigits(val),
       reportDate: formattedReport,
@@ -155,7 +182,7 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
       dailyShortDates: (w.dailyShortDates || []).map((d) => toThaiDigits(d)),
     }));
 
-    onChange({
+    commitMonthlyData({
       ...data,
       docNo: toThaiDigits(data.docNo),
       rptMonth: toThaiDigits(data.rptMonth),
@@ -181,7 +208,7 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
       return;
     }
     if (onChange) {
-      onChange({
+      commitMonthlyData({
         ...data,
         docNo: '',
         rptMonth: '',
@@ -208,10 +235,44 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
 
   const handleAddMonthlyPage = () => {
     if (!onChange) return;
+    const newPage = {
+      id: `monthly-${Date.now()}`,
+      data: { ...snapshotMonthlyData(data), docNo: '', rptMonth: '' },
+    };
+    const nextPages = [...monthlyPages, newPage];
     onChange({
+      ...initialData,
       ...data,
-      docNo: '',
-      rptMonth: '',
+      ...newPage.data,
+      monthlyPages: nextPages,
+      activeMonthlyPageIndex: nextPages.length - 1,
+    });
+  };
+
+  const handleSelectMonthlyPage = (index: number) => {
+    const page = monthlyPages[index];
+    if (!page || !onChange) return;
+    onChange({
+      ...initialData,
+      ...data,
+      ...page.data,
+      monthlyPages,
+      activeMonthlyPageIndex: index,
+    });
+  };
+
+  const handleDeleteMonthlyPage = () => {
+    if (!onChange || monthlyPages.length <= 1) return;
+    if (!window.confirm(`ยืนยันการลบหน้ารายเดือนที่ ${activeMonthlyPageIndex + 1} หรือไม่?`)) return;
+    const nextPages = monthlyPages.filter((_, index) => index !== activeMonthlyPageIndex);
+    const nextIndex = Math.min(activeMonthlyPageIndex, nextPages.length - 1);
+    const nextPage = nextPages[nextIndex];
+    onChange({
+      ...initialData,
+      ...data,
+      ...nextPage.data,
+      monthlyPages: nextPages,
+      activeMonthlyPageIndex: nextIndex,
     });
   };
 
@@ -227,7 +288,34 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
       <div className="print:hidden space-y-6">
 
         {/* Monthly page controls: no weekly selector on the monthly report. */}
-        <div className="neu-flat p-3 sm:p-3.5 rounded-2xl border border-white/5 flex items-center justify-end gap-2">
+        <div className="neu-flat p-3 sm:p-3.5 rounded-2xl border border-white/5 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <label htmlFor="monthly-page-selector" className="text-xs font-bold text-gray-400 whitespace-nowrap">หน้าเดือน</label>
+            <select
+              id="monthly-page-selector"
+              value={activeMonthlyPageIndex}
+              onChange={(e) => handleSelectMonthlyPage(Number(e.target.value))}
+              className="neu-pressed min-w-[180px] max-w-[280px] px-3 py-2 rounded-xl text-xs font-bold text-orange-300 border border-orange-500/20 outline-none cursor-pointer"
+              aria-label="เลือกหน้ารายงานรายเดือน"
+            >
+              {monthlyPages.map((page, index) => (
+                <option key={page.id} value={index} className="bg-[#181818] text-white">
+                  หน้าเดือนที่ {toThaiDigits(index + 1)}{page.data.rptMonth ? ` — ${page.data.rptMonth}` : ''}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={handleDeleteMonthlyPage}
+              disabled={monthlyPages.length <= 1}
+              className="p-2 rounded-xl neu-button text-rose-400 hover:text-rose-300 disabled:opacity-30 disabled:cursor-not-allowed border border-rose-500/20 transition-all active:scale-95 cursor-pointer"
+              title="ลบหน้ารายเดือนปัจจุบัน"
+              aria-label="ลบหน้ารายเดือนปัจจุบัน"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={handleAddMonthlyPage}
@@ -246,6 +334,7 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
             <RotateCcw className="w-3.5 h-3.5 text-rose-400" />
             <span>ล้างข้อมูล</span>
           </button>
+          </div>
         </div>
 
         {/* Bento Cards Grid: 2 Columns on PC, 1 Column on Mobile */}

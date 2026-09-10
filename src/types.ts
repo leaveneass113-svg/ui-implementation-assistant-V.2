@@ -167,6 +167,13 @@ export interface ReportData {
   // Multi-Week Structure
   weeks: WeekData[];
   activeWeekIndex: number;
+  monthlyPages?: MonthlyPage[];
+  activeMonthlyPageIndex?: number;
+}
+
+export interface MonthlyPage {
+  id: string;
+  data: Partial<ReportData>;
 }
 
 export interface Project {
