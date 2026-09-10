@@ -509,8 +509,8 @@ export default function App() {
         />
 
         {/* Main Content Area */}
-        <main className="app-main flex-1 py-4 pb-28 sm:py-8 sm:pb-8 px-3 sm:px-6 lg:px-8 overflow-y-auto">
-          <div className="w-full max-w-[1440px] mx-auto space-y-5 sm:space-y-8">
+        <main className="app-main flex-1 py-3 pb-24 sm:py-5 sm:pb-6 px-3 sm:px-5 lg:px-6 overflow-y-auto">
+          <div className="w-full max-w-[1600px] mx-auto space-y-4 sm:space-y-6">
 
             {/* Quick Nav Bar (Top) — prev / current page / next */}
             {(() => {

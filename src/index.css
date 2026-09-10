@@ -48,7 +48,21 @@
 
 .app-main {
   margin-left: var(--cs-sidebar-width);
-  padding-top: 2rem;
+  padding-top: 1.25rem;
+}
+
+.app-main .neu-flat {
+  box-shadow: 6px 7px 14px rgba(29, 32, 36, 0.52), -4px -4px 10px rgba(53, 58, 64, 0.14);
+}
+
+.app-main input,
+.app-main select,
+.app-main textarea {
+  line-height: 1.35;
+}
+
+.app-main textarea {
+  min-height: 3.25rem;
 }
 
 .font-sarabun {
@@ -345,7 +359,7 @@
 }
 
 .system-action {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   border: 1px solid rgba(249, 115, 22, 0.24);
   background: linear-gradient(120deg, rgba(249, 115, 22, 0.12), rgba(41, 45, 50, 0.94) 46%, rgba(124, 58, 246, 0.12));
   box-shadow: 8px 8px 16px rgba(29, 32, 36, 0.58), -4px -4px 12px rgba(53, 58, 64, 0.18);

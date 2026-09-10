@@ -368,10 +368,10 @@ export const DocumentPage1: React.FC<Props> = ({
         </div>
 
         {/* Bento Cards Grid: 2 Columns on PC, 1 Column on Mobile */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
 
           {/* Bento Card 1: โครงการ (Project Card) */}
-          <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-5 flex flex-col justify-between">
+          <div className="neu-flat p-4 sm:p-5 rounded-2xl border border-white/5 space-y-4 flex flex-col">
             <div className="space-y-4">
               {/* Card Header */}
               <div className="flex items-center justify-between border-b border-white/5 pb-3.5 mb-4">
@@ -543,8 +543,8 @@ export const DocumentPage1: React.FC<Props> = ({
           </div>
 
           {/* Bento Card 2: สัญญา (Contract Card) */}
-          <div className="neu-flat p-5 sm:p-7 rounded-3xl border border-white/5 space-y-5 flex flex-col justify-between">
-            <div className="space-y-4">
+          <div className="neu-flat p-4 sm:p-5 rounded-2xl border border-white/5 space-y-4 flex flex-col">
+            <div className="space-y-3">
               {/* Card Header */}
               <div className="flex items-center justify-between border-b border-white/5 pb-3.5 mb-4">
                 <div className="flex items-center gap-3">
@@ -561,7 +561,7 @@ export const DocumentPage1: React.FC<Props> = ({
               </div>
 
               {/* Form Fields */}
-              <div className="space-y-4 text-xs">
+              <div className="space-y-3 text-xs">
                 {/* Row 1: Contract Numbers & Dates (C_NO, C_DATE, WS_DATE, C_END) */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
 
@@ -704,7 +704,7 @@ export const DocumentPage1: React.FC<Props> = ({
                 </div>
 
                 {/* Section Divider: Progress */}
-                <div className="pt-3 border-t border-white/5 space-y-3">
+                <div className="pt-2.5 border-t border-white/5 space-y-2.5">
                   <div className="flex items-center gap-1.5 text-orange-400 font-bold text-xs">
                     <TrendingUp className="w-4 h-4" />
                     <span>ข้อมูลผลงานและความก้าวหน้า (คำนวณจากสัปดาห์ล่าสุดอัตโนมัติ)</span>
@@ -712,7 +712,7 @@ export const DocumentPage1: React.FC<Props> = ({
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {/* CURRENT_PCT */}
-                    <div className="p-4 rounded-2xl bg-[#141517] border border-orange-500/30 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)]">
+                    <div className="p-3 rounded-xl bg-[#141517] border border-orange-500/30 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)]">
                       <label className="block text-orange-300 font-bold mb-1 text-xs">
                         %ผลงานปัจจุบัน
                       </label>
@@ -725,7 +725,7 @@ export const DocumentPage1: React.FC<Props> = ({
                     </div>
 
                     {/* REMAIN */}
-                    <div className="p-4 rounded-2xl bg-[#141517] border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)]">
+                    <div className="p-3 rounded-xl bg-[#141517] border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)]">
                       <label className="block text-gray-300 font-semibold mb-1 text-xs">
                         ระยะเวลาก่อสร้างคงเหลือ
                       </label>
