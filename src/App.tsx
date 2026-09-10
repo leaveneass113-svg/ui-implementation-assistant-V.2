@@ -44,7 +44,7 @@ import {
   parseThaiDate,
   formatThaiDateFull,
 } from './utils/weekUtils';
-import { Bug, Check, Save, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, Save, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import { normalizePersonnelFields } from './utils/personnel';
 
 // Navigation order for prev/next buttons
@@ -169,6 +169,7 @@ export default function App() {
 
   const [activeProjectId, setActiveProjectId] = useState<string>(() => projects[0]?.id || 'proj-1');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [activeView, setActiveView] = useState<ViewState>('contract-info');
 
   // Save State Management
@@ -473,12 +474,12 @@ export default function App() {
   };
 
   return (
-    <div className="app-shell min-h-screen text-gray-100 flex flex-col font-sarabun selection:bg-orange-500 selection:text-white relative">
+    <div className={`app-shell min-h-screen text-gray-100 flex flex-col font-sarabun selection:bg-orange-500 selection:text-white relative ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       {/* Top Slim Header Bar */}
       <TopBar
         isPlaceholderMode={reportData.isPlaceholderMode}
         onTogglePreset={togglePreset}
-        onOpenDrawer={() => setIsDrawerOpen(true)}
+        onToggleSidebar={() => setIsSidebarCollapsed((collapsed) => !collapsed)}
         activeProjectName={reportData.projectName}
         onSaveProject={handleManualSave}
         isSaveSuccess={isSaveSuccess}
@@ -506,6 +507,7 @@ export default function App() {
           activeView={activeView}
           onViewChange={setActiveView}
           onOpenProjects={() => setIsDrawerOpen(true)}
+          isCollapsed={isSidebarCollapsed}
         />
 
         {/* Main Content Area */}
@@ -721,18 +723,6 @@ export default function App() {
             )}
           </div>
 
-          {/* Bottom system status / action prompt */}
-          <button
-            type="button"
-            className="system-action group rounded-2xl px-4 py-3 sm:px-5 sm:py-4 flex items-center gap-3 print:hidden w-full max-w-[1440px] mx-auto text-left cursor-pointer"
-            onClick={() => setToastMessage('ตรวจสอบแก้ไข บัค และปรับปรุงระบบ')}
-            aria-label="ตรวจสอบแก้ไข บัค และปรับปรุงระบบ"
-          >
-            <span className="system-action__icon w-10 h-10 rounded-xl bg-orange-500/15 border border-orange-400/20 text-orange-300 flex items-center justify-center shrink-0">
-              <Bug className="w-5 h-5" aria-hidden="true" />
-            </span>
-            <span className="min-w-0 flex-1 text-sm sm:text-base font-bold text-white leading-tight">ตรวจสอบแก้ไข บัค และปรับปรุงระบบ</span>
-          </button>
         </main>
       </div>
 

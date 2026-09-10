@@ -336,14 +336,6 @@ export const DocumentPage1: React.FC<Props> = ({
 
           {/* Right Action & Badges */}
           <div className="flex items-center gap-2 flex-wrap justify-between md:justify-end shrink-0">
-            <span className="text-[11px] sm:text-xs px-2.5 py-1.5 rounded-xl neu-pressed text-orange-400 font-bold border border-orange-500/30">
-              สะสม: {toThaiDigits(activeWeek?.workProgress?.cumulative ?? 0)}%
-            </span>
-
-            <span className="hidden sm:inline-block text-[11px] bg-orange-500/15 text-orange-400 px-2.5 py-1.5 rounded-xl border border-orange-500/30 font-medium">
-              ตัวเลขไทย ๑๐๐%
-            </span>
-
             {/* Convert All to Thai Numerals Button */}
             <button
               onClick={handleConvertAllToThaiDigits}

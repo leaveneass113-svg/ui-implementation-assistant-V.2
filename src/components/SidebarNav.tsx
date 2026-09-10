@@ -36,6 +36,7 @@ interface Props {
   activeView: ViewState;
   onViewChange: (view: ViewState) => void;
   onOpenProjects: () => void;
+  isCollapsed?: boolean;
 }
 
 const navItems: NavItem[] = [
@@ -59,7 +60,7 @@ const getProgress = (activeView: ViewState) => {
   };
 };
 
-export const SidebarNav: FC<Props> = ({ activeView, onViewChange, onOpenProjects }) => {
+export const SidebarNav: FC<Props> = ({ activeView, onViewChange, onOpenProjects, isCollapsed = false }) => {
   const { activeIndex, percent } = getProgress(activeView);
 
   const renderProjectButton = (mobile = false) => (
@@ -116,7 +117,7 @@ export const SidebarNav: FC<Props> = ({ activeView, onViewChange, onOpenProjects
 
   return (
     <>
-      <nav className="desktop-document-nav hidden md:block print:hidden" aria-label="เมนูเอกสาร">
+      <nav className={`desktop-document-nav hidden md:block print:hidden ${isCollapsed ? 'desktop-document-nav--collapsed' : ''}`} aria-label="เมนูเอกสาร">
         <div className="desktop-document-nav__inner">
           <div className="desktop-document-nav__meta">
             <div>

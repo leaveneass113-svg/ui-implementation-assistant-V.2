@@ -5,11 +5,8 @@ import {
   ScrollText,
   UserCheck,
   TrendingUp,
-  Sparkles,
-  Layers,
   ChevronLeft,
-  ChevronRight,
-  ChevronDown,
+  Plus,
   ArrowRight,
   RotateCcw,
 } from 'lucide-react';
@@ -49,7 +46,6 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
 
   const activeIndex = data.activeWeekIndex ?? 0;
   const activeWeek = (data.weeks && data.weeks[activeIndex]) || data.weeks?.[0];
-
   const updateActiveWeekField = (field: keyof WeekData, value: any) => {
     if (!onChange) return;
     const weeks = data.weeks || [];
@@ -210,6 +206,15 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
     }
   };
 
+  const handleAddMonthlyPage = () => {
+    if (!onChange) return;
+    onChange({
+      ...data,
+      docNo: '',
+      rptMonth: '',
+    });
+  };
+
   const inputClass =
     'w-full px-4 py-2.5 rounded-2xl bg-[#141517] text-slate-100 placeholder:text-zinc-500 placeholder:font-light text-sm outline-none border border-white/5 shadow-[inset_3px_3px_6px_#0a0b0c,inset_-2px_-2px_5px_rgba(255,255,255,0.03)] focus:border-orange-500/50 transition-all antialiased';
 
@@ -221,92 +226,26 @@ export const DocumentPage4Monthly: React.FC<Props> = ({
       {/* Screen View: Dark Neumorphism Bento Cards Form Input */}
       <div className="print:hidden space-y-6">
 
-        {/* Top Control Bar: Active Week Selector (Dropdown List) & Actions */}
-        <div className="neu-flat p-3.5 sm:p-4 rounded-3xl border border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-3.5">
-          {/* Week Selector Dropdown */}
-          <div className="flex items-center gap-3 min-w-0 flex-1">
-            <div className="w-10 h-10 rounded-2xl neu-pressed flex items-center justify-center text-orange-400 border border-orange-500/20 shrink-0">
-              <Layers className="w-5 h-5" />
-            </div>
-
-            <div className="flex items-center gap-2 flex-1 min-w-0 flex-wrap sm:flex-nowrap">
-              {/* Prev Week Button */}
-              <button
-                type="button"
-                disabled={activeIndex === 0}
-                onClick={() => onChange && onChange({ ...data, activeWeekIndex: Math.max(0, activeIndex - 1) })}
-                className="p-2.5 rounded-2xl neu-button text-gray-300 hover:text-orange-400 disabled:opacity-25 disabled:cursor-not-allowed border border-white/5 shrink-0 transition-all active:scale-95 cursor-pointer"
-                title="สัปดาห์ก่อนหน้า"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-
-              {/* Dropdown Select for Weeks */}
-              <div className="relative flex-1 min-w-[220px] sm:min-w-[320px] max-w-lg">
-                <select
-                  id="select_active_week_page4"
-                  value={activeIndex}
-                  onChange={(e) => onChange && onChange({ ...data, activeWeekIndex: Number(e.target.value) })}
-                  className="w-full appearance-none px-4 py-2.5 pr-10 rounded-2xl bg-[#141517] text-orange-400 font-bold text-sm sm:text-base border border-orange-500/30 outline-none shadow-[inset_2px_2px_6px_#0a0b0c,inset_-2px_-2px_6px_rgba(255,255,255,0.02)] focus:border-orange-500 cursor-pointer transition-all hover:border-orange-500/50 truncate"
-                >
-                  {data.weeks && data.weeks.map((w, idx) => {
-                    const cum = w.workProgress?.cumulative ?? 0;
-                    return (
-                      <option key={w.id || idx} value={idx} className="bg-[#181818] text-white py-1">
-                        สัปดาห์ {toThaiDigits(w.weekNo || idx + 1)} {w.startDate ? `(${w.startDate} ถึง ${w.endDate})` : ''} {cum > 0 ? `[สะสม ${toThaiDigits(cum)}%]` : ''}
-                      </option>
-                    );
-                  })}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-orange-400">
-                  <ChevronDown className="w-4 h-4" />
-                </div>
-              </div>
-
-              {/* Next Week Button */}
-              <button
-                type="button"
-                disabled={!data.weeks || activeIndex >= data.weeks.length - 1}
-                onClick={() => onChange && onChange({ ...data, activeWeekIndex: Math.min(data.weeks.length - 1, activeIndex + 1) })}
-                className="p-2.5 rounded-2xl neu-button text-gray-300 hover:text-orange-400 disabled:opacity-25 disabled:cursor-not-allowed border border-white/5 shrink-0 transition-all active:scale-95 cursor-pointer"
-                title="สัปดาห์ถัดไป"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Right Action & Badges */}
-          <div className="flex items-center gap-2 flex-wrap justify-between md:justify-end shrink-0">
-            <span className="text-[11px] sm:text-xs px-2.5 py-1.5 rounded-xl neu-pressed text-orange-400 font-bold border border-orange-500/30">
-              สะสม: {toThaiDigits(activeWeek?.workProgress?.cumulative ?? 0)}%
-            </span>
-
-            <span className="hidden sm:inline-block text-[11px] bg-orange-500/15 text-orange-400 px-2.5 py-1.5 rounded-xl border border-orange-500/30 font-medium">
-              ตัวเลขไทย ๑๐๐%
-            </span>
-
-            {/* Convert All to Thai Numerals Button */}
-            <button
-              onClick={handleConvertAllToThaiDigits}
-              className="px-3 py-2 neu-button text-orange-400 hover:text-orange-300 rounded-2xl text-xs font-bold border border-orange-500/20 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
-              title="แปลงตัวเลขทั้งหมดในโครงการเป็นตัวเลขไทย (๐-๙) อัตโนมัติ"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-orange-400" />
-              <span>แปลงเลขไทย</span>
-            </button>
-
-            {/* Clear Data Button */}
-            <button
-              type="button"
-              onClick={handleClearPage4}
-              className="px-3 py-2 neu-button text-rose-400 hover:text-rose-300 rounded-2xl text-xs font-bold border border-rose-500/20 hover:border-rose-500/40 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
-              title="ล้างข้อมูลทั้งหมดในหน้า ๔ (รายงานรายเดือน)"
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-rose-400" />
-              <span>ล้างข้อมูล</span>
-            </button>
-          </div>
+        {/* Monthly page controls: no weekly selector on the monthly report. */}
+        <div className="neu-flat p-3 sm:p-3.5 rounded-2xl border border-white/5 flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={handleAddMonthlyPage}
+            className="neu-orange-btn px-3.5 py-2 rounded-xl text-xs font-bold text-white flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
+            title="เพิ่มหน้าเดือนใหม่"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>เพิ่มหน้าเดือนใหม่</span>
+          </button>
+          <button
+            type="button"
+            onClick={handleClearPage4}
+            className="px-3 py-2 neu-button text-rose-400 hover:text-rose-300 rounded-xl text-xs font-bold border border-rose-500/20 hover:border-rose-500/40 flex items-center gap-1.5 transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
+            title="ล้างข้อมูลทั้งหมดในหน้า ๔ (รายงานรายเดือน)"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-rose-400" />
+            <span>ล้างข้อมูล</span>
+          </button>
         </div>
 
         {/* Bento Cards Grid: 2 Columns on PC, 1 Column on Mobile */}

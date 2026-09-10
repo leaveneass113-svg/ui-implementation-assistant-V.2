@@ -54,10 +54,9 @@ export const WeekSelectorBar: React.FC<Props> = ({
                 className="w-full appearance-none px-4 py-2.5 pr-10 rounded-2xl bg-[#141517] text-orange-400 font-bold text-sm sm:text-base border border-orange-500/30 outline-none shadow-[inset_2px_2px_6px_#0a0b0c,inset_-2px_-2px_6px_rgba(255,255,255,0.02)] focus:border-orange-500 cursor-pointer transition-all hover:border-orange-500/50 truncate"
               >
                 {weeks.map((w, idx) => {
-                  const cum = w.workProgress?.cumulative ?? 0;
                   return (
                     <option key={w.id || idx} value={idx} className="bg-[#181818] text-white py-1">
-                      สัปดาห์ที่ {toThaiDigits(w.weekNo || idx + 1)} {w.startDate ? `(${w.startDate} ถึง ${w.endDate})` : ''} {cum > 0 ? `[สะสม ${toThaiDigits(cum)}%]` : ''}
+                      สัปดาห์ที่ {toThaiDigits(w.weekNo || idx + 1)} {w.startDate ? `(${w.startDate} ถึง ${w.endDate})` : ''}
                     </option>
                   );
                 })}
@@ -82,10 +81,6 @@ export const WeekSelectorBar: React.FC<Props> = ({
 
         {/* Right: Action Buttons & Progress Badge */}
         <div className="flex items-center gap-2 flex-wrap justify-between lg:justify-end shrink-0">
-          <span className="text-[11px] sm:text-xs px-3 py-2 rounded-2xl neu-pressed text-orange-400 font-bold border border-orange-500/30">
-            สะสม: {toThaiDigits(currentWeek?.workProgress?.cumulative ?? 0)}%
-          </span>
-
           <button
             type="button"
             onClick={onAutoGenerateWeeks}
@@ -126,4 +121,3 @@ export const WeekSelectorBar: React.FC<Props> = ({
     </div>
   );
 };
-

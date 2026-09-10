@@ -110,7 +110,7 @@ export const ExportView: React.FC<Props> = ({ data, onSelectWeek }) => {
               <span className="text-orange-400">สัปดาห์ที่ {toThaiDigits(currentWeek?.weekNo || activeIndex + 1)}</span>
             </div>
             <div className="text-xs text-gray-400 mt-0.5">
-              ช่วงวันที่: {currentWeek?.startDate || '-'} ถึง {currentWeek?.endDate || '-'} (สะสม: {toThaiDigits(currentWeek?.workProgress?.cumulative ?? 0)}%)
+              ช่วงวันที่: {currentWeek?.startDate || '-'} ถึง {currentWeek?.endDate || '-'}
             </div>
           </div>
         </div>

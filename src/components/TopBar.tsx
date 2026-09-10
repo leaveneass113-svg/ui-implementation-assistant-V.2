@@ -12,7 +12,7 @@ export type { ViewState } from './SidebarNav';
 interface Props {
   isPlaceholderMode: boolean;
   onTogglePreset: () => void;
-  onOpenDrawer: () => void;
+  onToggleSidebar: () => void;
   activeProjectName?: string;
   onSaveProject?: () => void;
   isSaveSuccess?: boolean;
@@ -22,7 +22,7 @@ interface Props {
 export const TopBar: React.FC<Props> = ({
   isPlaceholderMode,
   onTogglePreset,
-  onOpenDrawer,
+  onToggleSidebar,
   activeProjectName,
   onSaveProject,
   isSaveSuccess,
@@ -37,10 +37,10 @@ export const TopBar: React.FC<Props> = ({
           <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
             {/* Project drawer toggle: the document navigation lives in the responsive nav below. */}
             <button
-              onClick={onOpenDrawer}
+              onClick={onToggleSidebar}
               className="p-2 sm:p-2.5 rounded-xl neu-button text-gray-200 hover:text-orange-400 border border-white/5 transition-all flex items-center justify-center group active:scale-95 shrink-0 cursor-pointer"
-              title="เปิดศูนย์จัดการโครงการ"
-              aria-label="เปิดศูนย์จัดการโครงการ"
+              title="เปิดหรือปิดแถบเมนูด้านข้าง"
+              aria-label="เปิดหรือปิดแถบเมนูด้านข้าง"
             >
               <Menu className="w-4 h-4 sm:w-[18px] sm:h-[18px] group-hover:scale-110 transition-transform" />
             </button>
